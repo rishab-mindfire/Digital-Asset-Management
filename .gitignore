@@ -1,6 +1,12 @@
-# Dependency directories 
+# Dependency directories
 **/node_modules/
 **/jspm_packages/
+
+# ------
+package-lock.json
+**/package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Environment files
 **/.env
@@ -13,9 +19,10 @@
 **/yarn-error.log*
 
 # Production Build Folders
-Frontend/dist/
-Frontend/build/
-Frontend/out/
+frontend/dist/
+frontend/build/
+frontend/out/
+backend/dist/
 
 # IDE / System files
 .DS_Store
@@ -26,4 +33,3 @@ Frontend/out/
 *.njsproj
 *.sln
 *.sw?
-
