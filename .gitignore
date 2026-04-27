@@ -1,10 +1,29 @@
-# Node modules for both
-node_modules/
+# Dependency directories 
+**/node_modules/
+**/jspm_packages/
 
-# Python virtual environments
-venv/
-.env
+# Environment files
+**/.env
+**/.env.local
+**/.env.*.local
 
-# Build folders
-frontend/dist/
-frontend/build/
+# Logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Production Build Folders
+Frontend/dist/
+Frontend/build/
+Frontend/out/
+
+# IDE / System files
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
