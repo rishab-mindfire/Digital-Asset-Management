@@ -9,8 +9,8 @@
     "strict": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "dist",
+    "rootDir": "src",
     "allowJs": true,
     "types": ["node", "express", "multer"]
   },
