@@ -107,7 +107,56 @@ npm run format
 * `bugfix/issue-name`
 * `hotfix/urgent-fix`
 
+
+
 ---
+#### Backend (nodeJs + TypeScript)
+---
+
+## Prerequisites
+
+Before you start, ensure you have the following installed:
+- **Node.js**: v18.x or higher (required for stable `worker_threads` support).
+- **MongoDB**: v6.0+ (Local instance or MongoDB Atlas).
+- **Package Manager**: npm or yarn.
+
+---
+## Environment Configuration:
+
+## Create a .env.dev file in the root directory:
+
+Code snippet
+
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/project_db
+
+
+## Install Dependencies:
+
+Bash
+```
+cd Backend
+npm install
+```
+
+Start the Server:
+
+Bash
+```
+npm run dev
+```
+
+ ## Architectural Guidelines
+
+
+
+
+
+
+
+
+
+ ---
 
 ### Commit Messages
 
@@ -174,45 +223,4 @@ When creating an issue, include:
 
 If something feels unclear, don’t guess — ask.
 Good contributions are not just about code, but also clarity and consistency.
-
----
-
-
----
-#### Backend (nodeJs + TypeScript)
-
-## Prerequisites
-
-Before you start, ensure you have the following installed:
-- **Node.js**: v18.x or higher (required for stable `worker_threads` support).
-- **MongoDB**: v6.0+ (Local instance or MongoDB Atlas).
-- **Package Manager**: npm or yarn.
-
----
-## Environment Configuration:
-
-## Create a .env.dev file in the root directory:
-
-Code snippet
-
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/project_db
-
-
-## Install Dependencies:
-
-Bash
-```
-cd Backend
-npm install
-```
-
-Start the Server:
-
-Bash
-```
-npm run dev
-```
-
- ## Architectural Guidelines
 
