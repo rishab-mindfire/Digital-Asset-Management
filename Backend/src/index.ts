@@ -5,6 +5,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import authRoleBased from './middlewares/authRoleBased.js';
+import { userRouter } from './router/user.js';
+import connectDB from './config/connectDB.config.js';
+import { adminRouter } from './router/admin.js';
+import { managerRouter } from './router/manager.js';
 
 // Determine environment file based on the current execution mode
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.dev';
@@ -29,6 +34,14 @@ app.use(cors(corsOptions));
 // Enable parsing of JSON payloads and URL-encoded form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Register application routes and apply role-based authentication to projects
+app.use('/user', userRouter);
+app.use('/admin-dashboard', authRoleBased('admin'), adminRouter);
+app.use('/manager-dashboard', authRoleBased('manager'), managerRouter);
+
+// Execute the database connection logic
+connectDB().catch();
 
 // Simple health check endpoint to confirm server availability
 app.get('/', (req, res) => {
