@@ -2,7 +2,6 @@ import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-plugin-prettier';
-import prettierConfig from 'eslint-config-prettier';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
@@ -11,13 +10,9 @@ export default defineConfig([
   {
     files: ['**/*.{ts,tsx}'],
 
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.recommended,
-    ],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
 
     languageOptions: {
-      parser: tseslint.parser,
       ecmaVersion: 2021,
       sourceType: 'module',
       globals: {
@@ -41,12 +36,8 @@ export default defineConfig([
       'max-depth': ['error', 3],
       complexity: ['error', 20],
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'preserve-caught-error': 'off',
     },
   },
-
-  prettierConfig,
 ]);
