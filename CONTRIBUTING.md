@@ -205,8 +205,10 @@ Bash
 ```
 cd Backend
 npm install
+```
 
 Start the Server:
+
 Bash
 ```
 npm run dev
