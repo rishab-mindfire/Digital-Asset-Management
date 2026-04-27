@@ -1,0 +1,10 @@
+# Node modules for both
+node_modules/
+
+# Python virtual environments
+venv/
+.env
+
+# Build folders
+frontend/dist/
+frontend/build/
