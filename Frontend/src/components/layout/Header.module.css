@@ -1,0 +1,157 @@
+/* ---  Container --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  height: 70px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+/* logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1f2c;
+  cursor: default;
+}
+.logo img {
+  width: 46px;
+  height: auto;
+  object-fit: contain;
+  order: -1;
+}
+.logo img:hover {
+  cursor: pointer;
+  opacity: 0.85;
+}
+.logo span {
+  letter-spacing: -0.01em;
+}
+
+/* --- Navigation & Sidebar --- */
+.navContainer {
+  position: fixed;
+  top: 70px;
+  left: -100%; /* Hidden off-side */
+  width: 260px;
+  height: calc(100vh - 70px);
+  background-color: #fcfcfc;
+  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-right: 1px solid #eee;
+}
+
+.navActive {
+  left: 0; /* Slide in */
+}
+
+.navLinks {
+  list-style: none;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #636e72;
+  font-weight: 500;
+  transition: color 0.2s;
+  padding-bottom: 3px;
+  border-bottom: 1px solid;
+}
+
+.navLinks a:hover {
+  color: #0984e3;
+}
+
+/* --- Logout Buttons --- */
+.btnLogout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  cursor: pointer;
+  border: 1px solid #436b62;
+  border-radius: 4px;
+  color: #636e72;
+  font-size: 16px;
+  padding-inline: 14px;
+  width: 100px;
+}
+.btnLogout:hover {
+  box-shadow: 0.4px -0.3px 5px #436b62;
+  transform: scale(1.02);
+}
+.btnLogout img {
+  margin-top: 5px;
+  height: 27px;
+  width: 30px;
+}
+
+.mobileLogout {
+  margin-top: 1rem;
+  display: block;
+}
+
+.desktopActions {
+  display: none;
+}
+
+/* --- Hamburger Icon --- */
+.menuBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.line {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  transition: 0.3s;
+}
+
+/* --- Desktop Styles (Media Query) --- */
+@media (min-width: 768px) {
+  .logo {
+    font-size: 1.8rem;
+  }
+  .menuBtn {
+    display: none;
+  }
+
+  .navContainer {
+    position: static;
+    height: auto;
+    width: auto;
+    background: none;
+    border: none;
+  }
+
+  .navLinks {
+    flex-direction: row;
+    padding: 0;
+    gap: 2rem;
+  }
+
+  .mobileLogout {
+    display: none;
+  }
+
+  .desktopActions {
+    display: block;
+  }
+}
