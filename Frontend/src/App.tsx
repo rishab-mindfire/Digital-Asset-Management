@@ -4,11 +4,12 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
 import Loader from './components/common/Loader';
+import Asset from './pages/Asset/AssetTable';
 
 // React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
 const Signup = lazy(() => import('./pages/login/SignUp'));
-const DashBord = lazy(() => import('./pages/dashBoard/DashBord'));
+const DashBord = lazy(() => import('./pages/dashBoard/AssetDashboard'));
 const PageNotFound = lazy(() => import('./pages/errorPage/PageNotFound'));
 const Layout = lazy(() => import('./components/layout/Layout'));
 
@@ -38,6 +39,17 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <DashBord />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/asset"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Asset />
                 </Layout>
               </ProtectedRoute>
             }

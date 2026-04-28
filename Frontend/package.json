@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "axios": "^1.15.2",
+    "highcharts": "^12.6.0",
+    "highcharts-react-official": "^3.2.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.2",
