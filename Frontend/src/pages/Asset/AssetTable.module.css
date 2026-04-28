@@ -1,14 +1,15 @@
 /* Container and Toolbar */
 .assetSection {
-  background: #ffffff;
+  background:  #eff6fc;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
-.tableHeader {
-  padding: 20px;
+.tableContainer {
   border-bottom: 1px solid #e5e7eb;
+  padding: 20px;
+  background-color: white;
 }
 
 .tableTitle {
@@ -53,13 +54,14 @@
 }
 
 .btnPrimary {
-  background: #3b82f6;
+  background: var(--logo-color);
   color: white;
-  border-color: #3b82f6;
+  border-color: var(--logo-color);
 }
 
-/* Responsive Table Wrapper */
+/* Table Wrapper */
 .tableResponsiveWrapper {
+  margin-top: 20px;
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;

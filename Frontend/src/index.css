@@ -1,6 +1,6 @@
 :root {
-  --primary-color: #033166;
-  --secondary-color: #012753;
+  --primary-color: #033166b0;
+  --secondary-color: #012753b4;
   --logo-color:#4993D2;
 }
 
@@ -36,12 +36,20 @@
   }
 }
 
+/* --- Container --- */
+.mainContainer {
+  background-color:#e3e7eb21;
+  padding: 20px;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  box-sizing: border-box;
+}
 
 /* common breadcrumb */
 /* --- Header --- */
 .header {
   margin-bottom: 24px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #bec2c9;
   padding-bottom: 16px;
   display: flex;
   justify-content: space-between;
@@ -49,7 +57,7 @@
 .title {
   font-size: 18px;
   font-weight: 700;
-  color: #111827;
+  color: var(--primary-color);
   margin: 0;
 }
 
@@ -61,7 +69,7 @@
 }
 @media (max-width: 768px) {
   .title {
-    font-size: 24px;
+    font-size: 22px;
   }
 .routes{
   display: none;

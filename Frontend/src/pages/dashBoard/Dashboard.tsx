@@ -48,7 +48,7 @@ const AssetDashboard = () => {
   };
 
   return (
-    <div className={styles.dashboardContainer}>
+    <div className="mainContainer">
       <header className="header">
         <h1 className="title">Asset Overview Dashboard</h1>
         <Link className="routes" to="/asset">

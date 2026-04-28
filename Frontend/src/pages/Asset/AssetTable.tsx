@@ -30,15 +30,14 @@ const AssetTable = () => {
   ];
 
   return (
-    <section className={styles.assetSection}>
-      <div className={styles.tableHeader}>
-        <header className="header">
-          <h1 className="title">Asset Overview</h1>
-          <Link className="routes" to="/dashboard">
-            Go to dashboard
-          </Link>
-        </header>
-
+    <section className="mainContainer">
+      <header className="header">
+        <h1 className="title">Asset Overview</h1>
+        <Link className="routes" to="/dashboard">
+          Go to dashboard
+        </Link>
+      </header>
+      <div className={styles.tableContainer}>
         <div className={styles.toolbar}>
           <div className={styles.actionsLeft}>
             <button className={styles.btn}>Filter</button>
@@ -46,41 +45,41 @@ const AssetTable = () => {
           </div>
           <button className={`${styles.btn} ${styles.btnPrimary}`}>+ Upload</button>
         </div>
-      </div>
 
-      <div className={styles.tableResponsiveWrapper}>
-        <table className={styles.assetTable}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Owner</th>
-              <th>Last Updated</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assets.map((asset) => (
-              <tr key={asset.id}>
-                <td style={{ fontWeight: 500 }}>{asset.name}</td>
-                <td>{asset.type}</td>
-                <td>
-                  <span
-                    className={`${styles.badge} ${asset.status === 'Approved' ? styles.approved : styles.pending}`}
-                  >
-                    {asset.status}
-                  </span>
-                </td>
-                <td>{asset.owner}</td>
-                <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
-                <td>
-                  <Link to={`${asset.id}`}>Open</Link>
-                </td>
+        <div className={styles.tableResponsiveWrapper}>
+          <table className={styles.assetTable}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Owner</th>
+                <th>Last Updated</th>
+                <th>View</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {assets.map((asset) => (
+                <tr key={asset.id}>
+                  <td style={{ fontWeight: 500 }}>{asset.name}</td>
+                  <td>{asset.type}</td>
+                  <td>
+                    <span
+                      className={`${styles.badge} ${asset.status === 'Approved' ? styles.approved : styles.pending}`}
+                    >
+                      {asset.status}
+                    </span>
+                  </td>
+                  <td>{asset.owner}</td>
+                  <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
+                  <td>
+                    <Link to={`${asset.id}`}>Open</Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );
