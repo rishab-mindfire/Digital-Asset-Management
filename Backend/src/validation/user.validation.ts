@@ -14,7 +14,7 @@ export const userRegistrationValidation = Joi.object({
     'string.alphanum': 'Password must be alphanumeric',
     'string.empty': 'Password is required',
   }),
-  role: Joi.string().valid('admin', 'manager', 'public').required(),
+  userRole: Joi.string().valid('admin', 'manager', 'public').required(),
 });
 
 export const userLoginValidation = Joi.object({

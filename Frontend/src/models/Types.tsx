@@ -70,10 +70,3 @@ export type SigninAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERRORS'; payload: SignInErrors }
   | { type: 'RESET' };
-
-export interface SignupResponse {
-  userEmail: string;
-  userPassword: string;
-  userRole: UserRole;
-  userName: string;
-}

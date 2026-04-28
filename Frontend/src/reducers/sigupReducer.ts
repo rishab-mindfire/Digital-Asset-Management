@@ -1,7 +1,7 @@
 import type { SigninAction, SignupType } from '../models/Types';
 
 /**
- * Initial state for sigin form
+ * Initial state for sigup form
  */
 export const initialSignInState: SignupType = {
   userName: 'name',
@@ -13,19 +13,19 @@ export const initialSignInState: SignupType = {
 };
 
 /**
- * siginReducer
+ * sigupReducer
  *
- * Handles sigin form state:
+ * Handles sigup form state:
  * - Field updates (email/password)
  * - Loading state during API calls
  * - Validation errors
  * - Resetting form
  *
- * @param state - Current sigin state
+ * @param state - Current sigup state
  * @param action - Action describing state change
  */
 
-export function siginReducer(state: SignupType, action: SigninAction): SignupType {
+export function sigupReducer(state: SignupType, action: SigninAction): SignupType {
   switch (action.type) {
     case 'SET_FIELD':
       return {

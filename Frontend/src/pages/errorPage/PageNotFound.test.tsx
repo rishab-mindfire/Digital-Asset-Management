@@ -11,9 +11,9 @@ describe('Page not found ', () => {
       </MemoryRouter>,
     );
 
-    const projectsBtn = screen.getByRole('link', { name: /back to projects/i });
+    const dashboardBtn = screen.getByRole('link', { name: /back to dashboard/i });
 
-    expect(projectsBtn).toBeInTheDocument();
-    expect(projectsBtn).toHaveAttribute('href', '/projects');
+    expect(dashboardBtn).toBeInTheDocument();
+    expect(dashboardBtn).toHaveAttribute('href', '/dashboard');
   });
 });

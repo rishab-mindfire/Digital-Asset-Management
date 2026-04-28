@@ -34,8 +34,8 @@ const Header: React.FC = () => {
   return (
     <header className={styles.navbar}>
       <div className={styles.logo} role="heading">
-        <span>File Processing System</span>
-        <img src={logo} alt="logo image" onClick={() => navigate('/projects')} />
+        <span>Digital Asset Management</span>
+        <img src={logo} alt="logo image" onClick={() => navigate('/dashboard')} />
       </div>
 
       {/* Hamburger Toggle */}

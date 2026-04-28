@@ -21,7 +21,7 @@ const userSchema = new Schema<UserType>(
       type: String,
       required: true,
     },
-    role: {
+    userRole: {
       type: String,
       required: true,
     },
