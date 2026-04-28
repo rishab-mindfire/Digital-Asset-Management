@@ -3,11 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
+import Loader from './components/common/Loader';
+import Asset from './pages/Asset/AssetTable';
+import ViewAsset from './pages/ViewAsset/ViewAsset';
 
 // React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
 const Signup = lazy(() => import('./pages/login/SignUp'));
-const DashBord = lazy(() => import('./pages/dashBoard/DashBord'));
+const DashBord = lazy(() => import('./pages/dashBoard/AssetDashboard'));
 const PageNotFound = lazy(() => import('./pages/errorPage/PageNotFound'));
 const Layout = lazy(() => import('./components/layout/Layout'));
 
@@ -19,7 +22,13 @@ const RootRedirect = (): JSX.Element => {
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div style={{ padding: 20 }}>Loading...</div>}>
+      <Suspense
+        fallback={
+          <div style={{ padding: 20 }}>
+            <Loader />
+          </div>
+        }
+      >
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />
@@ -31,6 +40,28 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <DashBord />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/asset"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Asset />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/asset/:assetId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ViewAsset />
                 </Layout>
               </ProtectedRoute>
             }
