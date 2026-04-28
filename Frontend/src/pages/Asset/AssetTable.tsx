@@ -8,16 +8,23 @@ const AssetTable = () => {
       name: 'Img1.jpg',
       type: 'Img',
       status: 'Approved',
-      owner: 'Mkt',
+      owner: 'Public',
       updated: '2 days ago',
     },
-    { id: 2, name: 'Vid1.mp4', type: 'Video', status: 'Pending', owner: 'PR', updated: 'Today' },
+    {
+      id: 2,
+      name: 'Vid1.mp4',
+      type: 'Video',
+      status: 'Pending',
+      owner: 'Manager',
+      updated: 'Today',
+    },
     {
       id: 3,
       name: 'Logo_Final.svg',
       type: 'Vector',
       status: 'Approved',
-      owner: 'Design',
+      owner: 'Admin',
       updated: '5 hours ago',
     },
   ];
@@ -50,6 +57,7 @@ const AssetTable = () => {
               <th>Status</th>
               <th>Owner</th>
               <th>Last Updated</th>
+              <th>View</th>
             </tr>
           </thead>
           <tbody>
@@ -66,6 +74,9 @@ const AssetTable = () => {
                 </td>
                 <td>{asset.owner}</td>
                 <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
+                <td>
+                  <Link to={`${asset.id}`}>Open</Link>
+                </td>
               </tr>
             ))}
           </tbody>

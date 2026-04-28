@@ -5,6 +5,7 @@ import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
 import Loader from './components/common/Loader';
 import Asset from './pages/Asset/AssetTable';
+import ViewAsset from './pages/ViewAsset/ViewAsset';
 
 // React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
@@ -50,6 +51,17 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Asset />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/asset/:assetId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ViewAsset />
                 </Layout>
               </ProtectedRoute>
             }
