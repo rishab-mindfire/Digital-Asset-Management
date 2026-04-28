@@ -217,3 +217,25 @@ User-facing APIs must **never block** on these operations.
 ---
 
 ### **Admin / Background Jobs Visibility**
+
+```
++--------------------------------------------------+
+| Background Processing                            |
++--------------------------------------------------+
+| Job Type | Asset | Status | Started | Duration   |
+|--------------------------------------------------|
+| Analysis | Img1  | Running| 10:21   | --         |
+| Report   | All   | Done   | 09:00   | 15m        |
++--------------------------------------------------+
+```
+
+---
+
+## **9. What This Assignment Is Testing**
+
+- Ability to design systems beyond basic CRUD
+- Understanding of asynchronous and event-driven workflows
+- Separation of real-time user actions from heavy computation
+- Handling scale, volume, and operational complexity
+- Translating messy real-world problems into structured systems
+- Thinking in terms of lifecycle, observability, and resilience
