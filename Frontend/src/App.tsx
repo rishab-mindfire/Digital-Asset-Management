@@ -5,12 +5,12 @@ import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
 import Loader from './components/common/Loader';
 import Asset from './pages/Asset/AssetTable';
-import ViewAsset from './pages/ViewAsset/ViewAsset';
+import ViewAsset from './pages/ViewAsset/AssetDetails';
 
 // React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
 const Signup = lazy(() => import('./pages/login/SignUp'));
-const DashBord = lazy(() => import('./pages/dashBoard/AssetDashboard'));
+const DashBord = lazy(() => import('./pages/dashBoard/Dashboard'));
 const PageNotFound = lazy(() => import('./pages/errorPage/PageNotFound'));
 const Layout = lazy(() => import('./components/layout/Layout'));
 
