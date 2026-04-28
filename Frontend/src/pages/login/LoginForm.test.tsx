@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import Login from './LoginPage';
 import { AuthProvider } from '../../context/AuthProvider';
-import { loginApi } from '../../services/loginService';
+import { loginApi } from '../../services/signinService';
 import '@testing-library/jest-dom';
 
 vi.mock('../../services/loginService', () => ({

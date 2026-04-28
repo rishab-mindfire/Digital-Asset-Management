@@ -3,7 +3,7 @@ import styles from './Header.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import logoutImage from '../../assets/logout.png';
-import folderImage from '../../assets/document-management.png';
+import logo from '../../assets/logo.png';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -35,7 +35,7 @@ const Header: React.FC = () => {
     <header className={styles.navbar}>
       <div className={styles.logo} role="heading">
         <span>File Processing System</span>
-        <img src={folderImage} alt="logo image" onClick={() => navigate('/projects')} />
+        <img src={logo} alt="logo image" onClick={() => navigate('/projects')} />
       </div>
 
       {/* Hamburger Toggle */}

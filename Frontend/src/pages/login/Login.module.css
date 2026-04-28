@@ -1,28 +1,35 @@
+
+
 .loginContainer {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #436b62;
+  background: url('/your-image.png') center/cover no-repeat;
+}
+.backgroundImage{
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 .logoSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0rem;
   text-align: center;
 }
 .logoImage {
-  width: 44px;
+  width: 64px;
   height: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
 }
 
 .title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #436b62;
+  color: white;
   margin: 0;
   letter-spacing: -0.025em;
 }
@@ -39,20 +46,21 @@
 }
 /* Form card hover lift */
 .loginForm {
-  border: 1px solid #24463e;
+  position: absolute;
   border-color: #29443e;
-  width: 380px;
-  padding: 40px;
+  width: 420px;
+  padding: 20px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 2px -2px 30px #054234;
+  background: transparent;
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
   animation: slideUp 0.6s ease-out;
+  will-change: transform;
 }
 
 .loginForm:hover {
@@ -74,22 +82,22 @@
 .inputGroup {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   width: 100%;
 }
 
 label {
   font-size: 13px;
   font-weight: 600;
-  color: #636e72;
-  margin-bottom: 6px;
+  color: white;
+  margin-bottom: 5px;
   margin-left: 2px;
   transition: color 0.2s;
 }
 
 /* Animated Input Borders */
 .input {
-  padding: 12px 16px;
+  padding: 10px 8px;
   border: 1px solid #c6ccd1;
   border-radius: 10px;
   font-size: 14px;
@@ -114,22 +122,22 @@ label {
 }
 
 .button {
-  padding: 14px;
-  background: #4a90e2;
+  padding: 10px;
+  background:  var(--primary-color);
   color: #fff;
   border: none;
   border-radius: 10px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 10px;
-  transition: all 0.3s ease;
+  margin-top: 5px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
 .button:hover:not(:disabled) {
-  background: #357abd;
+  background:  var(--secondary-color);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
@@ -159,9 +167,13 @@ label {
   text-align: center;
   font-size: 0.9rem;
 }
+.accoount{
+color:  #012753;
+}
 
 .link {
-  color: #007bff;
+  color: white;
+  font: bold;
   cursor: pointer;
   font-weight: 500;
 }
@@ -175,7 +187,7 @@ label {
   color: #d63031;
   font-size: 0.75rem;
   font-weight: 500;
-  margin-top: 4px;
+  margin-top: 2px;
   text-align: left;
   display: block;
   animation: fadeInShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
@@ -222,4 +234,11 @@ label {
   border-color: #d63031 !important;
   background-color: #fffafa;
   box-shadow: 0 0 0 3px rgba(214, 48, 49, 0.1);
+}
+
+
+@media screen and (max-width: 480px)  {
+ .loginForm {
+    padding: 20px;
+  }
 }
