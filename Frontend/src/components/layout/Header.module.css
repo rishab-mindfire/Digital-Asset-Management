@@ -19,7 +19,7 @@
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1a1f2c;
+  color: var(--logo-color);
   cursor: default;
 }
 .logo img {
@@ -81,21 +81,20 @@
   gap: 5px;
   background: none;
   cursor: pointer;
-  border: 1px solid #436b62;
+  border: 1px solid var(--secondary-color);
   border-radius: 4px;
-  color: #636e72;
+  color: var(--primary-color);
   font-size: 16px;
   padding-inline: 14px;
   width: 100px;
 }
 .btnLogout:hover {
-  box-shadow: 0.4px -0.3px 5px #436b62;
+  box-shadow: 0.4px -0.3px 5px var(--secondory-color);
   transform: scale(1.02);
 }
 .btnLogout img {
-  margin-top: 5px;
-  height: 27px;
-  width: 30px;
+  height: 32px;
+  width: 32px;
 }
 
 .mobileLogout {

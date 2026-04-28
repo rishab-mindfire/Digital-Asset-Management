@@ -4,13 +4,13 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import Login from './LoginPage';
 import { AuthProvider } from '../../context/AuthProvider';
-import { loginApi } from '../../services/signupService';
+import { loginApi } from '../../services/loginService';
 import '@testing-library/jest-dom';
 
 vi.mock('../../services/loginService', () => ({
   loginApi: vi.fn(),
 }));
-
+// create dummy memeory for auth acess
 const renderWithProviders = (ui: React.ReactElement) => {
   return render(
     <MemoryRouter>

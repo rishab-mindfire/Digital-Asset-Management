@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
+import Loader from './components/common/Loader';
 
 // React.lazy component
 const Login = lazy(() => import('./pages/login/LoginPage'));
@@ -19,7 +20,13 @@ const RootRedirect = (): JSX.Element => {
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div style={{ padding: 20 }}>Loading...</div>}>
+      <Suspense
+        fallback={
+          <div style={{ padding: 20 }}>
+            <Loader />
+          </div>
+        }
+      >
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />
