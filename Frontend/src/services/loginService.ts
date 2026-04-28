@@ -1,4 +1,4 @@
-import type { LoginType, SignupType } from '../models/Types';
+import type { LoginType } from '../models/Types';
 import { api } from './apiInterceptor';
 import axios from 'axios';
 
@@ -53,34 +53,5 @@ export const loginApi = async (
     }
 
     throw new Error('Login failed');
-  }
-};
-
-export const signupApi = async (
-  credentials: Pick<SignupType, 'userEmail' | 'userPassword' | 'role' | 'userName'>,
-): Promise<string> => {
-  try {
-    const response = await api.post('/user/register', credentials);
-    return response.data;
-  } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      if (err.response?.status === 400) {
-        throw new Error(err.response.data?.details || 'wrong email');
-      }
-      if (err.response?.status === 409) {
-        throw new Error(err.response.data?.message || 'Email already exists');
-      }
-
-      const message =
-        err.response?.data?.message || err.response?.data?.error || 'Server unavailable';
-
-      throw new Error(message);
-    }
-
-    if (err instanceof Error) {
-      throw new Error(err.message);
-    }
-
-    throw new Error('Signup failed');
   }
 };

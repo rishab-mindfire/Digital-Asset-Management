@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './Login.module.css';
-import type { Errors } from '../../models/Types';
-import { initialLoginState, loginReducer } from '../../reducers/loginReducer';
-import { loginApi } from '../../services/loginService';
+import type { LoginErrors } from '../../models/Types';
 import logoImage from '../../assets/logo.png';
+import backgroundImage from '../../assets/Glass Effect Login Page - Blue.webp';
+import { initialLoginState, loginReducer } from '../../reducers/loginReducer copy';
+import { loginApi } from '../../services/loginService';
 
 /**
  * Login Component
@@ -45,7 +46,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newErrors: Errors = {};
+    const newErrors: LoginErrors = {};
 
     // Validation
     if (!formState.userEmail) {
@@ -93,6 +94,7 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}>
+      <img src={backgroundImage} alt="background image" className={styles.backgroundImage} />
       <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.logoSection}>
           <img src={logoImage} alt="Application logo" className={styles.logoImage} />
