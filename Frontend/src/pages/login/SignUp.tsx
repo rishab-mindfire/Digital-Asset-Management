@@ -5,11 +5,11 @@ import styles from './Login.module.css';
 import type { SignInErrors } from '../../models/Types';
 import logoImage from '../../assets/logo.png';
 import backgroundImage from '../../assets/Glass Effect Login Page - Blue.webp';
-import { initialSignInState, siginReducer } from '../../reducers/siginReducer';
-import { signinApi } from '../../services/signinService';
+import { initialSignInState, sigupReducer } from '../../reducers/sigupReducer';
+import { signupApi } from '../../services/signupService';
 
 export default function Signup() {
-  const [formState, dispatch] = useReducer(siginReducer, initialSignInState);
+  const [formState, dispatch] = useReducer(sigupReducer, initialSignInState);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ export default function Signup() {
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
-      await signinApi({
+      await signupApi({
         userEmail: formState.userEmail,
         userPassword: formState.userPassword,
         userRole: formState.userRole,
@@ -51,12 +51,11 @@ export default function Signup() {
 
       formState.errors.general = '';
       setMessage('Sign up successfully');
-      console.log(formState);
-      // redirect to login after signup
-      // setTimeout(() => {
-      //   navigate('/login');
-      //   setMessage('');
-      // }, 2000);
+      //redirect to login after signup
+      setTimeout(() => {
+        navigate('/login');
+        setMessage('');
+      }, 2000);
     } catch (error: unknown) {
       let message = 'Signup failed';
 
@@ -196,7 +195,12 @@ export default function Signup() {
         <div className={styles.redirect}>
           <p>
             Already have an account?{' '}
-            <span className={styles.link} onClick={() => navigate('/')} role="button" tabIndex={0}>
+            <span
+              className={styles.link}
+              onClick={() => navigate('/login')}
+              role="button"
+              tabIndex={0}
+            >
               Login
             </span>
           </p>

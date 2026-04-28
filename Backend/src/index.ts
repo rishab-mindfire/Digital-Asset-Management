@@ -35,7 +35,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Register application routes and apply role-based authentication to projects
+// Register application routes and apply role-based authentication to dashboard
 app.use('/user', userRouter);
 app.use('/admin-dashboard', authRoleBased('admin'), adminRouter);
 app.use('/manager-dashboard', authRoleBased('manager'), managerRouter);

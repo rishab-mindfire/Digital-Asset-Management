@@ -21,7 +21,7 @@ export async function verifyEmplyeeRole(email: string): Promise<string | null | 
     }
 
     // Return the role string or null if the role field itself is missing
-    return user.role || null;
+    return user.userRole || null;
   } catch (err) {
     // Intercept database connection or query errors and return null for safety
     if (err) {

@@ -74,7 +74,7 @@ class userClass {
 
       return res.status(200).json({
         message: 'Login successful',
-        role: userRole,
+        userRole: userRole,
       });
     } catch {
       return res.status(500).json({ message: 'Internal Server Error' });

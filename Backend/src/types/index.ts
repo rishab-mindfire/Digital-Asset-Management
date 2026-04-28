@@ -4,7 +4,7 @@ export interface UserType {
   userName: string;
   userEmail: string;
   userPassword: string;
-  role: string;
+  userRole: string;
 }
 
 // User Login

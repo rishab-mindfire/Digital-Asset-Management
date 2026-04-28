@@ -73,7 +73,7 @@ export default function Login() {
       });
 
       login(token);
-      navigate('/projects');
+      navigate('/dashboard');
     } catch (error: unknown) {
       let message = 'Login failed';
 

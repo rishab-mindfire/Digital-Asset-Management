@@ -7,7 +7,7 @@ import styles from './PageNotFound.module.css';
  * Displays a fallback UI when the user navigates to a route
  * that does not exist in the application.
  *
- * Provides a quick navigation link back to the projects page.
+ * Provides a quick navigation link back to the dashboard page.
  *
  * @component
  *
@@ -21,8 +21,8 @@ const PageNotFound = () => {
     <div className={styles.container}>
       <h1 className={styles.errorCode}>404</h1>
       <h2 className={styles.message}>Oops! Page Not Found</h2>
-      <Link to="/projects" className={styles.backLink}>
-        Back to projects
+      <Link to="/dashboard" className={styles.backLink}>
+        Back to dashboard
       </Link>
     </div>
   );
