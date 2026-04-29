@@ -5,11 +5,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import authRoleBased from './middlewares/authRoleBased.js';
-import { userRouter } from './router/user.js';
+import authRoleBased from './middlewares/authRoleBased.middleware.js';
+import { userRouter } from './router/user.routes.js';
 import connectDB from './config/connectDB.config.js';
-import { adminRouter } from './router/admin.js';
-import { managerRouter } from './router/manager.js';
+import { adminRouter } from './router/admin.routes.js';
+import { managerRouter } from './router/manager.routes.js';
+import assetRouter from './router/asset.routes.js';
 
 // Determine environment file based on the current execution mode
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.dev';
@@ -37,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Register application routes and apply role-based authentication to dashboard
 app.use('/user', userRouter);
-app.use('/admin-dashboard', authRoleBased('admin'), adminRouter);
+app.use('/admin-dashboard', authRoleBased('admin'), assetRouter);
 app.use('/manager-dashboard', authRoleBased('manager'), managerRouter);
 
 // Execute the database connection logic

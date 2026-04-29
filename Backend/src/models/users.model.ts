@@ -1,16 +1,19 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 import { UserType } from '../types/index.js';
 
-const userSchema = new Schema<UserType>(
+// Extending UserType with Mongoose Document properties
+export interface IUserDocument extends UserType, Document {}
+
+const userSchema = new Schema<IUserDocument>(
   {
     userID: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     userName: {
       type: String,
-      require: true,
+      required: true,
     },
     userEmail: {
       type: String,
@@ -24,9 +27,10 @@ const userSchema = new Schema<UserType>(
     userRole: {
       type: String,
       required: true,
+      enum: ['Admin', 'Manager', 'User'],
     },
   },
   { timestamps: true },
 );
 
-export const UsersModel = model<UserType>('Users', userSchema);
+export const UsersModel = model<IUserDocument>('Users', userSchema);

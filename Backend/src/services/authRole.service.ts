@@ -3,6 +3,7 @@
 // Implements lean queries to optimize performance by reducing document overhead
 // Provides a foundational security layer for role-based access control (RBAC)
 import { UsersModel } from '../models/users.model.js';
+import { UserType } from '../types/index.js';
 
 // Retrieves the assigned security role for an employee based on their unique email address
 export async function verifyEmplyeeRole(email: string): Promise<string | null | undefined> {
@@ -25,6 +26,25 @@ export async function verifyEmplyeeRole(email: string): Promise<string | null | 
   } catch (err) {
     // Intercept database connection or query errors and return null for safety
     if (err) {
+      return null;
+    }
+  }
+}
+
+//get details based on user Email
+export async function getUserDetails(email: string): Promise<UserType | null | undefined> {
+  try {
+    if (!email) {
+      return null;
+    }
+    // Query the database for the user role while excluding all other document fields
+    const user = await UsersModel.findOne(
+      { userEmail: email },
+      { userRole: 1, userName: 1, userEmail: 1, _id: 0 },
+    ).lean();
+    return user;
+  } catch (error) {
+    if (error) {
       return null;
     }
   }
