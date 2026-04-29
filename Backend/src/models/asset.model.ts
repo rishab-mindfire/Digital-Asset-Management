@@ -16,7 +16,7 @@ const assetSchema = new Schema<IAsset>(
       enum: ['pending', 'processing', 'approved', 'expired', 'archived'],
       default: 'pending',
     },
-    ownerID: { type: Schema.Types.ObjectId, ref: 'Users', required: true },
+    ownerID: { type: String, required: true },
     ownerEmail: { type: String, required: true },
     department: { type: String },
     metadata: {
@@ -26,7 +26,7 @@ const assetSchema = new Schema<IAsset>(
       tags: [{ type: String }],
       hash: { type: String },
     },
-    usageRights: { type: String, default: 'Internal Use Only' },
+    usageRights: { type: String },
     expiryDate: { type: Date },
     version: { type: Number, default: 1 },
   },

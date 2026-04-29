@@ -40,7 +40,7 @@ export async function getUserDetails(email: string): Promise<UserType | null | u
     // Query the database for the user role while excluding all other document fields
     const user = await UsersModel.findOne(
       { userEmail: email },
-      { userRole: 1, userName: 1, userEmail: 1, _id: 0 },
+      { userRole: 1, userName: 1, userEmail: 1, userID: 1, _id: 0 },
     ).lean();
     return user;
   } catch (error) {
