@@ -31,9 +31,9 @@ export interface IAsset extends Document {
   localPath: string; // Path to the high-res original in /storage/raw
   previewPath?: string; // Path to the thumbnail in /storage/previews (set by Worker)
   // Lifecycle
-  status: 'pending' | 'processing' | 'approved' | 'expired' | 'archived';
+  status: 'pending' | 'processing' | 'uploaded' | 'expired' | 'archived';
   // Ownership
-  ownerID: Types.ObjectId;
+  ownerID: string;
   ownerEmail: string;
   department?: string;
   // Intelligence
@@ -47,6 +47,16 @@ export interface IAsset extends Document {
   usageRights: string;
   expiryDate?: Date;
   version: number;
+  checksum: string; // To detect duplicates
+  versionHistory: [
+    {
+      versionNumber: number;
+      fileId: string; // ID of the file in storage
+      createdAt: Date;
+    },
+  ];
+  isCompliant: { type: boolean; default: true }; // For Flagging
+  downloadCount: { type: number; default: 0 }; // For Analytics
 }
 
 //Collection Interface

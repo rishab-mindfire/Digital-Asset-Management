@@ -3,10 +3,14 @@
 // Routes incoming requests to specialized controllers for admin dash-board controle
 //
 import { Router } from 'express';
-import { uploadMiddleware } from '../config/multer.js';
 import { adminCtr } from '../controller/admin.controller.js';
+import multer from 'multer';
+
+// Initialize Multer with memory storage to handle file buffers before processing
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 export const adminRouter = Router();
 
 // admin route
-adminRouter.post('/upload', uploadMiddleware.single('file'), adminCtr.uploadAsset);
+adminRouter.post('/upload', upload.any(), adminCtr.uploadAsset);

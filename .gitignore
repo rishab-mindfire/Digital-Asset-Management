@@ -25,6 +25,7 @@ frontend/dist/
 frontend/build/
 frontend/out/
 backend/dist/
+backend/storage/raw
 
 # IDE / System files
 .DS_Store
