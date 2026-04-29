@@ -5,7 +5,7 @@ import { UsersModel } from '../models/users.model.js';
 import { verifyEmplyeeRole } from '../services/authRole.service.js';
 import { userLoginValidation, userRegistrationValidation } from '../validation/user.validation.js';
 
-class userClass {
+class UserClass {
   // create user
   userRegistration = async (req: Request, res: Response) => {
     const data = req.body;
@@ -94,4 +94,4 @@ class userClass {
   };
 }
 
-export const UserCtr = new userClass();
+export const UserCtr = new UserClass();
