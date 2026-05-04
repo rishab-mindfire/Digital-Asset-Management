@@ -70,3 +70,14 @@ export type SigninAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERRORS'; payload: SignInErrors }
   | { type: 'RESET' };
+
+//file upload model
+export interface UploadOptions {
+  chunkSize?: number;
+}
+
+export interface MergePayload {
+  uploadId: string;
+  filename: string;
+  totalChunks: number;
+}
