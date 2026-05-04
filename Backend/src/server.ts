@@ -1,39 +1,28 @@
-import app from './index.js';
 import dotenv from 'dotenv';
+
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.dev';
+
+dotenv.config({ path: envFile });
+
+import app from './index.js';
 import connectDB from './config/connectDB.config.js';
 import { processMedia } from './workers/media.worker.js';
-
-dotenv.config();
 
 const port = process.env.PORT || 4001;
 
 const startServer = async () => {
   try {
-    //  Database
     await connectDB();
-    console.log(' Database connection established');
 
-    // process media worker
+    console.log('Database connected successfully.');
+
     processMedia();
 
-    //  Start Express
-    const server = app.listen(port, () => {
-      console.log(` Server running in ${process.env.NODE_ENV} mode on port ${port}`);
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
     });
-
-    // Graceful Shutdown
-    const shutdown = () => {
-      console.log('Closing HTTP server...');
-      server.close(() => {
-        console.log('HTTP server closed. Exiting process.');
-        process.exit(0);
-      });
-    };
-
-    process.on('SIGTERM', shutdown);
-    process.on('SIGINT', shutdown);
-  } catch (error) {
-    console.error('Critical startup failure:', error);
+  } catch (err) {
+    console.error('Startup failed:', err);
     process.exit(1);
   }
 };

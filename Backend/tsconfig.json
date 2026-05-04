@@ -1,24 +1,20 @@
 {
 
-
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": true,
-    "noImplicitAny": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "target": "es2021",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "sourceMap": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "types": ["node"],
-    "allowJs": false
+    "strict": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "allowJs": true,
+    "types": ["node", "express", "multer"],
+    "skipLibCheck": true
   },
-
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
   "ts-node": {
