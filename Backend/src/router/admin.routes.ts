@@ -1,16 +1,23 @@
-// Admin Router Module
-// Defines endpoints for admin level routes
-// Routes incoming requests to specialized controllers for admin dash-board controle
-//
 import { Router } from 'express';
 import { adminCtr } from '../controller/admin.controller.js';
 import multer from 'multer';
 
-// Initialize Multer with memory storage to handle file buffers before processing
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 export const adminRouter = Router();
 
-// admin route
-adminRouter.post('/upload', upload.any(), adminCtr.uploadAsset);
+// Dashboard
+adminRouter.get('/dashboard/stats', adminCtr.getOverview);
+// Chunked Upload Pipeline
+// Receives individual file chunks under the key name "chunk"
+adminRouter.post('/upload/chunk', upload.single('chunk'), adminCtr.uploadChunk);
+//  Merges the saved chunks on the server and triggers background processing
+adminRouter.post('/upload/merge', adminCtr.mergeChunks);
+
+// Assets
+adminRouter.get('/assets', adminCtr.getAllAssets);
+adminRouter.get('/assets/:id', adminCtr.getAssetById);
+adminRouter.delete('/assets/:id', adminCtr.deleteAsset);
+// Streaming Preview
+adminRouter.get('/assets/:id/stream', adminCtr.streamVideo);
