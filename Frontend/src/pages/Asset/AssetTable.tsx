@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import styles from './AssetTable.module.css';
+import Modal from '../../components/modal/Modal';
+import { useState } from 'react';
 
 const AssetTable = () => {
   const assets = [
@@ -28,6 +30,9 @@ const AssetTable = () => {
       updated: '5 hours ago',
     },
   ];
+  const [isModelOpen, setIsModelOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const handleFileUpload = () => {};
 
   return (
     <section className="mainContainer">
@@ -43,7 +48,12 @@ const AssetTable = () => {
             <button className={styles.btn}>Filter</button>
             <input type="text" placeholder="Search assets..." className={styles.searchInput} />
           </div>
-          <button className={`${styles.btn} ${styles.btnPrimary}`}>+ Upload</button>
+          <button
+            className={`${styles.btn} ${styles.btnPrimary}`}
+            onClick={() => setIsModelOpen(true)}
+          >
+            + Upload
+          </button>
         </div>
 
         <div className={styles.tableResponsiveWrapper}>
@@ -81,6 +91,34 @@ const AssetTable = () => {
           </table>
         </div>
       </div>
+
+      {/* upload files Modal */}
+      <Modal
+        isOpen={isModelOpen}
+        onClose={() => {
+          setIsModelOpen(false);
+        }}
+        title="Upload files"
+      >
+        <form onSubmit={handleFileUpload} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="fileName">File Name</label>
+          </div>
+
+          <div className={styles.formGroup}></div>
+
+          <div className="center">
+            <button
+              type="submit"
+              role="button"
+              className={styles.uploadFile}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Uploading...' : 'Upload'}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </section>
   );
 };
