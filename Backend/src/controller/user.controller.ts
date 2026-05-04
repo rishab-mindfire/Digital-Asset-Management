@@ -8,31 +8,33 @@ import { userLoginValidation, userRegistrationValidation } from '../validation/u
 class UserClass {
   // create user
   userRegistration = async (req: Request, res: Response) => {
-    const data = req.body;
+    try {
+      const data = req.body;
 
-    // Check if request body exists
-    if (!data) {
-      return res.status(400).json({
-        message: 'provide body',
-      });
-    }
+      if (!data || Object.keys(data).length === 0) {
+        return res.status(400).json({ message: 'Provide request body' });
+      }
 
-    // Validate registration request body
-    const { error, value } = userRegistrationValidation.validate(data);
-    if (error) {
-      return res.status(422).json({ message: error.message.replace(/[\\"]/g, '') });
-    }
+      const { error, value } = userRegistrationValidation.validate(data);
+      if (error) {
+        return res.status(422).json({ message: error.message.replace(/[\\"]/g, '') });
+      }
 
-    // Check if email already exists
-    const email = await userServices.checkEmail(req.body.userEmail);
+      const existingUser = await userServices.checkEmail(value.userEmail);
+      if (existingUser) {
+        return res.status(409).json({ message: 'Email already exists!' });
+      }
 
-    if (!email) {
-      // Create new user
+      // create new user
       await userServices.createUser(value);
 
-      res.status(201).send('user created successfully !');
-    } else {
-      res.status(409).json({ message: 'Email allready exists !' });
+      return res.status(201).json({ message: 'User created successfully!' });
+    } catch (err: any) {
+      console.error('Registration Error:', err);
+      return res.status(500).json({
+        message: 'Internal server error. User could not be created.',
+        error: err.message,
+      });
     }
   };
 
