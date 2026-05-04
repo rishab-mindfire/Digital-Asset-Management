@@ -21,9 +21,9 @@ pnpm-lock.yaml
 **/yarn-error.log*
 
 # Production Build Folders
-frontend/dist/
-frontend/build/
-frontend/out/
+Frontend/dist/
+Frontend/build/
+Frontend/out/
 Backend/dist/
 Backend/storage/raw
 
