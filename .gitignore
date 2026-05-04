@@ -21,11 +21,11 @@ pnpm-lock.yaml
 **/yarn-error.log*
 
 # Production Build Folders
-frontend/dist/
-frontend/build/
-frontend/out/
-backend/dist/
-backend/storage/raw
+Frontend/dist/
+Frontend/build/
+Frontend/out/
+Backend/dist/
+Backend/storage/raw
 
 # IDE / System files
 .DS_Store
