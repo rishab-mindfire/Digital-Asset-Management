@@ -148,7 +148,7 @@ class AdminClass {
         console.error('Failed to log tracking:', logError.message);
       }
 
-      // 4. Retrieve video file data via the Service
+      //Retrieve video file data via the Service
       const videoMetadata = await adminServices.getFileMetadata(asset.localPath);
       const videoSize = videoMetadata.size;
       const range = req.headers.range;
