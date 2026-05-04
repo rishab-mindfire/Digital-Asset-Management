@@ -24,8 +24,8 @@ pnpm-lock.yaml
 frontend/dist/
 frontend/build/
 frontend/out/
-backend/dist/
-backend/storage/raw
+Backend/dist/
+Backend/storage/raw
 
 # IDE / System files
 .DS_Store

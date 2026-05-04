@@ -1,7 +1,6 @@
 //All admin services flow to serve admin request from there route
 
 import { AssetModel } from '../models/asset.model.js';
-import { Writable } from 'stream';
 import { CollectionModel } from '../models/collection.model.js';
 import { publishToQueue } from '../helper/producer.js';
 import fs from 'fs/promises';
@@ -116,11 +115,9 @@ class AdminServices {
     chunkIndexStr: string,
     uploadId: string,
     totalChunksStr: string,
-    filename?: string,
   ) {
     const chunkIndex = parseInt(chunkIndexStr, 10);
     const totalChunks = parseInt(totalChunksStr, 10);
-
     if (chunkIndex > totalChunks || chunkIndex < 1) {
       throw new Error(`Security Exception: Invalid chunkIndex ${chunkIndex}`);
     }
@@ -135,7 +132,7 @@ class AdminServices {
 
       // Ensure we capture the extension correctly.
       // If 'filename' is passed in body;, otherwise, the chunk's originalname.
-      const finalFileName = filename || chunk.originalname;
+      const finalFileName = chunk.originalname;
 
       await fs.writeFile(
         metadataPath,
@@ -147,7 +144,6 @@ class AdminServices {
         'utf8',
       );
     }
-
     const chunkPath = path.join(chunkDir, `chunk-${chunkIndex}`);
 
     // Write chunk to disk if it doesn't already exist
