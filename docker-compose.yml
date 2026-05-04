@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./Backend
+    container_name: backend
+    restart: always
+    ports:
+      - "4001:4001"
+    environment:
+      - NODE_ENV=production
+      - DB_CONNECTION_STRING=mongodb://mongo:27017/asset-management-production
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - FRONTEND_URL=http://localhost:3001
+    depends_on:
+      mongo:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy # Wait until RabbitMQ is fully ready
+    volumes:
+      - uploads_data:/backend-app/storage
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - app-network
+
+  frontend:
+    build: ./Frontend
+    container_name: frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  uploads_data:

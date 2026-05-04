@@ -23,7 +23,7 @@ class Users {
     } catch (err) {
       // Catch and ignore errors to prevent service interruption during creation
       if (err) {
-        return;
+        throw err;
       }
     }
   }
