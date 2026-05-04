@@ -74,7 +74,7 @@ export interface ICollection extends Document {
 //usese tracking
 export interface IUsageTracking extends Document {
   assetId: Types.ObjectId; // Which asset was accessed
-  performerId: Types.ObjectId; // Who accessed it (Ref to UsersModel)
+  performerId: string; // Who accessed it (Ref to UsersModel)
   performerEmail: string;
   action: 'view' | 'download' | 'share' | 'update' | 'delete';
   platform: string; // e.g., 'Web Dashboard', 'Mobile App', 'External API'

@@ -9,6 +9,7 @@ import authRoleBased from './middlewares/authRoleBased.middleware.js';
 import { userRouter } from './router/user.routes.js';
 import connectDB from './config/connectDB.config.js';
 import { adminRouter } from './router/admin.routes.js';
+import { processMedia } from './workers/media.worker.js';
 
 // Determine environment file based on the current execution mode
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.dev';
@@ -36,11 +37,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // Register application routes and apply role-based authentication to dashboard
 app.use('/user', userRouter);
-app.use('/admin-dashboard', authRoleBased('admin'), adminRouter);
+app.use('/admin', authRoleBased('admin'), adminRouter);
 // app.use('/manager-dashboard', authRoleBased('manager'), managerRouter);
 
-// Execute the database connection logic
-connectDB().catch();
+// Execute the database connection and worker logic
+connectDB()
+  .then(() => {
+    console.log('Database connected successfully.');
+    processMedia();
+  })
+  .catch((err) => {
+    console.error('Database connection failed:', err);
+  });
 
 // Simple health check endpoint to confirm server availability
 app.get('/', (req, res) => {

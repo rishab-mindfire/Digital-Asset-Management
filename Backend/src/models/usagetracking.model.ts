@@ -9,7 +9,7 @@ const usageTrackingSchema = new Schema<IUsageTracking>(
       required: true,
     },
     performerId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: 'Users',
       required: true,
     },
@@ -22,10 +22,6 @@ const usageTrackingSchema = new Schema<IUsageTracking>(
       enum: ['view', 'download', 'share', 'update', 'delete'],
       required: true,
     },
-    platform: {
-      type: String,
-      default: 'Web Dashboard',
-    },
     metadata: {
       type: Schema.Types.Mixed,
     },
@@ -34,7 +30,7 @@ const usageTrackingSchema = new Schema<IUsageTracking>(
 );
 
 // Indexes for the Analytics Service
-// These make generating reports (e.g., "Top 10 Downloaded Assets") very fast
+// These make generating reports
 usageTrackingSchema.index({ assetId: 1, action: 1 });
 usageTrackingSchema.index({ performerEmail: 1 });
 
