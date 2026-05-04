@@ -1,13 +1,14 @@
+//All admin services flow to serve admin request from there route
+
 import { AssetModel } from '../models/asset.model.js';
 import { CollectionModel } from '../models/collection.model.js';
 import { publishToQueue } from '../helper/producer.js';
 import fs from 'fs/promises';
-import { createReadStream, createWriteStream, promises as fsPromises } from 'fs';
+import { createReadStream, promises as fsPromises } from 'fs';
 import type { ReadStream } from 'fs';
 import path from 'path';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
-import mongoose from 'mongoose'; // Added for validation
-
+import mongoose from 'mongoose';
 export interface FileMetadata {
   size: number;
   localPath: string;
@@ -21,7 +22,7 @@ class AdminServices {
   private isValidId(id: string) {
     return mongoose.Types.ObjectId.isValid(id);
   }
-
+  //dash board data for graph
   async getDashboardStats() {
     const now = new Date();
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -42,7 +43,7 @@ class AdminServices {
 
     return stats[0] || { total: [], expiringSoon: [], byStatus: [], riskAssets: [] };
   }
-
+  // ALL asset list
   async assetListingService(query: any) {
     const { search, type, status, page = 1, limit = 10 } = query;
     const pageNum = parseInt(page as string, 10) || 1;
@@ -68,7 +69,7 @@ class AdminServices {
 
     return { assets, total, page: pageNum, totalPages: Math.ceil(total / limitNum) };
   }
-
+  // Single Asset View
   async getAssetFullDetail(assetId: string, user: { userId: string; userEmail: string }) {
     if (!this.isValidId(assetId)) {
       throw new Error(`INVALID_ID: ${assetId} is not a valid ObjectId`);
@@ -100,14 +101,14 @@ class AdminServices {
       versions: (asset as any).versionHistory || [],
     };
   }
-
+  //Archive asset
   async removeAsset(assetId: string) {
     if (!this.isValidId(assetId)) {
       throw new Error(`INVALID_ID: ${assetId} is not a valid ObjectId`);
     }
     return await AssetModel.findByIdAndUpdate(assetId, { status: 'archived' }, { new: true });
   }
-
+  //upload chunk Asset
   async uploadChunk(
     chunk: Express.Multer.File,
     chunkIndexStr: string,
@@ -156,7 +157,7 @@ class AdminServices {
       progress: uploadProgress,
     };
   }
-
+  // merge chun Asset
   async mergeChunks(
     uploadId: string,
     validatedBody: any,
@@ -254,7 +255,7 @@ class AdminServices {
 
     return asset;
   }
-
+  //get file metadata details
   async getFileMetadata(localPath: string): Promise<FileMetadata> {
     const stat = await fsPromises.stat(localPath);
     return { size: stat.size, localPath };
