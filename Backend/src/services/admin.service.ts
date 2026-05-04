@@ -1,14 +1,16 @@
 //All admin services flow to serve admin request from there route
 
 import { AssetModel } from '../models/asset.model.js';
+import { Writable } from 'stream';
 import { CollectionModel } from '../models/collection.model.js';
 import { publishToQueue } from '../helper/producer.js';
 import fs from 'fs/promises';
-import { createReadStream, promises as fsPromises } from 'fs';
-import type { ReadStream } from 'fs';
+import { createReadStream, createWriteStream, promises as fsPromises } from 'fs';
+import type { ReadStream, WriteStream } from 'fs';
 import path from 'path';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import mongoose from 'mongoose';
+
 export interface FileMetadata {
   size: number;
   localPath: string;
@@ -114,6 +116,7 @@ class AdminServices {
     chunkIndexStr: string,
     uploadId: string,
     totalChunksStr: string,
+    filename?: string,
   ) {
     const chunkIndex = parseInt(chunkIndexStr, 10);
     const totalChunks = parseInt(totalChunksStr, 10);
@@ -125,12 +128,19 @@ class AdminServices {
     const chunkDir = path.join(TEMP_DIR, uploadId);
     await fs.mkdir(chunkDir, { recursive: true });
 
+    // Write metadata file on the first chunk
+    // Inside uploadChunk
     if (chunkIndex === 1) {
-      const metadataPath = path.join(chunkDir, 'session-metadata.json');
+      const metadataPath = path.join(chunkDir, 'chunk-session.json');
+
+      // Ensure we capture the extension correctly.
+      // If 'filename' is passed in body;, otherwise, the chunk's originalname.
+      const finalFileName = filename || chunk.originalname;
+
       await fs.writeFile(
         metadataPath,
         JSON.stringify({
-          originalFilename: chunk.originalname,
+          originalFilename: finalFileName,
           totalChunks,
           createdAt: new Date(),
         }),
@@ -140,15 +150,15 @@ class AdminServices {
 
     const chunkPath = path.join(chunkDir, `chunk-${chunkIndex}`);
 
+    // Write chunk to disk if it doesn't already exist
     try {
       await fs.access(chunkPath);
     } catch {
       await fs.writeFile(chunkPath, chunk.buffer);
     }
 
-    const existingFiles = await fs.readdir(chunkDir);
-    const savedChunksCount = existingFiles.filter((file) => file.startsWith('chunk-')).length;
-    const uploadProgress = Math.min(Math.round((savedChunksCount / totalChunks) * 100), 100);
+    // Use chunkIndex directly instead
+    const uploadProgress = Math.min(Math.round((chunkIndex / totalChunks) * 100), 100);
 
     return {
       message: `Chunk ${chunkIndex} saved successfully.`,
@@ -157,16 +167,17 @@ class AdminServices {
       progress: uploadProgress,
     };
   }
-  // merge chun Asset
+
+  // merge chunk Asset
   async mergeChunks(
     uploadId: string,
     validatedBody: any,
     user: { userID: string; userEmail: string },
   ) {
     const chunkDir = path.join(TEMP_DIR, uploadId);
-    const metadataPath = path.join(chunkDir, 'session-metadata.json');
+    const metadataPath = path.join(chunkDir, 'chunk-session.json');
 
-    //  Check if the temp upload directory exists
+    // Check if the temp upload directory exists
     await fs.access(chunkDir).catch(() => {
       throw new Error(`Merge failed: Temp session '${uploadId}' does not exist.`);
     });
@@ -176,55 +187,80 @@ class AdminServices {
 
     // Safely read metadata
     try {
-      const metaData = JSON.parse(await fs.readFile(metadataPath, 'utf8'));
+      const metaData = JSON.parse(await fs.readFile(metadataPath, 'utf8')) as {
+        originalFilename: string;
+        totalChunks: number;
+      };
+
       originalFilename = metaData.originalFilename;
       totalChunks = metaData.totalChunks;
     } catch {
       throw new Error('Merge blocked: Session metadata file is corrupted or missing.');
     }
 
-    // Setup permanent path
-    await fs.mkdir(UPLOAD_DIR, { recursive: true });
-    const extension = path.extname(originalFilename).toLowerCase();
-    const finalFilename = `${uploadId}${extension}`;
-    const finalPath = path.join(UPLOAD_DIR, finalFilename);
-
-    // Ensure the final file exists
-    try {
-      await fs.access(finalPath);
-    } catch {
-      await fs.writeFile(finalPath, ''); // Create empty file if not present
-    }
-
-    // Append available chunks
+    // Verify that ALL chunks exist before modifying anything
     for (let i = 1; i <= totalChunks; i++) {
       const chunkPath = path.join(chunkDir, `chunk-${i}`);
 
       try {
         await fs.access(chunkPath);
-        const chunkBuffer = await fs.readFile(chunkPath);
-        await fs.appendFile(finalPath, chunkBuffer);
-        await fs.unlink(chunkPath); // Delete only the specific chunk file
       } catch {
-        // Skip if chunk was already merged
-        continue;
+        throw new Error(`Merge blocked: Chunk ${i} of ${totalChunks} is missing.`);
       }
     }
 
-    // Check if more chunks are expected in the future
-    const remainingFiles = await fs.readdir(chunkDir);
-    const remainingChunks = remainingFiles.filter((file) => file.startsWith('chunk-'));
+    // Setup permanent path and clean up old/stale partial merges
+    await fs.mkdir(UPLOAD_DIR, { recursive: true });
 
-    // If NO chunks are left in temp, the file is fully merged. WIPE the temp folder.
-    if (remainingChunks.length === 0) {
-      await fs.rm(chunkDir, { recursive: true, force: true });
-    } else {
-      // There are still chunks coming (e.g. 11, 12). Keep metadata intact!
-      console.log(`Partial merge complete for ${uploadId}. Keeping metadata file.`);
+    const extension = path.extname(originalFilename).toLowerCase();
+    const finalFilename = `${uploadId}${extension}`;
+    const finalPath = path.join(UPLOAD_DIR, finalFilename);
+
+    // Clear existing file to prevent appending duplicate chunks on merge retries
+    try {
+      await fs.unlink(finalPath);
+    } catch {
+      // Ignore error if the file doesn't exist yet
     }
 
-    //  DB updates & Queue publishing
+    // Append available chunks sequentially via Streams
+    const writeStream: WriteStream = createWriteStream(finalPath, {
+      flags: 'a',
+    });
+
+    try {
+      for (let i = 1; i <= totalChunks; i++) {
+        const chunkPath = path.join(chunkDir, `chunk-${i}`);
+
+        await new Promise<void>((resolve, reject) => {
+          const readStream: ReadStream = createReadStream(chunkPath);
+          readStream.pipe(writeStream, { end: false });
+          readStream.on('error', reject);
+          readStream.on('end', () => {
+            resolve();
+          });
+        });
+
+        // Safely remove the chunk once it has been piped
+        await fs.unlink(chunkPath);
+      }
+    } finally {
+      // Safely close the write stream
+      writeStream.end();
+    }
+
+    // Wait until all data is flushed to disk
+    await new Promise<void>((resolve, reject) => {
+      writeStream.on('finish', () => resolve());
+      writeStream.on('error', reject);
+    });
+
+    // Clean up the temporary session folder
+    await fs.rm(chunkDir, { recursive: true, force: true });
+
+    // DB updates & Queue publishing
     const stats = await fs.stat(finalPath);
+
     const asset = await AssetModel.findOneAndUpdate(
       { localPath: finalPath },
       {
@@ -236,14 +272,22 @@ class AdminServices {
         department: validatedBody.department,
         expiryDate: validatedBody.expiryDate,
         status: 'pending',
-        metadata: { extension: extension.replace('.', ''), size: stats.size },
+        metadata: {
+          extension: extension.replace('.', ''),
+          size: stats.size,
+        },
       },
-      { upsert: true, new: true },
+      {
+        upsert: true,
+        new: true,
+      },
     );
 
     if (validatedBody.collectionId && this.isValidId(validatedBody.collectionId)) {
       await CollectionModel.findByIdAndUpdate(validatedBody.collectionId, {
-        $addToSet: { assets: asset._id },
+        $addToSet: {
+          assets: asset._id,
+        },
       });
     }
 
