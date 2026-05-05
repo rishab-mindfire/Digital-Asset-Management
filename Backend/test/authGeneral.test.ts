@@ -14,7 +14,7 @@ describe('Auth Utilities', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
-  //-- check weather token is able to generate or not
+  //-- check weather token is able to generate
   describe('generateToken', () => {
     it('should return a token when JWT_SECRET is present', () => {
       const user = { userEmail: 'test@example.com' };

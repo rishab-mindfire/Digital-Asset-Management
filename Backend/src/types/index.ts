@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 
+//-------------------------------------------------------------------------------------
 // User Registration
 export interface UserType {
   userID: string;
@@ -21,8 +22,8 @@ export interface ParsedError {
   message: string;
 }
 
-//user details
 //-------------------------------------------------------------------------------------
+//user details
 //Asset Interface
 export interface IAsset extends Document {
   uploadId: string;
@@ -52,34 +53,32 @@ export interface IAsset extends Document {
   versionHistory: [
     {
       versionNumber: number;
-      fileId: string; // ID of the file in storage
+      fileId: string; // ID of the file in storage disk
       createdAt: Date;
     },
   ];
-  isCompliant: { type: boolean; default: true }; // For Flagging
-  downloadCount: { type: number; default: 0 }; // For Analytics
+  isCompliant: { type: boolean; default: true };
+  downloadCount: { type: number; default: 0 };
 }
 
 //Collection Interface
 export interface ICollection extends Document {
   name: string;
   description?: string;
-  // Relationship: Array of Asset IDs
   assets: Types.ObjectId[];
-  // Ownership
-  createdBy: Types.ObjectId; // Reference to UsersModel
+  createdBy: Types.ObjectId;
   ownerEmail: string;
-  isPublic: boolean; // For sharing across teams
+  isPublic: boolean; //  sharing across teams
 }
 
 //usese tracking
 export interface IUsageTracking extends Document {
-  assetId: Types.ObjectId; // Which asset was accessed
-  performerId: string; // Who accessed it (Ref to UsersModel)
+  assetId: Types.ObjectId;
+  performerId: string; // (Ref to UsersModel userid)
   performerEmail: string;
   action: 'view' | 'download' | 'share' | 'update' | 'delete';
-  platform: string; // e.g., 'Web Dashboard', 'Mobile App', 'External API'
-  metadata?: Record<string, string[]>; // Extra context (e.g., IP address, browser)
+  platform: string;
+  metadata?: Record<string, string[]>;
 }
 
 /**
@@ -89,4 +88,26 @@ export interface MediaTaskPayload {
   assetId: string;
   filePath: string;
   fileType: string;
+}
+
+export interface ChunkUploadBody {
+  chunkIndex: string;
+  totalChunks: string;
+}
+
+export interface FinalizeMergeBody {
+  title?: string;
+  department?: string;
+  collectionId?: string;
+  expiryDate?: string;
+}
+
+export interface AuthUser {
+  userID: string;
+  userEmail: string;
+}
+
+export interface AuthUser {
+  userID: string;
+  userEmail: string;
 }

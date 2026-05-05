@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
 import { adminCtr } from '../controller/admin.controller.js';
 import multer from 'multer';
 

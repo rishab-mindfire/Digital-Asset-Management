@@ -1,16 +1,14 @@
 import { startAssetWorker } from './asset-processor/index.js';
 
-export async function initWorkers() {
+export async function initWorkers(): Promise<void> {
   try {
-    console.log('--- Initializing Background Workers ---');
-
-    // Start the asset processor
+    // Start the asset processor worker
     await startAssetWorker();
-
-    // You can easily add more workers here in the future
-    // await startEmailWorker();
   } catch (error) {
-    console.error('Failed to initialize workers:', error);
-    process.exit(1);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+
+    throw new Error('Worker initialization failed');
   }
 }
