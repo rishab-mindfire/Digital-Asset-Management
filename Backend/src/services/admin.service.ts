@@ -114,7 +114,6 @@ class AdminServices {
   //upload chunk Asset
   async handleChunkUpload(uploadId: string, chunk: Express.Multer.File, body: any) {
     // Validation:
-
     const chunkIndex = parseInt(body.chunkIndex as string, 10);
     const totalChunks = parseInt(body.totalChunks as string, 10);
 
@@ -152,23 +151,25 @@ class AdminServices {
   }
 
   async finalizeMerge(uploadId: string, validatedBody: any, user: any) {
-    // Get Metadata
+    //  Get Metadata
     const metadata = await StorageService.getMetadata(uploadId);
     const extension = path.extname(metadata.originalFilename).toLowerCase();
     const finalFilename = `${uploadId}${extension}`;
 
-    // Physical Merge
+    //  Physical Merge ( memory-leak safe)
     const finalPath = await StorageService.mergeChunks(
       uploadId,
       metadata.totalChunks,
       finalFilename,
     );
+
     const stats = await fs.stat(finalPath);
 
     //  Database Update
     const asset = await AssetModel.findOneAndUpdate(
-      { localPath: finalPath },
+      { uploadId: uploadId },
       {
+        uploadId: uploadId,
         title: validatedBody.title || metadata.originalFilename,
         fileType: extension.match(/\.(mp4|webm|mov)$/) ? 'video' : 'image',
         localPath: finalPath,
@@ -181,19 +182,26 @@ class AdminServices {
       { upsert: true, new: true },
     );
 
-    // Handle Collections
+    //  Handle Collections
     if (validatedBody.collectionId) {
       await CollectionModel.findByIdAndUpdate(validatedBody.collectionId, {
         $addToSet: { assets: asset._id },
       });
     }
 
-    // Trigger Worker
-    await publishToQueue('asset_upload_processing', {
-      assetId: asset._id,
-      filePath: finalPath,
-      fileType: asset.fileType,
-    });
+    //  Trigger Worker with basic error handling
+    try {
+      await publishToQueue('asset_upload_processing', {
+        assetId: asset._id,
+        filePath: finalPath,
+        fileType: asset.fileType,
+      });
+    } catch (error) {
+      console.error(`Failed to queue asset ${asset._id}:`, error);
+      //Mark asset as 'failed' or 'retry_required' in DB
+      await AssetModel.findByIdAndUpdate(asset._id, { status: 'error' });
+      throw new Error('Merge successful but failed to trigger processing worker.');
+    }
 
     return asset;
   }

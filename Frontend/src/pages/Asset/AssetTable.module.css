@@ -98,7 +98,6 @@
   font-size: 12px;
   font-weight: 500;
 }
-
 .approved{
     background: #dcfce7;
     color: #166534;
@@ -121,7 +120,7 @@
 .dropZone {
   border: 2px dashed #cbd5e1;
   border-radius: 12px;
-  padding: 2.5rem 1.5rem;
+  padding: 0.5rem 0.5rem;
   text-align: center;
   background-color: #f8fafc;
   cursor: pointer;
@@ -129,52 +128,68 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
 }
 
 .dropZone:hover {
   border-color: #3b82f6;
   background-color: #eff6ff;
 }
-
 .dropZone p {
   color: #64748b;
   margin: 0;
   font-size: 0.95rem;
 }
-
 .dropZone strong {
   color: #1e293b;
   word-break: break-all;
 }
-
-/* Progress Section */
-.progressWrapper {
+.dropText{
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  min-height: 10vh;
+}
+.fileStack{
+  width: 100%;
+   min-height: 10vh;
+  max-height: 15vh;
+  overflow-y: auto;
+}
+
+/* Progress Section */
+.progresscontainer {
+  max-height: 50vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px 0;
+  scrollbar-width: thin;
+}
+
+.filenameText {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .progressTrack {
-  flex: 1;
+  width: 100%;
   height: 8px;
-  background-color: #e2e8f0;
-  border-radius: 999px;
-  overflow: hidden;
+  background-color: #eee;
+  border-radius: 4px;
 }
 
 .progressFill {
   height: 100%;
-  background-color: #3b82f6;
-  transition: width 0.3s ease;
+  background-color: #007bff;
+  border-radius: 4px;
+  transition: width 0.4s ease;
 }
 
 .percentageText {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #3b82f6;
-  min-width: 35px;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #666;
 }
 
 /* Error Message */
@@ -188,7 +203,7 @@
 }
 
 /* Upload Button */
-.uploadFile {
+.uploadFileBtn {
   background-color: #2563eb;
   color: white;
   padding: 0.625rem 1.5rem;
@@ -199,18 +214,12 @@
   transition: background-color 0.2s;
 }
 
-.uploadFile:hover:not(:disabled) {
+.uploadFileBtn:hover:not(:disabled) {
   background-color: #1d4ed8;
 }
 
-.uploadFile:disabled {
+.uploadFileBtn:disabled {
   background-color: #94a3b8;
   cursor: not-allowed;
 }
-
-/* alignment */
-:global(.center) {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
+/*  */

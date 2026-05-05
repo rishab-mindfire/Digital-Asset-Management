@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import path from 'path';
-import { pipeline } from 'stream/promises';
+import { finished } from 'stream/promises';
 
 export class StorageService {
   private static TEMP_DIR = path.resolve('storage/temp');
@@ -14,14 +14,13 @@ export class StorageService {
     const chunkPath = path.join(chunkDir, `chunk-${chunkIndex}`);
 
     // Better for bulk: Write even if exists to ensure integrity,
-    // or keep your access check if you want to save I/O on retries.
     await fs.writeFile(chunkPath, buffer);
     return chunkPath;
   }
 
   static async saveMetadata(uploadId: string, data: object) {
     const chunkDir = path.join(this.TEMP_DIR, uploadId);
-    await fs.mkdir(chunkDir, { recursive: true }); // Ensure dir exists
+    await fs.mkdir(chunkDir, { recursive: true });
     const metaPath = path.join(chunkDir, 'chunk-session.json');
     await fs.writeFile(metaPath, JSON.stringify(data, null, 2), 'utf8');
   }
@@ -40,33 +39,38 @@ export class StorageService {
     const finalPath = path.join(this.UPLOAD_DIR, finalFilename);
 
     await fs.mkdir(this.UPLOAD_DIR, { recursive: true });
-
-    // Use a unique name if a file already exists to avoid collisions in bulk
     const writeStream = createWriteStream(finalPath);
 
     try {
       for (let i = 1; i <= totalChunks; i++) {
         const chunkPath = path.join(chunkDir, `chunk-${i}`);
-
-        // Check if chunk exists before trying to read (critical for bulk stability)
         await fs.access(chunkPath);
 
         const readStream = createReadStream(chunkPath);
 
-        // pipeline handles the 'end' and 'error' events automatically
-        // { end: false } keeps the writeStream open for the next chunk
-        await pipeline(readStream, writeStream, { end: i === totalChunks });
+        // Pipe avoid pipeline() creating multiple listeners on writeStream
+        readStream.pipe(writeStream, { end: false });
 
-        // Async cleanup: Unlink individual chunks to free space during the merge
+        // Wait for the current chunk to finish reading
+        await new Promise<void>((resolve, reject) => {
+          readStream.on('end', () => resolve());
+          readStream.on('error', (err) => reject(err));
+        });
+
+        // Clean up chunk immediately to save disk space
         await fs.unlink(chunkPath).catch(() => {});
       }
+
+      // Signal end of writing and wait for the file to be fully flushed to disk
+      writeStream.end();
+      await finished(writeStream);
     } catch (err) {
       writeStream.destroy();
       throw err;
+    } finally {
+      // Final cleanup of the isolated directory
+      await fs.rm(chunkDir, { recursive: true, force: true }).catch(() => {});
     }
-
-    // Final cleanup of the isolated directory
-    await fs.rm(chunkDir, { recursive: true, force: true }).catch(() => {});
 
     return finalPath;
   }
