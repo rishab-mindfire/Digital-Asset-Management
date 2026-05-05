@@ -4,10 +4,11 @@
   "description": "A centralize plateform the manage digital assets",
   "type": "module",
   "scripts": {
+     "prebuild": "rm -rf dist",
     "test": "vitest",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix && npx prettier --write .",
-    "build": "tsc",
+    "build": "npm run prebuild && tsc",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,css,scss,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css,scss,md}\"",
     "dev": "cross-env NODE_ENV=dev nodemon --watch src --exec tsx src/server.ts",

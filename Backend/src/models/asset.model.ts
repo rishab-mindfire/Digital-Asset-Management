@@ -3,13 +3,14 @@ import { IAsset } from '../types/index.js';
 
 const assetSchema = new Schema<IAsset>(
   {
+    uploadId: { type: String, required: true, unique: true, index: true },
     title: { type: String, required: true },
     fileType: {
       type: String,
       enum: ['image', 'video', 'document', 'audio'],
       required: true,
     },
-    localPath: { type: String, required: true },
+    localPath: { type: String, required: false },
     previewPath: { type: String },
     status: {
       type: String,

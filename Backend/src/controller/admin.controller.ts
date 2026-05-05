@@ -95,6 +95,7 @@ class AdminClass {
     }
   };
 
+  //merge chunk
   mergeChunks = async (req: Request, res: Response) => {
     try {
       if (!req.userEmail) {

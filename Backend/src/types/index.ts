@@ -25,11 +25,12 @@ export interface ParsedError {
 //-------------------------------------------------------------------------------------
 //Asset Interface
 export interface IAsset extends Document {
+  uploadId: string;
   title: string;
   fileType: 'image' | 'video' | 'document' | 'audio';
   // Storage
-  localPath: string; // Path to the high-res original in /storage/raw
-  previewPath?: string; // Path to the thumbnail in /storage/previews (set by Worker)
+  localPath: string;
+  previewPath?: string;
   // Lifecycle
   status: 'pending' | 'processing' | 'uploaded' | 'expired' | 'archived';
   // Ownership

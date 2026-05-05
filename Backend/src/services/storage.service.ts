@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import path from 'path';
+import { pipeline } from 'stream/promises';
 
 export class StorageService {
   private static TEMP_DIR = path.resolve('storage/temp');
@@ -11,20 +12,19 @@ export class StorageService {
     await fs.mkdir(chunkDir, { recursive: true });
 
     const chunkPath = path.join(chunkDir, `chunk-${chunkIndex}`);
-    // Only write if it doesn't exist (basic optimization for retries)
-    try {
-      await fs.access(chunkPath);
-    } catch {
-      await fs.writeFile(chunkPath, buffer);
-    }
+
+    // Better for bulk: Write even if exists to ensure integrity,
+    // or keep your access check if you want to save I/O on retries.
+    await fs.writeFile(chunkPath, buffer);
     return chunkPath;
   }
 
   static async saveMetadata(uploadId: string, data: object) {
-    const metaPath = path.join(this.TEMP_DIR, uploadId, 'chunk-session.json');
-    await fs.writeFile(metaPath, JSON.stringify(data), 'utf8');
+    const chunkDir = path.join(this.TEMP_DIR, uploadId);
+    await fs.mkdir(chunkDir, { recursive: true }); // Ensure dir exists
+    const metaPath = path.join(chunkDir, 'chunk-session.json');
+    await fs.writeFile(metaPath, JSON.stringify(data, null, 2), 'utf8');
   }
-
   static async getMetadata(uploadId: string) {
     const metaPath = path.join(this.TEMP_DIR, uploadId, 'chunk-session.json');
     const content = await fs.readFile(metaPath, 'utf8');
@@ -41,32 +41,32 @@ export class StorageService {
 
     await fs.mkdir(this.UPLOAD_DIR, { recursive: true });
 
-    // Clean up existing file if any
-    await fs.unlink(finalPath).catch(() => {});
+    // Use a unique name if a file already exists to avoid collisions in bulk
+    const writeStream = createWriteStream(finalPath);
 
-    const writeStream = createWriteStream(finalPath, { flags: 'a' });
+    try {
+      for (let i = 1; i <= totalChunks; i++) {
+        const chunkPath = path.join(chunkDir, `chunk-${i}`);
 
-    for (let i = 1; i <= totalChunks; i++) {
-      const chunkPath = path.join(chunkDir, `chunk-${i}`);
-      await new Promise<void>((resolve, reject) => {
+        // Check if chunk exists before trying to read (critical for bulk stability)
+        await fs.access(chunkPath);
+
         const readStream = createReadStream(chunkPath);
-        readStream.pipe(writeStream, { end: false });
-        readStream.on('error', reject);
-        readStream.on('end', async () => {
-          await fs.unlink(chunkPath); // Delete chunk after stream ends
-          resolve();
-        });
-      });
+
+        // pipeline handles the 'end' and 'error' events automatically
+        // { end: false } keeps the writeStream open for the next chunk
+        await pipeline(readStream, writeStream, { end: i === totalChunks });
+
+        // Async cleanup: Unlink individual chunks to free space during the merge
+        await fs.unlink(chunkPath).catch(() => {});
+      }
+    } catch (err) {
+      writeStream.destroy();
+      throw err;
     }
 
-    writeStream.end();
-    await new Promise<void>((resolve, reject) => {
-      writeStream.on('finish', () => resolve());
-      writeStream.on('error', (err) => reject(err));
-    });
-
-    // Clean up temp dir
-    await fs.rm(chunkDir, { recursive: true, force: true });
+    // Final cleanup of the isolated directory
+    await fs.rm(chunkDir, { recursive: true, force: true }).catch(() => {});
 
     return finalPath;
   }
