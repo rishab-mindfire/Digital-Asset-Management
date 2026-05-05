@@ -35,7 +35,7 @@ const collectionSchema = new Schema<ICollection>(
   { timestamps: true },
 );
 
-// Indexing for faster lookups by owner or name
+// Indexing for lookups by owner name or email
 collectionSchema.index({ name: 1, ownerEmail: 1 });
 
 export const CollectionModel = model<ICollection>('Collections', collectionSchema);

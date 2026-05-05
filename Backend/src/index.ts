@@ -8,7 +8,7 @@ import { adminRouter } from './router/admin.routes.js';
 const app = express();
 
 const frontend_url = process.env.FRONTEND_URL || 'http://localhost:3001';
-
+//cros policy :
 const corsOptions = {
   origin: [frontend_url],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -16,12 +16,13 @@ const corsOptions = {
   optionsSuccessStatus: 200,
   exposedHeaders: ['Authorization'],
 };
-
 app.use(cors(corsOptions));
 
+// JSON parser for body JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Routes
 app.use('/user', userRouter);
 app.use('/admin', authRoleBased('admin'), adminRouter);
 

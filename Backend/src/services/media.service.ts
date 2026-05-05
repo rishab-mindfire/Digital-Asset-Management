@@ -33,7 +33,6 @@ export class MediaService {
         })
         .toFile(outputPath);
     } catch (error) {
-      console.error('[MediaService] Thumbnail generation failed:', error);
       throw new Error(
         `Failed to process image: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
@@ -53,7 +52,9 @@ export class MediaService {
         hasAlpha: metadata.hasAlpha,
       };
     } catch (error) {
-      throw new Error('Could not read image metadata');
+      if (error instanceof Error) {
+        throw new Error('Could not read image metadata');
+      }
     }
   }
 

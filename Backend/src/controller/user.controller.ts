@@ -29,12 +29,13 @@ class UserClass {
       await userServices.createUser(value);
 
       return res.status(201).json({ message: 'User created successfully!' });
-    } catch (err: any) {
-      console.error('Registration Error:', err);
-      return res.status(500).json({
-        message: 'Internal server error. User could not be created.',
-        error: err.message,
-      });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return res.status(500).json({
+          message: 'Internal server error. User could not be created.',
+          error: err.message,
+        });
+      }
     }
   };
 

@@ -35,6 +35,7 @@ const AssetTable = () => {
   // file (asset chunk) upload
   const [isModelOpen, setIsModelOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const { uploadMultipalFiles, isUploading, progressMap, error } = useChunkedUpload();
@@ -62,8 +63,10 @@ const AssetTable = () => {
       await uploadMultipalFiles(selectedFiles);
       alert('All files uploaded successfully!');
       setSelectedFiles([]);
-    } catch (err) {
-      console.error('Upload error:', err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      }
     }
   };
 
@@ -170,7 +173,7 @@ const AssetTable = () => {
             ))}
           </div>
 
-          {error && <div className={styles.errorMessage}>{error}</div>}
+          {error && <div className={styles.errorMessage}>{error || errorMessage}</div>}
 
           <div className="center">
             <button

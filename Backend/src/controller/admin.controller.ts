@@ -9,10 +9,12 @@ class AdminClass {
     try {
       const stats = await adminServices.getDashboardStats();
       return res.status(200).json({ summary: stats });
-    } catch (error: any) {
-      return res
-        .status(500)
-        .json({ message: 'Error loading dashboard', error: error.message || error });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res
+          .status(500)
+          .json({ message: 'Error loading dashboard', error: error.message || error });
+      }
     }
   };
 
@@ -20,10 +22,12 @@ class AdminClass {
     try {
       const result = await adminServices.assetListingService(req.query);
       return res.status(200).json(result);
-    } catch (error: any) {
-      return res
-        .status(500)
-        .json({ message: 'Error fetching assets', error: error.message || error });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res
+          .status(500)
+          .json({ message: 'Error fetching assets', error: error.message || error });
+      }
     }
   };
 
@@ -38,7 +42,7 @@ class AdminClass {
       }
 
       const assetData = await adminServices.getAssetFullDetail(req.params.id as string, {
-        userId: userDetails.userID,
+        userID: userDetails.userID,
         userEmail: userDetails.userEmail,
       });
 
@@ -46,10 +50,12 @@ class AdminClass {
         return res.status(404).json({ message: 'Asset not found' });
       }
       return res.status(200).json(assetData);
-    } catch (error: any) {
-      return res
-        .status(500)
-        .json({ message: 'Error loading asset details', error: error.message || error });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res
+          .status(500)
+          .json({ message: 'Error loading asset details', error: error.message || error });
+      }
     }
   };
 
@@ -57,8 +63,10 @@ class AdminClass {
     try {
       await adminServices.removeAsset(req.params.id as string);
       return res.status(200).json({ message: 'Asset moved to archive' });
-    } catch (error: any) {
-      return res.status(500).json({ message: 'Delete failed', error: error.message || error });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: 'Delete failed', error: error.message || error });
+      }
     }
   };
 
@@ -86,12 +94,13 @@ class AdminClass {
       });
 
       return res.status(200).json(result);
-    } catch (error: any) {
-      console.error('Upload Error:', error);
-      return res.status(500).json({
-        message: 'Chunk upload failed',
-        error: error.message,
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res.status(500).json({
+          message: 'Chunk upload failed',
+          error: error.message,
+        });
+      }
     }
   };
 
@@ -126,18 +135,20 @@ class AdminClass {
         message: 'All chunks merged. File is pending background processing.',
         asset,
       });
-    } catch (error: any) {
-      return res.status(500).json({
-        message: 'Merging failed',
-        error: error.message,
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res.status(500).json({
+          message: 'Merging failed',
+          error: error.message,
+        });
+      }
     }
   };
 
   //stream video
   async streamVideo(req: Request, res: Response) {
     try {
-      const userEmail = (req as any).userEmail;
+      const userEmail = req.userEmail;
       if (!userEmail) {
         return res.status(401).json({ message: 'Invalid token' });
       }
@@ -163,9 +174,11 @@ class AdminClass {
             originalFilename: asset.title || 'N/A no file name ',
           },
         });
-      } catch (logError: any) {
+      } catch (logError: unknown) {
         // Log quietly so tracking errors don't interrupt the actual streaming
-        console.error('Failed to log tracking:', logError.message);
+        if (logError instanceof Error) {
+          throw new Error(logError.message);
+        }
       }
 
       //Retrieve video file data via the Service
@@ -199,18 +212,20 @@ class AdminClass {
       res.writeHead(206, headers);
       const videoStream = adminServices.createStreamChunk(asset.localPath, start, end);
       videoStream.pipe(res);
-    } catch (error: any) {
-      if (error.name === 'CastError') {
-        return res.status(400).json({
-          message: 'Invalid ID format',
-          error: `The provided ID "${error.value}" is not a valid ObjectId.`,
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.name === 'CastError') {
+          return res.status(400).json({
+            message: 'Invalid ID format',
+            error: error.message,
+          });
+        }
+
+        return res.status(500).json({
+          message: 'Error streaming asset',
+          error: error.message || error,
         });
       }
-
-      return res.status(500).json({
-        message: 'Error streaming asset',
-        error: error.message || error,
-      });
     }
   }
 }

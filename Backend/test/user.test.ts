@@ -83,7 +83,7 @@ describe('User API Integration', () => {
     });
 
     expect(response.status).toBe(201);
-    expect(response.text).toBe('user created successfully !');
+    expect(response.body.message).toBe('User created successfully!');
   });
 
   // EMAIL EXISTS
@@ -98,6 +98,6 @@ describe('User API Integration', () => {
     });
 
     expect(response.status).toBe(409);
-    expect(response.body.message).toBe('Email allready exists !');
+    expect(response.body.message).toBe('Email already exists!');
   });
 });

@@ -1,6 +1,6 @@
 // User Identity and Authentication Service
 // Manages account creation and secure credential verification processes
-// Implements industry-standard password hashing and comparison using bcrypt
+// Implements password hashing and comparison using bcrypt
 // Facilitates user identification through custom ID generation and email lookups
 import { UsersModel } from '../models/users.model.js';
 import bcrypt from 'bcrypt';

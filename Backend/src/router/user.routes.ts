@@ -7,7 +7,7 @@ import { UserCtr } from '../controller/user.controller.js';
 
 export const userRouter = Router();
 
-// user route
+// user routes
 userRouter.post('/register', UserCtr.userRegistration);
 userRouter.post('/login', UserCtr.userLogin);
 userRouter.post('/reset', UserCtr.userChangePassword);

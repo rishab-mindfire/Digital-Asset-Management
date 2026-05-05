@@ -6,7 +6,7 @@ import { AssetModel } from '../../models/asset.model.js';
 import { MediaTaskPayload } from '../../types/index.js';
 import { MediaService } from '../../services/media.service.js';
 
-// Centralized path for thumbnails - should match your config
+// Centralized path for thumbnails
 const THUMBNAIL_DIR = path.resolve('storage/thumbnails');
 
 /**
@@ -17,7 +17,7 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
 
   try {
     /**
-     * 1. Parse and Validate Payload
+     * Parse and Validate Payload
      */
     const payload: MediaTaskPayload = JSON.parse(msg.content.toString());
     const { filePath, fileType } = payload;
@@ -30,19 +30,19 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
     console.log(`[Worker] Starting process for Asset: ${assetId}`);
 
     /**
-     * 2. Mark Asset as Processing in DB
+     * Mark Asset as Processing in DB
      */
     await AssetModel.findByIdAndUpdate(assetId, { status: 'processing' });
 
     /**
-     * 3. Pre-flight Check: Ensure source file exists
+     * Pre-flight Check: Ensure source file exists
      */
     await fs.access(filePath);
 
     let thumbnailPath: string | undefined;
 
     /**
-     * 4. Media Processing Logic
+     *  Media Processing Logic
      * We delegate the actual image manipulation to the MediaService
      */
     if (fileType === 'image') {
@@ -59,12 +59,12 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
 
       console.log(`[Worker] Thumbnail generated: ${thumbnailName}`);
     } else if (fileType === 'video') {
-      // Future: Add VideoService.generateFrame() here
+      // Add VideoService.generateFrame()
       console.log('[Worker] Video processing skipped (Logic not implemented)');
     }
 
     /**
-     * 5. Finalize Database State
+     * Finalize Database State
      */
     const stats = await fs.stat(filePath);
 
@@ -76,7 +76,7 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
     });
 
     /**
-     * 6. Acknowledge Success
+     * Acknowledge Success
      * Removes the message from the queue
      */
     channel.ack(msg);
@@ -86,7 +86,7 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
     console.error(`[Worker Error]: ${errorMessage}`);
 
     /**
-     * 7. Handle Failures
+     * Handle Failures
      */
     if (assetId) {
       await AssetModel.findByIdAndUpdate(assetId, { status: 'failed' }).catch((dbErr) =>
@@ -95,8 +95,8 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
     }
 
     /**
-     * 8. Negative Acknowledge (Nack)
-     * Requeue: false (We don't want to loop forever on a broken file)
+     * Negative Acknowledge (Nack)
+     * Requeue: false ( don't loop forever on a broken file)
      */
     channel.nack(msg, false, false);
   }

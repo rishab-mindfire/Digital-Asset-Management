@@ -1,34 +1,9 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { ProjectServices } from '../../src/services/projects.service';
 import { userServices } from '../../src/services/users.service';
 
-// --- Project Mocks ---
-export const mockProjectResponse = {
-  _id: '65f1a2b3c4d5e6f7a8b9c0d2',
-  projectName: 'Test Project',
-  projectDescription: 'Integration testing with Vitest',
-  owner: '65f1a2b3c4d5e6f7a8b9c0d1',
-} as unknown as Awaited<ReturnType<typeof ProjectServices.createNewProject>>;
+// --- other services Mocks ---
 
-export const mockUpdatedProject = {
-  _id: '65f1a2b3c4d5e6f7a8b9c0d2',
-  projectName: 'Updated Project',
-  projectDescription: 'Updated desc',
-} as unknown as Awaited<ReturnType<typeof ProjectServices.updateProject>>;
-
-export const mockProjectList = [
-  { _id: '1', projectName: 'P1' },
-  { _id: '2', projectName: 'P2' },
-] as unknown as Awaited<ReturnType<typeof ProjectServices.listAllProjects>>;
-
-export const mockProjectWithStats = {
-  _id: '65f1a2b3c4d5e6f7a8b9c0d2',
-  projectName: 'Test Project',
-  fileCount: 5,
-  jobCount: 10,
-} as unknown as Awaited<ReturnType<typeof ProjectServices.getProjectWithStats>>;
-
-// --- User Mocks ---
+// --- User service Mocks ---
 export const mockAuthUser = {
   _id: '65f1a2b3c4d5e6f7a8b9c0d1',
   email: 'test@example.com',
