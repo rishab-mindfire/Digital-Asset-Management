@@ -10,19 +10,12 @@ const options = {
 // DB connection using connection string
 const connectDB = async () => {
   const connectionString = process.env.DB_CONNECTION_STRING;
-  console.log(process.env.DB_CONNECTION_STRING);
   if (!connectionString) {
-    console.error('No DB_CONNECTION_STRING found in environment');
+    // console.error('No DB_CONNECTION_STRING found in environment');
     return;
   }
-
-  try {
-    await mongoose.connect(connectionString, options);
-    return mongoose;
-  } catch (err) {
-    console.error('Mongoose connection error:', err);
-    throw err;
-  }
+  await mongoose.connect(connectionString, options);
+  return mongoose;
 };
 
 export default connectDB;

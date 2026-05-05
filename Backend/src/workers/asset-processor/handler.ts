@@ -27,7 +27,7 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
       throw new Error('Invalid queue payload: Missing assetId or filePath');
     }
 
-    console.log(`[Worker] Starting process for Asset: ${assetId}`);
+    // console.log(`[Worker] Starting process for Asset: ${assetId}`);
 
     /**
      * Mark Asset as Processing in DB
@@ -57,10 +57,10 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
 
       await MediaService.generateThumbnail(filePath, absoluteThumbnailPath);
 
-      console.log(`[Worker] Thumbnail generated: ${thumbnailName}`);
+      //console.log(`[Worker] Thumbnail generated: ${thumbnailName}`);
     } else if (fileType === 'video') {
       // Add VideoService.generateFrame()
-      console.log('[Worker] Video processing skipped (Logic not implemented)');
+      //console.log('[Worker] Video processing skipped (Logic not implemented)');
     }
 
     /**
@@ -80,10 +80,10 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
      * Removes the message from the queue
      */
     channel.ack(msg);
-    console.log(`[Worker] Asset ${assetId} completed successfully.`);
+    //console.log(`[Worker] Asset ${assetId} completed successfully.`);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown worker error';
-    console.error(`[Worker Error]: ${errorMessage}`);
+    //console.error(`[Worker Error]: ${errorMessage}`);
 
     /**
      * Handle Failures
