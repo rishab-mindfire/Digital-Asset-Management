@@ -14,9 +14,9 @@ declare global {
 }
 
 function authRoleBased(...allowedRoles: string[]) {
-  const secret = process.env.JWT_SECRET;
   // check token in each incomming request
   return async (req: Request, res: Response, next: NextFunction) => {
+    const secret = process.env.JWT_SECRET;
     const userToken = req?.headers['authorization']?.toString();
     const token = userToken && userToken.split(' ')[1];
 
@@ -34,6 +34,7 @@ function authRoleBased(...allowedRoles: string[]) {
         const userDetails = jwt.verify(token, secret);
         const userEmail = await JSON.parse(JSON.stringify(userDetails)).userEmail;
         const userRole = await verifyEmplyeeRole(userEmail);
+
         if (userRole && !allowedRoles.includes(userRole)) {
           return res.status(404).send('User not authorized !');
         } else {

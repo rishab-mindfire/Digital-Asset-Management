@@ -80,3 +80,12 @@ export interface IUsageTracking extends Document {
   platform: string; // e.g., 'Web Dashboard', 'Mobile App', 'External API'
   metadata?: Record<string, string[]>; // Extra context (e.g., IP address, browser)
 }
+
+/**
+ * Queue payload type
+ */
+export interface MediaTaskPayload {
+  assetId: string;
+  filePath: string;
+  fileType: string;
+}

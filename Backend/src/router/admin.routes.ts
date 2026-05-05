@@ -10,8 +10,7 @@ export const adminRouter = Router();
 // Dashboard
 adminRouter.get('/dashboard/stats', adminCtr.getOverview);
 // Chunked Upload Pipeline
-// Receives individual file chunks under the key name "chunk"
-adminRouter.post('/upload/chunk', upload.single('chunk'), adminCtr.uploadChunk);
+adminRouter.post('/upload/chunk', upload.single('file'), adminCtr.uploadChunk);
 //  Merges the saved chunks on the server and triggers background processing
 adminRouter.post('/upload/merge', adminCtr.mergeChunks);
 

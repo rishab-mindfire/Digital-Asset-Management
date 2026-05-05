@@ -9,6 +9,7 @@ import type { ReadStream, WriteStream } from 'fs';
 import path from 'path';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import mongoose from 'mongoose';
+import { StorageService } from './storage.service.js';
 
 export interface FileMetadata {
   size: number;
@@ -109,59 +110,92 @@ class AdminServices {
     }
     return await AssetModel.findByIdAndUpdate(assetId, { status: 'archived' }, { new: true });
   }
+
   //upload chunk Asset
-  async uploadChunk(
-    chunk: Express.Multer.File,
-    chunkIndexStr: string,
-    uploadId: string,
-    totalChunksStr: string,
-  ) {
-    const chunkIndex = parseInt(chunkIndexStr, 10);
-    const totalChunks = parseInt(totalChunksStr, 10);
-    if (chunkIndex > totalChunks || chunkIndex < 1) {
-      throw new Error(`Security Exception: Invalid chunkIndex ${chunkIndex}`);
+  async handleChunkUpload(uploadId: string, chunk: Express.Multer.File, body: any) {
+    // Validation:
+
+    const chunkIndex = parseInt(body.chunkIndex as string, 10);
+    const totalChunks = parseInt(body.totalChunks as string, 10);
+
+    if (isNaN(chunkIndex) || isNaN(totalChunks)) {
+      throw new Error('chunkIndex and totalChunks must be valid numbers');
     }
 
-    const chunkDir = path.join(TEMP_DIR, uploadId);
-    await fs.mkdir(chunkDir, { recursive: true });
+    if (chunkIndex < 1 || chunkIndex > totalChunks) {
+      throw new Error(`Invalid chunk index: ${chunkIndex}. Range: 1-${totalChunks}`);
+    }
 
-    // Write metadata file on the first chunk
-    // Inside uploadChunk
-    if (chunkIndex === 1) {
-      const metadataPath = path.join(chunkDir, 'chunk-session.json');
+    //  Pass to StorageService
+    try {
+      await StorageService.saveChunk(uploadId, chunkIndex, chunk.buffer);
 
-      // Ensure we capture the extension correctly.
-      // If 'filename' is passed in body;, otherwise, the chunk's originalname.
-      const finalFileName = chunk.originalname;
-
-      await fs.writeFile(
-        metadataPath,
-        JSON.stringify({
-          originalFilename: finalFileName,
+      //  Handle Metadata on first chunk
+      if (chunkIndex === 1) {
+        await StorageService.saveMetadata(uploadId, {
+          originalFilename: chunk.originalname,
           totalChunks,
           createdAt: new Date(),
-        }),
-        'utf8',
-      );
+        });
+      }
+
+      //  Return progress to controller
+      return {
+        success: true,
+        progress: Math.min(Math.round((chunkIndex / totalChunks) * 100), 100),
+        chunkIndex,
+      };
+    } catch (err: any) {
+      console.error('StorageService Error:', err);
+      throw new Error(`Filesystem operation failed: ${err.message}`);
     }
-    const chunkPath = path.join(chunkDir, `chunk-${chunkIndex}`);
+  }
 
-    // Write chunk to disk if it doesn't already exist
-    try {
-      await fs.access(chunkPath);
-    } catch {
-      await fs.writeFile(chunkPath, chunk.buffer);
+  async finalizeMerge(uploadId: string, validatedBody: any, user: any) {
+    // Get Metadata
+    const metadata = await StorageService.getMetadata(uploadId);
+    const extension = path.extname(metadata.originalFilename).toLowerCase();
+    const finalFilename = `${uploadId}${extension}`;
+
+    // Physical Merge
+    const finalPath = await StorageService.mergeChunks(
+      uploadId,
+      metadata.totalChunks,
+      finalFilename,
+    );
+    const stats = await fs.stat(finalPath);
+
+    //  Database Update
+    const asset = await AssetModel.findOneAndUpdate(
+      { localPath: finalPath },
+      {
+        title: validatedBody.title || metadata.originalFilename,
+        fileType: extension.match(/\.(mp4|webm|mov)$/) ? 'video' : 'image',
+        localPath: finalPath,
+        ownerID: user.userID,
+        ownerEmail: user.userEmail,
+        department: validatedBody.department,
+        status: 'pending',
+        metadata: { extension: extension.replace('.', ''), size: stats.size },
+      },
+      { upsert: true, new: true },
+    );
+
+    // Handle Collections
+    if (validatedBody.collectionId) {
+      await CollectionModel.findByIdAndUpdate(validatedBody.collectionId, {
+        $addToSet: { assets: asset._id },
+      });
     }
 
-    // Use chunkIndex directly instead
-    const uploadProgress = Math.min(Math.round((chunkIndex / totalChunks) * 100), 100);
+    // Trigger Worker
+    await publishToQueue('asset_upload_processing', {
+      assetId: asset._id,
+      filePath: finalPath,
+      fileType: asset.fileType,
+    });
 
-    return {
-      message: `Chunk ${chunkIndex} saved successfully.`,
-      chunkIndex,
-      totalChunks,
-      progress: uploadProgress,
-    };
+    return asset;
   }
 
   // merge chunk Asset
@@ -295,6 +329,7 @@ class AdminServices {
 
     return asset;
   }
+
   //get file metadata details
   async getFileMetadata(localPath: string): Promise<FileMetadata> {
     const stat = await fsPromises.stat(localPath);

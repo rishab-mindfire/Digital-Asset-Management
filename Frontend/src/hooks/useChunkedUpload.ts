@@ -25,7 +25,7 @@ const useChunkedUpload = (options: UploadOptions = {}) => {
         const chunk = file.slice(start, end);
 
         const formData = new FormData();
-        formData.append('chunk', chunk, file.name);
+        formData.append('file', chunk, file.name);
         formData.append('chunkIndex', i.toString());
         formData.append('uploadId', uploadId);
         formData.append('totalChunks', totalChunks.toString());
