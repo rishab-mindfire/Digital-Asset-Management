@@ -34,35 +34,36 @@ const AssetTable = () => {
 
   // file (asset chunk) upload
   const [isModelOpen, setIsModelOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { uploadFile, isUploading, progress, error } = useChunkedUpload();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const { uploadMultipalFiles, isUploading, progressMap, error } = useChunkedUpload();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+    if (e.target.files) {
+      setSelectedFiles(Array.from(e.target.files));
     }
   };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files) {
+      setSelectedFiles(Array.from(e.dataTransfer.files));
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!selectedFile) {
+    if (selectedFiles.length === 0) {
       return;
     }
+
     try {
-      await uploadFile(selectedFile);
-      setIsModelOpen(false);
-      alert('Upload successful! Background processing has started.');
+      await uploadMultipalFiles(selectedFiles);
+      alert('All files uploaded successfully!');
+      setSelectedFiles([]);
     } catch (err) {
-      console.log('error in file', err);
+      console.error('Upload error:', err);
     }
   };
 
@@ -131,47 +132,55 @@ const AssetTable = () => {
         title="Upload Asset"
       >
         <form onSubmit={handleSubmit} className={styles.form}>
-          {/* Drag & Drop Area */}
           <div
             className={styles.dropZone}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
           >
-            {selectedFile ? (
-              <p>
-                Ready to upload: <strong>{selectedFile.name}</strong>
-              </p>
+            {selectedFiles.length > 0 ? (
+              <div className={styles.fileStack}>
+                {selectedFiles.map((f) => (
+                  <p key={f.name}>{f.name}</p>
+                ))}
+              </div>
             ) : (
-              <p>Drag files here or click to browse</p>
+              <p className={styles.dropText}>Drag files here or click to browse</p>
             )}
             <input
               type="file"
+              multiple
               ref={fileInputRef}
               onChange={handleFileChange}
               style={{ display: 'none' }}
             />
           </div>
+          {/* Multiple Progress Bars Container */}
+          <div className={styles.progresscontainer}>
+            {Object.entries(progressMap).map(([filename, prg]) => (
+              <div key={filename} className={styles.progressWrapper}>
+                <span className={styles.filenameText}>{filename}</span>
 
-          {/* Dynamic Progress Feedback */}
-          {isUploading && (
-            <div className={styles.progressWrapper}>
-              <div className={styles.progressTrack}>
-                <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+                <div className={styles.progressTrack}>
+                  <div className={styles.progressFill} style={{ width: `${prg}%` }} />
+                </div>
+
+                <span className={styles.percentageText}>{prg}%</span>
               </div>
-              <span className={styles.percentageText}>{progress}%</span>
-            </div>
-          )}
+            ))}
+          </div>
 
           {error && <div className={styles.errorMessage}>{error}</div>}
 
           <div className="center">
             <button
               type="submit"
-              className={styles.uploadFile}
-              disabled={isUploading || !selectedFile}
+              className={styles.uploadFileBtn}
+              disabled={isUploading || selectedFiles.length === 0}
             >
-              {isUploading ? 'Sending Chunks...' : 'Upload File'}
+              {isUploading
+                ? 'Uploading Files...'
+                : `Upload ${selectedFiles.length} File${selectedFiles.length > 1 ? 's' : ''}`}
             </button>
           </div>
         </form>

@@ -27,7 +27,7 @@ const userSchema = new Schema<IUserDocument>(
     userRole: {
       type: String,
       required: true,
-      enum: ['Admin', 'Manager', 'User'],
+      enum: ['admin', 'manager', 'public'],
     },
   },
   { timestamps: true },

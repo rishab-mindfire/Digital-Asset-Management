@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prebuild": "rm -rf dist",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run prebuild && tsc -b && vite build",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "coverage": "vitest --coverage",

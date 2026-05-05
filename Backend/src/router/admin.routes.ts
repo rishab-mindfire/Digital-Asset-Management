@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { adminCtr } from '../controller/admin.controller.js';
 import multer from 'multer';
 
@@ -10,14 +10,13 @@ export const adminRouter = Router();
 // Dashboard
 adminRouter.get('/dashboard/stats', adminCtr.getOverview);
 // Chunked Upload Pipeline
-// Receives individual file chunks under the key name "chunk"
-adminRouter.post('/upload/chunk', upload.single('chunk'), adminCtr.uploadChunk);
-//  Merges the saved chunks on the server and triggers background processing
+adminRouter.post('/upload/chunk', upload.single('file'), adminCtr.uploadChunk);
 adminRouter.post('/upload/merge', adminCtr.mergeChunks);
 
 // Assets
 adminRouter.get('/assets', adminCtr.getAllAssets);
 adminRouter.get('/assets/:id', adminCtr.getAssetById);
 adminRouter.delete('/assets/:id', adminCtr.deleteAsset);
+
 // Streaming Preview
 adminRouter.get('/assets/:id/stream', adminCtr.streamVideo);

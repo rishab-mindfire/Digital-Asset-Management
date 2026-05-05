@@ -62,37 +62,53 @@ class AdminClass {
     }
   };
 
+  // upload file
   uploadChunk = async (req: Request, res: Response) => {
     try {
       const { chunkIndex, uploadId, totalChunks } = req.body;
       const file = req.file;
 
-      if (!file || !chunkIndex || !uploadId || !totalChunks) {
+      if (!file) {
         return res.status(400).json({
-          message:
-            'Missing required payload: file, chunkIndex, uploadId, and totalChunks are required.',
+          message: 'No file detected. key is "file" and type is "File".',
         });
       }
 
-      const result = await adminServices.uploadChunk(file, chunkIndex, uploadId, totalChunks);
+      if (!chunkIndex || !uploadId || !totalChunks) {
+        return res.status(400).json({
+          message: 'Missing metadata fields in form-data.',
+        });
+      }
+
+      const result = await adminServices.handleChunkUpload(uploadId, file, {
+        chunkIndex,
+        totalChunks,
+      });
+
       return res.status(200).json(result);
     } catch (error: any) {
-      return res.status(500).json({ message: 'Chunk upload failed', error: error.message });
+      console.error('Upload Error:', error);
+      return res.status(500).json({
+        message: 'Chunk upload failed',
+        error: error.message,
+      });
     }
   };
 
+  //merge chunk
   mergeChunks = async (req: Request, res: Response) => {
     try {
       if (!req.userEmail) {
         return res.status(401).json({ message: 'Invalid token' });
       }
+
       const { uploadId, filename, totalChunks, title, department, collectionId, expiryDate } =
         req.body;
 
       if (!uploadId || !filename || !totalChunks) {
-        return res
-          .status(400)
-          .json({ message: 'Invalid payload: uploadId, filename, and totalChunks are required.' });
+        return res.status(400).json({
+          message: 'Invalid payload: uploadId, filename, and totalChunks are required.',
+        });
       }
 
       const userDetails = await getUserDetails(req.userEmail);
@@ -100,7 +116,7 @@ class AdminClass {
         return res.status(404).json({ message: 'User details not found' });
       }
 
-      const asset = await adminServices.mergeChunks(
+      const asset = await adminServices.finalizeMerge(
         uploadId,
         { title, department, collectionId, expiryDate },
         { userID: userDetails.userID, userEmail: userDetails.userEmail },
@@ -111,9 +127,13 @@ class AdminClass {
         asset,
       });
     } catch (error: any) {
-      return res.status(500).json({ message: 'Merging failed', error: error.message });
+      return res.status(500).json({
+        message: 'Merging failed',
+        error: error.message,
+      });
     }
   };
+
   //stream video
   async streamVideo(req: Request, res: Response) {
     try {

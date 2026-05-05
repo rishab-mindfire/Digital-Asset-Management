@@ -9,6 +9,7 @@ import type { ReadStream, WriteStream } from 'fs';
 import path from 'path';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import mongoose from 'mongoose';
+import { StorageService } from './storage.service.js';
 
 export interface FileMetadata {
   size: number;
@@ -109,192 +110,102 @@ class AdminServices {
     }
     return await AssetModel.findByIdAndUpdate(assetId, { status: 'archived' }, { new: true });
   }
+
   //upload chunk Asset
-  async uploadChunk(
-    chunk: Express.Multer.File,
-    chunkIndexStr: string,
-    uploadId: string,
-    totalChunksStr: string,
-  ) {
-    const chunkIndex = parseInt(chunkIndexStr, 10);
-    const totalChunks = parseInt(totalChunksStr, 10);
-    if (chunkIndex > totalChunks || chunkIndex < 1) {
-      throw new Error(`Security Exception: Invalid chunkIndex ${chunkIndex}`);
+  async handleChunkUpload(uploadId: string, chunk: Express.Multer.File, body: any) {
+    // Validation:
+    const chunkIndex = parseInt(body.chunkIndex as string, 10);
+    const totalChunks = parseInt(body.totalChunks as string, 10);
+
+    if (isNaN(chunkIndex) || isNaN(totalChunks)) {
+      throw new Error('chunkIndex and totalChunks must be valid numbers');
     }
 
-    const chunkDir = path.join(TEMP_DIR, uploadId);
-    await fs.mkdir(chunkDir, { recursive: true });
+    if (chunkIndex < 1 || chunkIndex > totalChunks) {
+      throw new Error(`Invalid chunk index: ${chunkIndex}. Range: 1-${totalChunks}`);
+    }
 
-    // Write metadata file on the first chunk
-    // Inside uploadChunk
-    if (chunkIndex === 1) {
-      const metadataPath = path.join(chunkDir, 'chunk-session.json');
+    //  Pass to StorageService
+    try {
+      await StorageService.saveChunk(uploadId, chunkIndex, chunk.buffer);
 
-      // Ensure we capture the extension correctly.
-      // If 'filename' is passed in body;, otherwise, the chunk's originalname.
-      const finalFileName = chunk.originalname;
-
-      await fs.writeFile(
-        metadataPath,
-        JSON.stringify({
-          originalFilename: finalFileName,
+      //  Handle Metadata on first chunk
+      if (chunkIndex === 1) {
+        await StorageService.saveMetadata(uploadId, {
+          originalFilename: chunk.originalname,
           totalChunks,
           createdAt: new Date(),
-        }),
-        'utf8',
-      );
+        });
+      }
+
+      //  Return progress to controller
+      return {
+        success: true,
+        progress: Math.min(Math.round((chunkIndex / totalChunks) * 100), 100),
+        chunkIndex,
+      };
+    } catch (err: any) {
+      console.error('StorageService Error:', err);
+      throw new Error(`Filesystem operation failed: ${err.message}`);
     }
-    const chunkPath = path.join(chunkDir, `chunk-${chunkIndex}`);
-
-    // Write chunk to disk if it doesn't already exist
-    try {
-      await fs.access(chunkPath);
-    } catch {
-      await fs.writeFile(chunkPath, chunk.buffer);
-    }
-
-    // Use chunkIndex directly instead
-    const uploadProgress = Math.min(Math.round((chunkIndex / totalChunks) * 100), 100);
-
-    return {
-      message: `Chunk ${chunkIndex} saved successfully.`,
-      chunkIndex,
-      totalChunks,
-      progress: uploadProgress,
-    };
   }
 
-  // merge chunk Asset
-  async mergeChunks(
-    uploadId: string,
-    validatedBody: any,
-    user: { userID: string; userEmail: string },
-  ) {
-    const chunkDir = path.join(TEMP_DIR, uploadId);
-    const metadataPath = path.join(chunkDir, 'chunk-session.json');
-
-    // Check if the temp upload directory exists
-    await fs.access(chunkDir).catch(() => {
-      throw new Error(`Merge failed: Temp session '${uploadId}' does not exist.`);
-    });
-
-    let originalFilename: string;
-    let totalChunks: number;
-
-    // Safely read metadata
-    try {
-      const metaData = JSON.parse(await fs.readFile(metadataPath, 'utf8')) as {
-        originalFilename: string;
-        totalChunks: number;
-      };
-
-      originalFilename = metaData.originalFilename;
-      totalChunks = metaData.totalChunks;
-    } catch {
-      throw new Error('Merge blocked: Session metadata file is corrupted or missing.');
-    }
-
-    // Verify that ALL chunks exist before modifying anything
-    for (let i = 1; i <= totalChunks; i++) {
-      const chunkPath = path.join(chunkDir, `chunk-${i}`);
-
-      try {
-        await fs.access(chunkPath);
-      } catch {
-        throw new Error(`Merge blocked: Chunk ${i} of ${totalChunks} is missing.`);
-      }
-    }
-
-    // Setup permanent path and clean up old/stale partial merges
-    await fs.mkdir(UPLOAD_DIR, { recursive: true });
-
-    const extension = path.extname(originalFilename).toLowerCase();
+  async finalizeMerge(uploadId: string, validatedBody: any, user: any) {
+    //  Get Metadata
+    const metadata = await StorageService.getMetadata(uploadId);
+    const extension = path.extname(metadata.originalFilename).toLowerCase();
     const finalFilename = `${uploadId}${extension}`;
-    const finalPath = path.join(UPLOAD_DIR, finalFilename);
 
-    // Clear existing file to prevent appending duplicate chunks on merge retries
-    try {
-      await fs.unlink(finalPath);
-    } catch {
-      // Ignore error if the file doesn't exist yet
-    }
+    //  Physical Merge ( memory-leak safe)
+    const finalPath = await StorageService.mergeChunks(
+      uploadId,
+      metadata.totalChunks,
+      finalFilename,
+    );
 
-    // Append available chunks sequentially via Streams
-    const writeStream: WriteStream = createWriteStream(finalPath, {
-      flags: 'a',
-    });
-
-    try {
-      for (let i = 1; i <= totalChunks; i++) {
-        const chunkPath = path.join(chunkDir, `chunk-${i}`);
-
-        await new Promise<void>((resolve, reject) => {
-          const readStream: ReadStream = createReadStream(chunkPath);
-          readStream.pipe(writeStream, { end: false });
-          readStream.on('error', reject);
-          readStream.on('end', () => {
-            resolve();
-          });
-        });
-
-        // Safely remove the chunk once it has been piped
-        await fs.unlink(chunkPath);
-      }
-    } finally {
-      // Safely close the write stream
-      writeStream.end();
-    }
-
-    // Wait until all data is flushed to disk
-    await new Promise<void>((resolve, reject) => {
-      writeStream.on('finish', () => resolve());
-      writeStream.on('error', reject);
-    });
-
-    // Clean up the temporary session folder
-    await fs.rm(chunkDir, { recursive: true, force: true });
-
-    // DB updates & Queue publishing
     const stats = await fs.stat(finalPath);
 
+    //  Database Update
     const asset = await AssetModel.findOneAndUpdate(
-      { localPath: finalPath },
+      { uploadId: uploadId },
       {
-        title: validatedBody.title || originalFilename,
+        uploadId: uploadId,
+        title: validatedBody.title || metadata.originalFilename,
         fileType: extension.match(/\.(mp4|webm|mov)$/) ? 'video' : 'image',
         localPath: finalPath,
         ownerID: user.userID,
         ownerEmail: user.userEmail,
         department: validatedBody.department,
-        expiryDate: validatedBody.expiryDate,
         status: 'pending',
-        metadata: {
-          extension: extension.replace('.', ''),
-          size: stats.size,
-        },
+        metadata: { extension: extension.replace('.', ''), size: stats.size },
       },
-      {
-        upsert: true,
-        new: true,
-      },
+      { upsert: true, new: true },
     );
 
-    if (validatedBody.collectionId && this.isValidId(validatedBody.collectionId)) {
+    //  Handle Collections
+    if (validatedBody.collectionId) {
       await CollectionModel.findByIdAndUpdate(validatedBody.collectionId, {
-        $addToSet: {
-          assets: asset._id,
-        },
+        $addToSet: { assets: asset._id },
       });
     }
 
-    await publishToQueue('asset_upload_processing', {
-      assetId: asset._id,
-      filePath: finalPath,
-      fileType: asset.fileType,
-    });
+    //  Trigger Worker with basic error handling
+    try {
+      await publishToQueue('asset_upload_processing', {
+        assetId: asset._id,
+        filePath: finalPath,
+        fileType: asset.fileType,
+      });
+    } catch (error) {
+      console.error(`Failed to queue asset ${asset._id}:`, error);
+      //Mark asset as 'failed' or 'retry_required' in DB
+      await AssetModel.findByIdAndUpdate(asset._id, { status: 'error' });
+      throw new Error('Merge successful but failed to trigger processing worker.');
+    }
 
     return asset;
   }
+
   //get file metadata details
   async getFileMetadata(localPath: string): Promise<FileMetadata> {
     const stat = await fsPromises.stat(localPath);
