@@ -2,6 +2,7 @@
 // Manages account creation and secure credential verification processes
 // Implements password hashing and comparison using bcrypt
 // Facilitates user identification through custom ID generation and email lookups
+
 import { UsersModel } from '../models/users.model.js';
 import bcrypt from 'bcrypt';
 import { generateCustomId } from '../utils/randomId.js';
@@ -17,8 +18,6 @@ class Users {
 
       // Assign a custom-formatted ID to the user profile
       userData.userID = generateCustomId();
-
-      // Persist the finalized user record to the database collection
       await UsersModel.create(userData);
     } catch (err) {
       // Catch and ignore errors to prevent service interruption during creation
@@ -35,7 +34,6 @@ class Users {
       const user = await UsersModel.findOne({ userEmail: email });
       return user;
     } catch {
-      // Return null if a database error occurs or the email is not found
       return null;
     }
   }
