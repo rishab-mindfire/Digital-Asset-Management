@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 //-------------------------------------------------------------------------------------
 // User Registration
@@ -102,12 +102,17 @@ export interface FinalizeMergeBody {
   expiryDate?: string;
 }
 
-export interface AuthUser {
-  userID: string;
-  userEmail: string;
+export interface FileMetadata {
+  size: number;
+  localPath: string;
 }
 
 export interface AuthUser {
   userID: string;
   userEmail: string;
 }
+
+// Utility to prevent CastErrors
+export const isValidId = (id: string) => {
+  return mongoose.Types.ObjectId.isValid(id);
+};

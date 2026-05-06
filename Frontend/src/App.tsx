@@ -4,7 +4,7 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import type { JSX } from 'react';
 import Loader from './components/common/Loader';
-import Asset from './pages/Asset/AssetTable';
+import Asset from './pages/AssetList/AssetTable';
 import ViewAsset from './pages/ViewAsset/AssetDetails';
 
 // React.lazy component

@@ -1,5 +1,4 @@
-//All admin services flow to serve admin request from there route
-
+// All admin services flow to serve admin request from there route
 import { AssetModel } from '../models/asset.model.js';
 import { CollectionModel } from '../models/collection.model.js';
 import { publishToQueue } from '../helper/producer.js';
@@ -8,24 +7,24 @@ import { createReadStream, promises as fsPromises } from 'fs';
 import type { ReadStream } from 'fs';
 import path from 'path';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
-import mongoose, { FilterQuery } from 'mongoose';
-import { StorageService } from './storage.service.js';
-import { AuthUser, ChunkUploadBody, FinalizeMergeBody, IAsset } from '../types/index.js';
-
-export interface FileMetadata {
-  size: number;
-  localPath: string;
-}
-
-// const UPLOAD_DIR = process.env.UPLOAD_DIR || './storage/raw';
-// const TEMP_DIR = './storage/temp';
+import { FilterQuery } from 'mongoose';
+import {
+  AuthUser,
+  ChunkUploadBody,
+  FileMetadata,
+  FinalizeMergeBody,
+  IAsset,
+  isValidId,
+} from '../types/index.js';
+import {
+  getFileSesionDetails,
+  mergeFinalChunks,
+  saveChunkBasedChunkId,
+  saveFileSesionDetails,
+} from '../helper/fileHandlers.js';
 
 class AdminServices {
-  // Utility to prevent CastErrors
-  private isValidId(id: string) {
-    return mongoose.Types.ObjectId.isValid(id);
-  }
-  //dash board data for graph
+  // dash board data for graph
   async getDashboardStats() {
     const now = new Date();
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -46,8 +45,8 @@ class AdminServices {
 
     return stats[0] || { total: [], expiringSoon: [], byStatus: [], riskAssets: [] };
   }
-  // ALL asset list
 
+  // ALL asset list
   async assetListingService(query: {
     search?: string;
     type?: string;
@@ -94,7 +93,7 @@ class AdminServices {
 
   // Single Asset View
   async getAssetFullDetail(assetId: string, user: AuthUser) {
-    if (!this.isValidId(assetId)) {
+    if (isValidId(assetId)) {
       throw new Error('Invalid asset ID');
     }
 
@@ -107,7 +106,7 @@ class AdminServices {
     // Fire-and-forget tracking
     void UsageTrackingModel.create({
       assetId: asset._id,
-      performerId: user.userId,
+      performerId: user.userID,
       performerEmail: user.userEmail,
       action: 'view',
       platform: 'Web Dashboard',
@@ -134,15 +133,15 @@ class AdminServices {
     };
   }
 
-  //Archive asset
+  // Archive asset
   async removeAsset(assetId: string) {
-    if (!this.isValidId(assetId)) {
+    if (isValidId(assetId)) {
       throw new Error(`INVALID_ID: ${assetId} is not a valid ObjectId`);
     }
     return await AssetModel.findByIdAndUpdate(assetId, { status: 'archived' }, { new: true });
   }
 
-  //upload chunk Asset
+  // upload chunk Asset
   async handleChunkUpload(uploadId: string, chunk: Express.Multer.File, body: ChunkUploadBody) {
     const chunkIndex = Number.parseInt(body.chunkIndex, 10);
     const totalChunks = Number.parseInt(body.totalChunks, 10);
@@ -158,11 +157,11 @@ class AdminServices {
 
     try {
       // Save chunk
-      await StorageService.saveChunk(uploadId, chunkIndex, chunk.buffer);
+      await saveChunkBasedChunkId(uploadId, chunkIndex, chunk.buffer);
 
       // Save metadata only once
       if (chunkIndex === 1) {
-        await StorageService.saveMetadata(uploadId, {
+        await saveFileSesionDetails(uploadId, {
           originalFilename: chunk.originalname,
           totalChunks,
           createdAt: new Date(),
@@ -186,18 +185,14 @@ class AdminServices {
 
   async finalizeMerge(uploadId: string, validatedBody: FinalizeMergeBody, user: AuthUser) {
     // Get metadata
-    const metadata = await StorageService.getMetadata(uploadId);
+    const metadata = await getFileSesionDetails(uploadId);
 
     const extension = path.extname(metadata.originalFilename).toLowerCase();
 
     const finalFilename = `${uploadId}${extension}`;
 
     // Merge chunks
-    const finalPath = await StorageService.mergeChunks(
-      uploadId,
-      metadata.totalChunks,
-      finalFilename,
-    );
+    const finalPath = await mergeFinalChunks(uploadId, metadata.totalChunks, finalFilename);
 
     const stats = await fs.stat(finalPath);
 
@@ -262,7 +257,7 @@ class AdminServices {
     return asset;
   }
 
-  //get file metadata details
+  // get file metadata details
   async getFileMetadata(localPath: string): Promise<FileMetadata> {
     const stat = await fsPromises.stat(localPath);
     return { size: stat.size, localPath };

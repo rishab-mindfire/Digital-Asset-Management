@@ -158,7 +158,8 @@ const AssetTable = () => {
               style={{ display: 'none' }}
             />
           </div>
-          {/* Multiple Progress Bars Container */}
+
+          {/*Progress Bars Container */}
           <div className={styles.progresscontainer}>
             {Object.entries(progressMap).map(([filename, prg]) => (
               <div key={filename} className={styles.progressWrapper}>

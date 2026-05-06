@@ -6,7 +6,7 @@ import styles from './Login.module.css';
 import type { LoginErrors } from '../../models/Types';
 import logoImage from '../../assets/logo.png';
 import backgroundImage from '../../assets/Glass Effect Login Page - Blue.webp';
-import { initialLoginState, loginReducer } from '../../reducers/loginReducer copy';
+import { initialLoginState, loginReducer } from '../../reducers/loginReducer';
 import { loginApi } from '../../services/loginService';
 
 /**
