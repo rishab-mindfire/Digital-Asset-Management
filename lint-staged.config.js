@@ -1,9 +1,9 @@
 export default {
-  '**/src/**/*.{ts,tsx}': [
+  '**/Frontend/src/**/*.{ts,tsx}': [
     'npm --prefix Frontend run lint',
     'npm --prefix Frontend run format'
   ],
-  'backend/**/*.{ts,tsx}': [
+  '**/Backend/src/**/*.{ts,tsx}': [
     'npm --prefix Backend run lint',
     'npm --prefix Backend run format'
   ],
