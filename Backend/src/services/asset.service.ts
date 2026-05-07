@@ -35,7 +35,12 @@ class AssetManagement {
       };
     }
 
-    const assets = await AssetModel.find(filter)
+    const assets = await AssetModel.find(filter, {
+      metadata: 0,
+      localPath: 0,
+      version: 0,
+      ownerID: 0,
+    })
       .sort({ updatedAt: -1 })
       .limit(limitNum)
       .skip((pageNum - 1) * limitNum);

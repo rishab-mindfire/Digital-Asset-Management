@@ -1,5 +1,4 @@
 // this handleAssetTask will recive channel name and message as { assetId, filePath, fileType } and create thumbnails for images using helper function generateThumbnail :
-
 // work :  1)update document db data, 2)generateThumbnail, 3) save thumbnail
 
 import { Channel, ConsumeMessage } from 'amqplib';

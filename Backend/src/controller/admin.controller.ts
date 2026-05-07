@@ -74,7 +74,7 @@ class AdminClass {
       const asset = await adminServices.finalizeMerge(
         uploadId,
         { title, department, collectionId, expiryDate },
-        { userID: userDetails.userID, userEmail: userDetails.userEmail },
+        { userID: userDetails.userID, userRole: userDetails.userRole },
       );
 
       return res.status(201).json({

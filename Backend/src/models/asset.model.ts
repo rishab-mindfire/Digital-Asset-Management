@@ -14,11 +14,16 @@ const assetSchema = new Schema<IAsset>(
     previewPath: { type: String },
     status: {
       type: String,
-      enum: ['pending', 'processing', 'approved', 'expired', 'archived'],
+      enum: ['pending', 'processing', 'uploaded', 'archived'],
+      default: 'pending',
+    },
+    approval: {
+      type: String,
+      enum: ['pending', 'approved'],
       default: 'pending',
     },
     ownerID: { type: String, required: true },
-    ownerEmail: { type: String, required: true },
+    owner: { type: String, required: true },
     department: { type: String },
     metadata: {
       size: { type: Number },
@@ -27,9 +32,6 @@ const assetSchema = new Schema<IAsset>(
       tags: [{ type: String }],
       hash: { type: String },
     },
-    usageRights: { type: String },
-    expiryDate: { type: Date },
-    version: { type: Number, default: 1 },
   },
   { timestamps: true },
 );

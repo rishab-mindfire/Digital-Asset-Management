@@ -4,7 +4,7 @@ import { CollectionModel } from '../models/collection.model.js';
 import { publishToQueue } from '../helper/producer.js';
 import fs from 'fs/promises';
 import path from 'path';
-import { AuthUser, ChunkUploadBody, FinalizeMergeBody } from '../types/index.js';
+import { ChunkUploadBody, FinalizeMergeBody } from '../types/index.js';
 import {
   getFileSesionDetails,
   mergeFinalChunks,
@@ -84,7 +84,11 @@ class AdminServices {
   }
 
   // merge chunk
-  async finalizeMerge(uploadId: string, validatedBody: FinalizeMergeBody, user: AuthUser) {
+  async finalizeMerge(
+    uploadId: string,
+    validatedBody: FinalizeMergeBody,
+    user: { userID: string; userRole: string },
+  ) {
     // Get metadata
     const metadata = await getFileSesionDetails(uploadId);
     const extension = path.extname(metadata.originalFilename).toLowerCase();
@@ -106,7 +110,7 @@ class AdminServices {
         fileType: isVideo ? 'video' : 'image',
         localPath: finalPath,
         ownerID: user.userID,
-        ownerEmail: user.userEmail,
+        owner: user.userRole,
         department: validatedBody.department,
         status: 'pending',
         metadata: {
