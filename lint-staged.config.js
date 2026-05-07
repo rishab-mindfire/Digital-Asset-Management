@@ -1,10 +1,10 @@
 export default {
   'frontend/**/*.{ts,tsx}': [
-    'npm --prefix frontend run lint',
-    'npm --prefix frontend run format'
+    'npm --prefix Frontend run lint',
+    'npm --prefix Frontend run format'
   ],
   'backend/**/*.{ts,tsx}': [
-    'npm --prefix backend run lint',
-    'npm --prefix backend run format'
+    'npm --prefix Backend run lint',
+    'npm --prefix Backend run format'
   ],
 };

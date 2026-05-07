@@ -29,7 +29,7 @@ export default defineConfig([
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
       'no-unused-vars': 'off',
-      'no-console': 'warn',
+      'no-console': 'error',
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'max-depth': ['error', 3],
