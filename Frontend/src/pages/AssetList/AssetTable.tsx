@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom';
 import styles from './AssetTable.module.css';
 import Modal from '../../components/modal/Modal';
-import { useRef, useState, type ChangeEvent, type DragEvent, type FormEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+  type FormEvent,
+} from 'react';
 import useChunkedUpload from '../../hooks/useChunkedUpload';
 
 const AssetTable = () => {
@@ -34,11 +41,13 @@ const AssetTable = () => {
 
   // file (asset chunk) upload
   const [isModelOpen, setIsModelOpen] = useState(false);
+  const [message, setMessage] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const { uploadMultipalFiles, isUploading, progressMap, error } = useChunkedUpload();
+  const { uploadMultipalFiles, isUploading, progressMap, setProgressMap, error } =
+    useChunkedUpload();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -61,7 +70,7 @@ const AssetTable = () => {
 
     try {
       await uploadMultipalFiles(selectedFiles);
-      alert('All files uploaded successfully!');
+      // alert('All files uploaded successfully!');
       setSelectedFiles([]);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -69,6 +78,26 @@ const AssetTable = () => {
       }
     }
   };
+
+  const onModelClose = () => {
+    setIsModelOpen(false);
+  };
+
+  const onModelOpen = () => {
+    setIsModelOpen(true);
+    if (!isUploading) {
+      setProgressMap({});
+      setMessage('');
+    }
+  };
+
+  useEffect(() => {
+    if (isUploading) {
+      setMessage('file uploading...');
+    } else if (!isUploading && !error && Object.keys(progressMap).length !== 0) {
+      setMessage('file uploaded !');
+    }
+  }, [error, isUploading]);
 
   return (
     <section className="mainContainer">
@@ -84,11 +113,9 @@ const AssetTable = () => {
             <button className={styles.btn}>Filter</button>
             <input type="text" placeholder="Search assets..." className={styles.searchInput} />
           </div>
-          <button
-            className={`${styles.btn} ${styles.btnPrimary}`}
-            onClick={() => setIsModelOpen(true)}
-          >
-            + Upload
+          <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={onModelOpen}>
+            <div> + Upload</div>{' '}
+            {isUploading && <div className={`spinner ${styles.mySpiner}`}></div>}
           </button>
         </div>
 
@@ -129,12 +156,9 @@ const AssetTable = () => {
       </div>
 
       {/* upload files Modal */}
-      <Modal
-        isOpen={isModelOpen}
-        onClose={() => !isUploading && setIsModelOpen(false)}
-        title="Upload Asset"
-      >
+      <Modal isOpen={isModelOpen} onClose={onModelClose} title="Upload Asset">
         <form onSubmit={handleSubmit} className={styles.form}>
+          {message && <p className="successMessage">{message}</p>}
           <div
             className={styles.dropZone}
             onDragOver={(e) => e.preventDefault()}
@@ -184,7 +208,7 @@ const AssetTable = () => {
             >
               {isUploading
                 ? 'Uploading Files...'
-                : `Upload ${selectedFiles.length} File${selectedFiles.length > 1 ? 's' : ''}`}
+                : `Upload ${selectedFiles.length > 1 ? selectedFiles.length : ''} File${selectedFiles.length > 1 ? 's' : ''}`}
             </button>
           </div>
         </form>

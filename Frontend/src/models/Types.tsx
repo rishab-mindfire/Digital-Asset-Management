@@ -81,3 +81,12 @@ export interface MergePayload {
   filename: string;
   totalChunks: number;
 }
+
+export interface UploadResponse {
+  message: string;
+  data?: unknown;
+}
+
+export interface ApiErrorResponse {
+  message: string;
+}

@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { api } from '../services/apiInterceptor';
-import type { MergePayload, UploadOptions } from '../models/Types';
-
-interface UploadResponse {
-  message: string;
-  data?: unknown;
-}
-
-interface ApiErrorResponse {
-  message: string;
-}
+import type {
+  ApiErrorResponse,
+  MergePayload,
+  UploadOptions,
+  UploadResponse,
+} from '../models/Types';
 
 const useChunkedUpload = (options: UploadOptions = {}) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -69,17 +65,16 @@ const useChunkedUpload = (options: UploadOptions = {}) => {
 
     try {
       const uploadPromises = files.map((file) => uploadSingleFile(file));
-
       const results = await Promise.all(uploadPromises);
 
       setIsUploading(false);
-
       return results;
     } catch (err) {
+      let errMsg = '';
       const error = err as AxiosError<ApiErrorResponse>;
-
-      const errMsg = error.response?.data?.message || 'Upload failed';
-
+      if (error.response && error.response.status === 404) {
+        errMsg = 'not authorized person !';
+      }
       setError(errMsg);
       setIsUploading(false);
 
@@ -92,6 +87,7 @@ const useChunkedUpload = (options: UploadOptions = {}) => {
     isUploading,
     progressMap,
     error,
+    setProgressMap,
   };
 };
 
