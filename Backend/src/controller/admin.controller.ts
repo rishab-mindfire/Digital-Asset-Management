@@ -3,6 +3,19 @@ import { getUserDetails } from '../services/authRole.service.js';
 import { adminServices } from '../services/admin.service.js';
 
 class AdminClass {
+  // dashboard route
+  dashboard = async (req: Request, res: Response) => {
+    try {
+      const stats = await adminServices.getDashboardStats();
+      return res.status(200).json({ summary: stats });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res
+          .status(500)
+          .json({ message: 'Error loading dashboard', error: error.message || error });
+      }
+    }
+  };
   // upload file
   uploadChunk = async (req: Request, res: Response) => {
     try {
@@ -11,13 +24,13 @@ class AdminClass {
 
       if (!file) {
         return res.status(400).json({
-          message: 'No file detected. key is "file" and type is "File".',
+          message: 'No file detected.',
         });
       }
 
       if (!chunkIndex || !uploadId || !totalChunks) {
         return res.status(400).json({
-          message: 'Missing metadata fields in form-data.',
+          message: 'Missing metadata fields',
         });
       }
 
