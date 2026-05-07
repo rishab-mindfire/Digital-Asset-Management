@@ -63,7 +63,10 @@
   color: var(--primary-color);
   margin: 0;
 }
-
+.successMessage{
+  color: green;
+  text-align: center;
+}
 
 @media (min-width: 768px) {
   .title {

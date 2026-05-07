@@ -9,9 +9,9 @@ import { generateThumbnail } from '../../helper/imageThumbnail.js';
 // Centralized path for thumbnails
 const THUMBNAIL_DIR = path.resolve('storage/thumbnails');
 const SUPPORTED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.tiff'];
-/**
- * Handle a single asset processing task from the queue
- */
+
+// Handle a single asset processing task from the queue
+
 export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Promise<void> {
   const payload: MediaTaskPayload = JSON.parse(msg.content.toString());
   const { assetId, filePath, fileType } = payload;

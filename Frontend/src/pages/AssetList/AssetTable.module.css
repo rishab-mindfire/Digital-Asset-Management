@@ -57,6 +57,14 @@
   background: var(--logo-color);
   color: white;
   border-color: var(--logo-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.mySpiner{
+ width: 20px !important;
+  height: 20px !important;
 }
 
 /* Table Wrapper */
@@ -112,7 +120,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.5rem;
   padding: 1rem;
 }
 
@@ -177,6 +185,7 @@
   height: 8px;
   background-color: #eee;
   border-radius: 4px;
+  margin-top: 5px;
 }
 
 .progressFill {
