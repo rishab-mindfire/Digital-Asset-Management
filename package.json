@@ -1,7 +1,7 @@
 {
   "name": "y",
   "version": "1.0.0",
-  "description": "Asset management system",
+  "description": "Asset management system root",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
