@@ -26,7 +26,7 @@ export default defineConfig([
     },
 
     rules: {
-      'prettier/prettier': 'error',
+     'prettier/prettier': ['error', { endOfLine: 'lf' }],
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
       'no-unused-vars': 'off',
