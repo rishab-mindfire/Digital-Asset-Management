@@ -34,7 +34,7 @@ The goal is to build a centralized platform that manages digital assets end-to-e
 
 ---
 
-## **4. Non-Functional Requirements**
+## **4. Non-Functional **
 
 - **Scalability**
 
@@ -97,9 +97,6 @@ The goal is to build a centralized platform that manages digital assets end-to-e
 
     Decouples user actions from background processing
 
-- **Cache Layer**
-
-    Speeds up frequent reads for asset listings and metadata
 
 
 ---
@@ -175,7 +172,7 @@ User-facing APIs must **never block** on these operations.
 +--------------------------------------------------+
 | Filter | Search | Upload                         |
 +--------------------------------------------------+
-| Name | Type | Status | Owner | Last Updated      |
+| Name | Type | Approval | Owner | Uploaded at      |
 |--------------------------------------------------|
 | Img1 | Img  | Approved | Mkt | 2 days ago       |
 | Vid1 | Video| Pending  | PR  | Today            |
@@ -231,11 +228,3 @@ User-facing APIs must **never block** on these operations.
 
 ---
 
-## **9. What This Assignment Is Testing**
-
-- Ability to design systems beyond basic CRUD
-- Understanding of asynchronous and event-driven workflows
-- Separation of real-time user actions from heavy computation
-- Handling scale, volume, and operational complexity
-- Translating messy real-world problems into structured systems
-- Thinking in terms of lifecycle, observability, and resilience
