@@ -10,7 +10,7 @@ import { generateThumbnail } from '../../helper/imageThumbnail.js';
 
 // path for thumbnails
 const THUMBNAIL_DIR = path.resolve(process.env.RABBITMQ_THUMBNAILPATH || 'storage/thumbnails');
-const SUPPORTED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.tiff'];
+const SUPPORTED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.tiff'];
 
 // Handle a single asset processing task from the queue
 export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Promise<void> {

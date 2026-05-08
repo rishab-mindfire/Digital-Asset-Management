@@ -1,4 +1,4 @@
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 //-------------------------------------------------------------------------------------
 // User Registration
@@ -54,7 +54,7 @@ export interface IAsset extends Document {
   versionHistory: [
     {
       versionNumber: number;
-      fileId: string; // ID of the file in storage disk
+      fileId: string;
       createdAt: Date;
     },
   ];

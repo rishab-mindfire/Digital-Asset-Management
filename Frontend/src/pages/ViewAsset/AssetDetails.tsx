@@ -1,55 +1,69 @@
-import { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { api } from '../../services/apiInterceptor';
 import styles from './AssetDetails.module.css';
-import { Link } from 'react-router-dom';
+import { VideoPlayer } from './MediaComponents/VideoPlayer';
+import { ImagePreview } from './MediaComponents/ImagePreview';
+import { PdfViewer } from './MediaComponents/PdfViewer';
+import type { metaDataType } from '../../models/Types';
 
 const AssetDetails = () => {
-  const [activeTab, setActiveTab] = useState('Versions');
-  const versions = [
-    { id: 1, version: 'v3.0', date: '2026-04-28', user: 'user name' },
-    {
-      id: 2,
-      version: 'v2.0',
-      date: '2026-04-20',
-      user: 'Manager 1',
-    },
-    { id: 3, version: 'v1.0', date: '2026-04-15', user: 'user name 1' },
-  ];
+  const { id } = useParams<{ id: string }>();
+  const [metaData, setMetaData] = useState<metaDataType>();
+  const [category, setCategory] = useState<'image' | 'video' | 'pdf' | 'other'>('other');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'Versions':
-        return (
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Version</th>
-                  <th>Date</th>
-                  <th>User</th>
-                </tr>
-              </thead>
-              <tbody>
-                {versions.map((v) => (
-                  <tr key={v.id}>
-                    <td>
-                      <span className={styles.versionTag}>{v.version}</span>
-                    </td>
-                    <td>{v.date}</td>
-                    <td>{v.user}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        );
-      case 'Activity':
-        return <div className={styles.tabPlaceholder}>Activity Log coming soon...</div>;
-      case 'Usage History':
-        return <div className={styles.tabPlaceholder}>Usage tracking details...</div>;
-      default:
-        return null;
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`admin/assetsDetails/${id}`);
+
+        // Handle if response.data is a string ("jpg") or an object
+        const rawData = response.data;
+        const data: string = rawData?.metadata?.extension;
+        const extension = data.toLowerCase();
+
+        // Store the raw data for metadata
+        setMetaData(rawData);
+
+        if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension)) {
+          setCategory('image');
+        } else if (['mp4', 'mov', 'webm'].includes(extension)) {
+          setCategory('video');
+        } else if (extension === 'pdf') {
+          setCategory('pdf');
+        } else {
+          setCategory('other');
+        }
+      } catch (err: unknown) {
+        const error = err as { response?: { data?: { message?: string } } };
+        setError(error.response?.data?.message || 'Failed to load details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchDetails();
     }
-  };
+  }, [id]);
+
+  if (loading) {
+    return (
+      <section className="mainContainer">
+        <p>Loading asset...</p>
+      </section>
+    );
+  }
+  if (error) {
+    return (
+      <section className="mainContainer">
+        <p className={styles.error}>{error}</p>
+      </section>
+    );
+  }
 
   return (
     <section className="mainContainer">
@@ -59,18 +73,29 @@ const AssetDetails = () => {
           Go to assets
         </Link>
       </header>
+
       <div className={styles.container}>
         <header className={styles.header}>
           <div className={styles.headerContent}>
-            <h1>Asset: marketing_hero_v2.jpg</h1>
-            <button className={styles.downloadBtn}>Download</button>
+            <h1>Asset: {metaData?.fileType}</h1>
+            {/* link for download */}
+            <a className={styles.downloadBtn}>Download</a>
           </div>
         </header>
 
         <main className={styles.mainContent}>
           <section className={styles.previewArea}>
-            <div className={styles.imagePlaceholder}>
-              <span>Preview</span>
+            <div className={styles.previewContainer}>
+              {category === 'video' && (
+                <VideoPlayer assetId={id!} ext={metaData?.metadata.extension || ''} />
+              )}
+              {category === 'image' && <ImagePreview assetId={id!} />}
+              {category === 'pdf' && <PdfViewer assetId={id!} />}
+              {category === 'other' && (
+                <div className={styles.imagePlaceholder}>
+                  <span>No Preview Available (.{metaData?.metadata.extension})</span>
+                </div>
+              )}
             </div>
           </section>
 
@@ -78,8 +103,8 @@ const AssetDetails = () => {
             <h3>Metadata</h3>
             <div className={styles.metaGrid}>
               <div className={styles.metaItem}>
-                <label>Owner</label>
-                <p>User name</p>
+                <label>File Type</label>
+                <p>{metaData?.metadata.extension?.toUpperCase()}</p>
               </div>
               <div className={styles.metaItem}>
                 <label>Status</label>
@@ -87,23 +112,16 @@ const AssetDetails = () => {
                   <span className={styles.statusBadge}>Uploaded</span>
                 </p>
               </div>
+              {/* If data is an object, show owner */}
+              {
+                <div className={styles.metaItem}>
+                  <label>Owner</label>
+                  <p>{metaData?.owner || 'System'}</p>
+                </div>
+              }
             </div>
           </aside>
         </main>
-
-        <footer className={styles.footerTabs}>
-          {['Versions', 'Activity', 'Usage History'].map((tab) => (
-            <button
-              key={tab}
-              className={`${styles.tab} ${activeTab === tab ? styles.active : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </footer>
-
-        <section className={styles.detailsContent}>{renderTabContent()}</section>
       </div>
     </section>
   );

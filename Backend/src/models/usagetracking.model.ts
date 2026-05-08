@@ -22,9 +22,6 @@ const usageTrackingSchema = new Schema<IUsageTracking>(
       enum: ['view', 'download', 'share', 'update', 'delete'],
       required: true,
     },
-    metadata: {
-      type: Schema.Types.Mixed,
-    },
   },
   { timestamps: true },
 );

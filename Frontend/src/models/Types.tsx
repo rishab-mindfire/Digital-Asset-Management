@@ -118,3 +118,17 @@ export interface AssetApiResponse {
   page: number;
   totalPages: number;
 }
+
+//meta data
+export type metaDataType = {
+  metadata: {
+    tags: string[];
+    extension: string;
+    size: number;
+  };
+  _id: string;
+  approval: string;
+  fileType: string;
+  owner: string;
+  title: string;
+};

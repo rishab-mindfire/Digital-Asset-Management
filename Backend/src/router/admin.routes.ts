@@ -12,7 +12,7 @@ export const adminRouter = Router();
 adminRouter.get('/assets', assetAdmin.getAllAssets);
 adminRouter.get('/assets/:id', assetAdmin.getAssetById);
 adminRouter.delete('/assets/:id', assetAdmin.deleteAssetById);
-adminRouter.get('/assets/:id/stream', assetAdmin.streamVideo);
+adminRouter.get('/assetsDetails/:id', assetAdmin.metaDataDetalis);
 
 // Dashboard and upload files
 adminRouter.get('/dashboard/stats', adminCtr.dashboard);

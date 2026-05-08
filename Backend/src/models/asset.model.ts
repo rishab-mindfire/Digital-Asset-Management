@@ -32,6 +32,7 @@ const assetSchema = new Schema<IAsset>(
       tags: [{ type: String }],
       hash: { type: String },
     },
+    downloadCount: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

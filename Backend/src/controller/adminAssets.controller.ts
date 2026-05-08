@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import { getUserDetails } from '../services/authRole.service.js';
-import { AssetModel } from '../models/asset.model.js';
-import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import { assetService } from '../services/asset.service.js';
-import { createReadStream } from 'fs';
+import { streamAsset } from '../helper/stream.helper.js';
 
 class AssetAdmin {
   // Assets
@@ -22,35 +20,91 @@ class AssetAdmin {
 
   getAssetById = async (req: Request, res: Response) => {
     try {
-      if (!req.userEmail) {
-        return res.status(401).json({ message: 'Invalid token' });
+      const { id } = req.params as { id: string };
+      const { userEmail } = req;
+
+      // chaeck for user email
+      if (!userEmail) {
+        return res.status(401).json({ message: 'Unauthorized: No user email provided' });
       }
-      const userDetails = await getUserDetails(req.userEmail);
-      if (!userDetails) {
-        return res.status(404).json({ message: 'User details not found' });
+      if (!id) {
+        return res.status(400).json({ message: 'Asset ID is required' });
       }
 
-      const assetData = await assetService.getAssetFullDetail(req.params.id as string, {
+      // Check if you actually need to fetch userDetails
+      const userDetails = await getUserDetails(userEmail);
+      if (!userDetails) {
+        return res.status(404).json({ message: 'User profile not found' });
+      }
+
+      // Fetch Asset Data
+      const assetData = await assetService.getAssetFullDetail(id, {
         userID: userDetails.userID,
         userEmail: userDetails.userEmail,
       });
 
+      if (!assetData || !assetData.asset) {
+        return res.status(404).json({ message: 'Asset not found' });
+      }
+
+      // Streaming Logic
+      // Validate localPath exists before passing to streamAsset to prevent 500 errors
+      const filePath = assetData.asset.localPath;
+      const isStreamRequested = req.headers.range || req.query.stream === 'true';
+
+      if (isStreamRequested) {
+        if (!filePath) {
+          return res
+            .status(422)
+            .json({ message: 'Asset exists but is not available for streaming' });
+        }
+        // Ensure streamAsset handles the response internally
+        return streamAsset(res, filePath, req.headers.range as string);
+      }
+
+      // Standard JSON Response
+      return res.status(200).json(assetData);
+    } catch (error: unknown) {
+      // Log the specific ID and User
+      console.error(`Error fetching asset ${req.params.id}:`, error);
+
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return res.status(500).json({
+        message: 'Internal server error while loading asset',
+        error: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+      });
+    }
+  };
+
+  metaDataDetalis = async (req: Request, res: Response) => {
+    try {
+      if (!req.userEmail) {
+        return res.status(401).json({ message: 'Invalid token' });
+      }
+      //grab user details
+      const userDetails = await getUserDetails(req.userEmail);
+      if (!userDetails) {
+        return res.status(404).json({ message: 'User details not found' });
+      }
+      // call asset details
+      const assetData = await assetService.getAssetMetadata(req.params.id as string);
       if (!assetData) {
         return res.status(404).json({ message: 'Asset not found' });
       }
+      // Return the JSON metadata
       return res.status(200).json(assetData);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        return res
-          .status(500)
-          .json({ message: 'Error loading asset details', error: error.message || error });
-      }
+      console.error(error);
+      return res.status(500).json({
+        message: 'Error loading asset',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
   deleteAssetById = async (req: Request, res: Response) => {
     try {
-      await assetService.removeAsset(req.params.id as string);
+      //await assetService.removeAsset(req.params.id as string);
       return res.status(200).json({ message: 'Asset moved to archive' });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -58,90 +112,6 @@ class AssetAdmin {
       }
     }
   };
-
-  // stream video
-  async streamVideo(req: Request, res: Response) {
-    try {
-      const userEmail = req.userEmail;
-      if (!userEmail) {
-        return res.status(401).json({ message: 'Invalid token' });
-      }
-
-      const userDetails = await getUserDetails(userEmail);
-      if (!userDetails) {
-        return res.status(404).json({ message: 'User details not found' });
-      }
-      //  Fetch the Asset from DB
-      const asset = await AssetModel.findById(req.params.id);
-      if (!asset || !asset.localPath) {
-        return res.sendStatus(404);
-      }
-
-      //  Log usage tracking safely
-      try {
-        await UsageTrackingModel.create({
-          assetId: asset._id,
-          performerId: userDetails.userID,
-          performerEmail: userDetails.userEmail,
-          action: 'view',
-          metadata: {
-            originalFilename: asset.title || 'N/A no file name ',
-          },
-        });
-      } catch (logError: unknown) {
-        // Log quietly so tracking errors don't interrupt the actual streaming
-        if (logError instanceof Error) {
-          throw new Error(logError.message);
-        }
-      }
-
-      // Retrieve video file data via the Service
-      const videoMetadata = await assetService.getFileMetadata(asset.localPath);
-      const videoSize = videoMetadata.size;
-      const range = req.headers.range;
-
-      //  A: Client does not send a Range header (Serve full file)
-      if (!range) {
-        const headers = {
-          'Content-Length': videoSize,
-          'Content-Type': 'video/mp4',
-        };
-        res.writeHead(200, headers);
-        return createReadStream(asset.localPath).pipe(res);
-      }
-
-      //  B: Client requests a specific Range chunk
-      const CHUNK_SIZE = 10 ** 6; // 1MB
-      const start = Number(range.replace(/\D/g, ''));
-      const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-
-      const contentLength = end - start + 1;
-      const headers = {
-        'Content-Range': `bytes ${start}-${end}/${videoSize}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': contentLength,
-        'Content-Type': 'video/mp4',
-      };
-
-      res.writeHead(206, headers);
-      const videoStream = createReadStream(asset.localPath, { start, end });
-      videoStream.pipe(res);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        if (error.name === 'CastError') {
-          return res.status(400).json({
-            message: 'Invalid ID format',
-            error: error.message,
-          });
-        }
-
-        return res.status(500).json({
-          message: 'Error streaming asset',
-          error: error.message || error,
-        });
-      }
-    }
-  }
 }
 
 export const assetAdmin = new AssetAdmin();

@@ -1,8 +1,7 @@
 import { FilterQuery } from 'mongoose';
 import { AssetModel } from '../models/asset.model.js';
-import { promises as fsPromises } from 'fs';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
-import { AuthUser, FileMetadata, IAsset } from '../types/index.js';
+import { AuthUser, IAsset } from '../types/index.js';
 
 class AssetManagement {
   // ALL asset lists
@@ -50,52 +49,39 @@ class AssetManagement {
     };
   }
 
-  // Single Asset details
+  // Asset details
   async getAssetFullDetail(assetId: string, user: AuthUser) {
     const asset = await AssetModel.findById(assetId);
-
     if (!asset) {
       return null;
     }
-    // Fire-and-forget tracking
-    void UsageTrackingModel.create({
-      assetId: asset._id,
+
+    // Log usage
+    UsageTrackingModel.create({
+      assetId,
       performerId: user.userID,
       performerEmail: user.userEmail,
       action: 'view',
-      platform: 'Web Dashboard',
-    });
+    }).catch((err) => console.error('Tracking Error:', err));
 
-    // Increment view count
-    void AssetModel.findByIdAndUpdate(assetId, {
-      $inc: {
-        viewCount: 1,
-      },
-    });
+    const history = await UsageTrackingModel.find({ assetId }).sort({ createdAt: -1 }).limit(10);
 
-    // Recent usage history
-    const history = await UsageTrackingModel.find({
-      assetId,
-    })
-      .sort({ createdAt: -1 })
-      .limit(10);
-
-    return {
-      asset,
-      usageHistory: history,
-      versions: asset.versionHistory || [],
-    };
+    return { asset, history };
   }
 
-  // Archive asset
-  async removeAsset(assetId: string) {
-    return await AssetModel.findByIdAndUpdate(assetId, { status: 'archived' }, { new: true });
-  }
-
-  // get file metadata details
-  async getFileMetadata(localPath: string): Promise<FileMetadata> {
-    const stat = await fsPromises.stat(localPath);
-    return { size: stat.size, localPath };
+  //get meteData
+  async getAssetMetadata(assetId: string) {
+    const asset = await AssetModel.findById(assetId, {
+      title: 1,
+      owner: 1,
+      fileType: 1,
+      approval: 1,
+      metadata: 1,
+    });
+    if (!asset) {
+      return null;
+    }
+    return asset;
   }
 }
 
