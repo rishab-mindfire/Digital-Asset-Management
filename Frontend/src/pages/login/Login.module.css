@@ -1,5 +1,3 @@
-
-
 .loginContainer {
   height: 100vh;
   display: flex;
@@ -7,7 +5,7 @@
   align-items: center;
   background: url('/your-image.png') center/cover no-repeat;
 }
-.backgroundImage{
+.backgroundImage {
   height: 100%;
   width: 100%;
   position: relative;
@@ -123,7 +121,7 @@ label {
 
 .button {
   padding: 10px;
-  background:  var(--primary-color);
+  background: var(--primary-color);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -131,13 +129,15 @@ label {
   font-weight: 600;
   cursor: pointer;
   margin-top: 5px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
 .button:hover:not(:disabled) {
-  background:  var(--secondary-color);
+  background: var(--secondary-color);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
@@ -152,7 +152,7 @@ label {
 }
 
 .success {
-  background-color:white;
+  background-color: white;
   color: green;
   padding: 10px;
   border-radius: 6px;
@@ -167,8 +167,8 @@ label {
   text-align: center;
   font-size: 0.9rem;
 }
-.accoount{
-color:  #012753;
+.accoount {
+  color: #012753;
 }
 
 .link {
@@ -236,9 +236,8 @@ color:  #012753;
   box-shadow: 0 0 0 3px rgba(214, 48, 49, 0.1);
 }
 
-
-@media screen and (max-width: 480px)  {
- .loginForm {
+@media screen and (max-width: 480px) {
+  .loginForm {
     padding: 20px;
   }
 }

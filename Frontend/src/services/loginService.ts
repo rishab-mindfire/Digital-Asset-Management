@@ -45,13 +45,13 @@ export const loginApi = async (
       const message =
         err.response?.data?.message || err.response?.data?.error || 'Server unavailable';
 
-      throw new Error(message);
+      throw new Error(message, { cause: err });
     }
 
     if (err instanceof Error) {
-      throw new Error(err.message);
+      throw new Error(err.message, { cause: err });
     }
 
-    throw new Error('Login failed');
+    throw new Error('Login failed', { cause: err });
   }
 };
