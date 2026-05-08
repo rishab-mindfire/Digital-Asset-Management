@@ -1,7 +1,8 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import prettier from 'eslint-plugin-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
+import eslintConfigPrettier from 'eslint-config-prettier';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
@@ -9,7 +10,13 @@ export default defineConfig([
 
   {
     files: ['**/*.{ts,tsx}'],
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommended,
+      eslintConfigPrettier,
+    ],
+
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
@@ -20,22 +27,26 @@ export default defineConfig([
     },
 
     plugins: {
-      prettier,
+      prettier: prettierPlugin,
     },
 
     rules: {
-      'prettier/prettier': 'error',
       'prettier/prettier': ['error', { endOfLine: 'lf' }],
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
       'no-unused-vars': 'off',
-      'no-console': 'warn',
+      'no-console': ['error', { allow: ['warn', 'error'] }],
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'max-depth': ['error', 3],
-      complexity: ['error', 20],
+      complexity: ['warn', 20],
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+        },
+      ],
     },
   },
 ]);
