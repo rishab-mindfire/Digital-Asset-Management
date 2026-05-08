@@ -18,7 +18,7 @@ The goal is to build a centralized platform that manages digital assets end-to-e
 
 ---
 
-## **3. Functional Requirements**
+## **3. Functional **
 
 - Upload and store digital assets (images, videos, documents, audio)
 - Organize assets into collections, folders, or logical groupings
