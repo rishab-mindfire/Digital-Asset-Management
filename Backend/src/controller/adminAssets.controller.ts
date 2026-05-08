@@ -1,28 +1,15 @@
 import { Request, Response } from 'express';
-import { adminServices } from '../services/admin.service.js';
 import { getUserDetails } from '../services/authRole.service.js';
 import { AssetModel } from '../models/asset.model.js';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
+import { assetService } from '../services/asset.service.js';
+import { createReadStream } from 'fs';
 
 class AssetAdmin {
-  //dashboard route
-  dashboard = async (res: Response) => {
-    try {
-      const stats = await adminServices.getDashboardStats();
-      return res.status(200).json({ summary: stats });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return res
-          .status(500)
-          .json({ message: 'Error loading dashboard', error: error.message || error });
-      }
-    }
-  };
-
-  //Assets
+  // Assets
   getAllAssets = async (req: Request, res: Response) => {
     try {
-      const result = await adminServices.assetListingService(req.query);
+      const result = await assetService.assetListingService(req.query);
       return res.status(200).json(result);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -43,7 +30,7 @@ class AssetAdmin {
         return res.status(404).json({ message: 'User details not found' });
       }
 
-      const assetData = await adminServices.getAssetFullDetail(req.params.id as string, {
+      const assetData = await assetService.getAssetFullDetail(req.params.id as string, {
         userID: userDetails.userID,
         userEmail: userDetails.userEmail,
       });
@@ -63,7 +50,7 @@ class AssetAdmin {
 
   deleteAssetById = async (req: Request, res: Response) => {
     try {
-      await adminServices.removeAsset(req.params.id as string);
+      await assetService.removeAsset(req.params.id as string);
       return res.status(200).json({ message: 'Asset moved to archive' });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -108,8 +95,8 @@ class AssetAdmin {
         }
       }
 
-      //Retrieve video file data via the Service
-      const videoMetadata = await adminServices.getFileMetadata(asset.localPath);
+      // Retrieve video file data via the Service
+      const videoMetadata = await assetService.getFileMetadata(asset.localPath);
       const videoSize = videoMetadata.size;
       const range = req.headers.range;
 
@@ -120,7 +107,7 @@ class AssetAdmin {
           'Content-Type': 'video/mp4',
         };
         res.writeHead(200, headers);
-        return adminServices.createFullStream(asset.localPath).pipe(res);
+        return createReadStream(asset.localPath).pipe(res);
       }
 
       //  B: Client requests a specific Range chunk
@@ -137,7 +124,7 @@ class AssetAdmin {
       };
 
       res.writeHead(206, headers);
-      const videoStream = adminServices.createStreamChunk(asset.localPath, start, end);
+      const videoStream = createReadStream(asset.localPath, { start, end });
       videoStream.pipe(res);
     } catch (error: unknown) {
       if (error instanceof Error) {

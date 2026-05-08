@@ -3,24 +3,19 @@ import amqp from 'amqplib';
 // Rabit mq url
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
 
-export const publishToQueue = async (
-  queueName: string,
-  data: Record<string, unknown>,
-): Promise<void> => {
+export const publishToQueue = async (data: Record<string, unknown>): Promise<void> => {
   let connection;
+  const queueName = process.env.RABBITMQ_QUEUE_NAME || 'asset_upload_processing';
   try {
-    // Establish connection
+    // Establish connection and Create a channel
     connection = await amqp.connect(RABBITMQ_URL);
-
-    // Create a channel
     const channel = await connection.createChannel();
 
     // Ensure the queue exists
-    // true ensures the queue survives RabbitMQ restarts
     await channel.assertQueue(queueName, { durable: true });
 
     //  Send the message
-    // true ensures the message survives RabbitMQ restarts
+    //  true ensures the message survives RabbitMQ restarts
     const messageBuffer = Buffer.from(JSON.stringify(data));
     channel.sendToQueue(queueName, messageBuffer, {
       persistent: true,

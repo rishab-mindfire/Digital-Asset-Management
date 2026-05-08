@@ -8,7 +8,5 @@ export async function initWorkers(): Promise<void> {
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-
-    throw new Error('Worker initialization failed');
   }
 }

@@ -17,7 +17,7 @@ const AssetTable = () => {
       id: 1,
       name: 'Img1.jpg',
       type: 'Img',
-      status: 'Approved',
+      Approval: 'Approve',
       owner: 'Public',
       updated: '2 days ago',
     },
@@ -25,7 +25,7 @@ const AssetTable = () => {
       id: 2,
       name: 'Vid1.mp4',
       type: 'Video',
-      status: 'Pending',
+      Approval: 'Pending',
       owner: 'Manager',
       updated: 'Today',
     },
@@ -33,7 +33,7 @@ const AssetTable = () => {
       id: 3,
       name: 'Logo_Final.svg',
       type: 'Vector',
-      status: 'Approved',
+      Approval: 'Approve',
       owner: 'Admin',
       updated: '5 hours ago',
     },
@@ -125,9 +125,9 @@ const AssetTable = () => {
               <tr>
                 <th>Name</th>
                 <th>Type</th>
-                <th>Status</th>
+                <th>Approval</th>
                 <th>Owner</th>
-                <th>Last Updated</th>
+                <th>Uploaded At</th>
                 <th>View</th>
               </tr>
             </thead>
@@ -138,9 +138,9 @@ const AssetTable = () => {
                   <td>{asset.type}</td>
                   <td>
                     <span
-                      className={`${styles.badge} ${asset.status === 'Approved' ? styles.approved : styles.pending}`}
+                      className={`${styles.badge} ${asset.Approval === 'Approve' ? styles.approved : styles.pending}`}
                     >
-                      {asset.status}
+                      {asset.Approval}
                     </span>
                   </td>
                   <td>{asset.owner}</td>

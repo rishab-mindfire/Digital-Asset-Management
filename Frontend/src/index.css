@@ -1,7 +1,7 @@
 :root {
   --primary-color: #033166b0;
   --secondary-color: #012753b4;
-  --logo-color:#4993D2;
+  --logo-color: #4993d2;
 }
 
 /* globle css */
@@ -11,7 +11,7 @@
   padding: 0;
   font-family: 'Roboto', sans-serif;
 }
-.center{
+.center {
   display: flex;
   justify-content: center;
 }
@@ -41,10 +41,14 @@
 
 /* --- Container --- */
 .mainContainer {
-  background-color:#e3e7eb21;
+  background-color: #e3e7eb21;
   padding: 20px;
   min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   box-sizing: border-box;
 }
 
@@ -63,7 +67,7 @@
   color: var(--primary-color);
   margin: 0;
 }
-.successMessage{
+.successMessage {
   color: green;
   text-align: center;
 }
@@ -77,8 +81,7 @@
   .title {
     font-size: 22px;
   }
-.routes{
-  display: none;
- }
-
+  .routes {
+    display: none;
+  }
 }

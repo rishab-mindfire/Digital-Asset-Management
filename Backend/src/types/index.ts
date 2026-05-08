@@ -33,10 +33,11 @@ export interface IAsset extends Document {
   localPath: string;
   previewPath?: string;
   // Lifecycle
-  status: 'pending' | 'processing' | 'uploaded' | 'expired' | 'archived';
+  status: 'pending' | 'processing' | 'uploaded' | 'archived';
+  approval: 'pending' | 'approved' | 'expired';
   // Ownership
   ownerID: string;
-  ownerEmail: string;
+  owner: string;
   department?: string;
   // Intelligence
   metadata: {
@@ -68,7 +69,7 @@ export interface ICollection extends Document {
   assets: Types.ObjectId[];
   createdBy: Types.ObjectId;
   ownerEmail: string;
-  isPublic: boolean; //  sharing across teams
+  isPublic: boolean;
 }
 
 //usese tracking

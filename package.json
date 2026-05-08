@@ -1,0 +1,37 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "Asset management system root",
+  "type": "module",
+  "scripts": {
+    "lint:frontend": "cd Frontend && npm run lint",
+    "format:frontend": "cd Frontend && npm run format",
+    "lint:backend": "cd Backend && npm run lint",
+    "format:backend": "cd Backend && npm run format",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "format": "npm run format:frontend && npm run format:backend",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+  "Frontend/**/*.{ts,tsx,js,jsx,json,css,scss,md}": [
+    "prettier --write",
+    "eslint --fix"
+  ],
+
+  "Backend/**/*.{ts,js,json,md}": [
+    "prettier --write",
+    "eslint --fix"
+  ]
+},
+
+
+
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
+  }
+}

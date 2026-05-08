@@ -74,11 +74,13 @@ const useChunkedUpload = (options: UploadOptions = {}) => {
       const error = err as AxiosError<ApiErrorResponse>;
       if (error.response && error.response.status === 404) {
         errMsg = 'not authorized person !';
+      } else if (error.response?.data?.message) {
+        errMsg = error.response.data.message;
       }
       setError(errMsg);
       setIsUploading(false);
 
-      throw new Error(errMsg);
+      throw new Error(errMsg, { cause: err });
     }
   };
 

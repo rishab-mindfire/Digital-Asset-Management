@@ -3,19 +3,8 @@ import { AssetModel } from '../models/asset.model.js';
 import { CollectionModel } from '../models/collection.model.js';
 import { publishToQueue } from '../helper/producer.js';
 import fs from 'fs/promises';
-import { createReadStream, promises as fsPromises } from 'fs';
-import type { ReadStream } from 'fs';
 import path from 'path';
-import { UsageTrackingModel } from '../models/usagetracking.model.js';
-import { FilterQuery } from 'mongoose';
-import {
-  AuthUser,
-  ChunkUploadBody,
-  FileMetadata,
-  FinalizeMergeBody,
-  IAsset,
-  isValidId,
-} from '../types/index.js';
+import { ChunkUploadBody, FinalizeMergeBody } from '../types/index.js';
 import {
   getFileSesionDetails,
   mergeFinalChunks,
@@ -26,119 +15,30 @@ import {
 class AdminServices {
   // dash board data for graph
   async getDashboardStats() {
-    const now = new Date();
-    const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    try {
+      const now = new Date();
+      const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-    const stats = await AssetModel.aggregate([
-      {
-        $facet: {
-          total: [{ $count: 'count' }],
-          expiringSoon: [
-            { $match: { expiryDate: { $gte: now, $lte: thirtyDaysFromNow } } },
-            { $count: 'count' },
-          ],
-          byStatus: [{ $group: { _id: '$status', count: { $sum: 1 } } }],
-          riskAssets: [{ $match: { isCompliant: false } }, { $count: 'count' }],
+      const stats = await AssetModel.aggregate([
+        {
+          $facet: {
+            total: [{ $count: 'count' }],
+            expiringSoon: [
+              { $match: { expiryDate: { $gte: now, $lte: thirtyDaysFromNow } } },
+              { $count: 'count' },
+            ],
+            byStatus: [{ $group: { _id: '$status', count: { $sum: 1 } } }],
+            riskAssets: [{ $match: { isCompliant: false } }, { $count: 'count' }],
+          },
         },
-      },
-    ]);
+      ]);
 
-    return stats[0] || { total: [], expiringSoon: [], byStatus: [], riskAssets: [] };
-  }
-
-  // ALL asset list
-  async assetListingService(query: {
-    search?: string;
-    type?: string;
-    status?: string;
-    page?: string;
-    limit?: string;
-  }) {
-    const { search, type, status, page = '1', limit = '10' } = query;
-
-    const pageNum = Number.parseInt(page, 10) || 1;
-    const limitNum = Number.parseInt(limit, 10) || 10;
-
-    const filter: FilterQuery<IAsset> = {};
-
-    if (type) {
-      filter.fileType = type;
+      return stats[0] || { total: [], expiringSoon: [], byStatus: [], riskAssets: [] };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw Error(error.message);
+      }
     }
-
-    if (status) {
-      filter.status = status;
-    }
-
-    if (search) {
-      filter.title = {
-        $regex: search,
-        $options: 'i',
-      };
-    }
-
-    const assets = await AssetModel.find(filter)
-      .sort({ updatedAt: -1 })
-      .limit(limitNum)
-      .skip((pageNum - 1) * limitNum);
-
-    const total = await AssetModel.countDocuments(filter);
-
-    return {
-      assets,
-      total,
-      page: pageNum,
-      totalPages: Math.ceil(total / limitNum),
-    };
-  }
-
-  // Single Asset View
-  async getAssetFullDetail(assetId: string, user: AuthUser) {
-    if (isValidId(assetId)) {
-      throw new Error('Invalid asset ID');
-    }
-
-    const asset = await AssetModel.findById(assetId);
-
-    if (!asset) {
-      return null;
-    }
-
-    // Fire-and-forget tracking
-    void UsageTrackingModel.create({
-      assetId: asset._id,
-      performerId: user.userID,
-      performerEmail: user.userEmail,
-      action: 'view',
-      platform: 'Web Dashboard',
-    });
-
-    // Increment view count
-    void AssetModel.findByIdAndUpdate(assetId, {
-      $inc: {
-        viewCount: 1,
-      },
-    });
-
-    // Recent usage history
-    const history = await UsageTrackingModel.find({
-      assetId,
-    })
-      .sort({ createdAt: -1 })
-      .limit(10);
-
-    return {
-      asset,
-      usageHistory: history,
-      versions: asset.versionHistory || [],
-    };
-  }
-
-  // Archive asset
-  async removeAsset(assetId: string) {
-    if (isValidId(assetId)) {
-      throw new Error(`INVALID_ID: ${assetId} is not a valid ObjectId`);
-    }
-    return await AssetModel.findByIdAndUpdate(assetId, { status: 'archived' }, { new: true });
   }
 
   // upload chunk Asset
@@ -183,17 +83,19 @@ class AdminServices {
     }
   }
 
-  async finalizeMerge(uploadId: string, validatedBody: FinalizeMergeBody, user: AuthUser) {
+  // merge chunk
+  async finalizeMerge(
+    uploadId: string,
+    validatedBody: FinalizeMergeBody,
+    user: { userID: string; userRole: string },
+  ) {
     // Get metadata
     const metadata = await getFileSesionDetails(uploadId);
-
     const extension = path.extname(metadata.originalFilename).toLowerCase();
-
     const finalFilename = `${uploadId}${extension}`;
 
     // Merge chunks
     const finalPath = await mergeFinalChunks(uploadId, metadata.totalChunks, finalFilename);
-
     const stats = await fs.stat(finalPath);
 
     // File type detection
@@ -208,7 +110,7 @@ class AdminServices {
         fileType: isVideo ? 'video' : 'image',
         localPath: finalPath,
         ownerID: user.userID,
-        ownerEmail: user.userEmail,
+        owner: user.userRole,
         department: validatedBody.department,
         status: 'pending',
         metadata: {
@@ -237,7 +139,7 @@ class AdminServices {
 
     // Queue worker
     try {
-      await publishToQueue('asset_upload_processing', {
+      await publishToQueue({
         assetId: asset._id.toString(),
         filePath: finalPath,
         fileType: asset.fileType,
@@ -248,27 +150,13 @@ class AdminServices {
       });
 
       if (error instanceof Error) {
-        throw new Error(`Merge successful but queue processing failed: ${error.message}`);
+        throw new Error(`Merged successful but queue processing failed: ${error.message}`);
       }
 
-      throw new Error('Merge successful but failed to trigger processing worker');
+      throw new Error('Merged successful but failed to trigger processing worker');
     }
 
     return asset;
-  }
-
-  // get file metadata details
-  async getFileMetadata(localPath: string): Promise<FileMetadata> {
-    const stat = await fsPromises.stat(localPath);
-    return { size: stat.size, localPath };
-  }
-
-  createStreamChunk(localPath: string, start: number, end: number): ReadStream {
-    return createReadStream(localPath, { start, end });
-  }
-
-  createFullStream(localPath: string): ReadStream {
-    return createReadStream(localPath);
   }
 }
 
