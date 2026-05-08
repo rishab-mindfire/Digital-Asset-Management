@@ -90,3 +90,31 @@ export interface UploadResponse {
 export interface ApiErrorResponse {
   message: string;
 }
+
+//assets
+export interface AssetListType {
+  _id: string;
+  title: string;
+  fileType: string;
+  approval: string;
+  owner: string;
+  updatedAt: string;
+  __v?: number;
+  status?: string;
+  createdAt?: string;
+}
+
+export interface FormattedAsset {
+  id: string;
+  name: string;
+  type: string;
+  Approval: string;
+  owner: string;
+  updated: string;
+}
+export interface AssetApiResponse {
+  assets: AssetListType[];
+  total: number;
+  page: number;
+  totalPages: number;
+}

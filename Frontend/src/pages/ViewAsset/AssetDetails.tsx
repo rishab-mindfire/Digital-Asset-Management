@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 
 const AssetDetails = () => {
   const [activeTab, setActiveTab] = useState('Versions');
-
   const versions = [
     { id: 1, version: 'v3.0', date: '2026-04-28', user: 'user name' },
     {

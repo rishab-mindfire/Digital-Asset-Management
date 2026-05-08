@@ -44,7 +44,6 @@ export const loginApi = async (
     if (axios.isAxiosError(err)) {
       const message =
         err.response?.data?.message || err.response?.data?.error || 'Server unavailable';
-
       throw new Error(message, { cause: err });
     }
 

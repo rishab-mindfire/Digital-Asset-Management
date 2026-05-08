@@ -10,25 +10,29 @@
     "format:backend": "cd Backend && npm run format",
     "lint": "npm run lint:frontend && npm run lint:backend",
     "format": "npm run format:frontend && npm run format:backend",
-    "prepare": "husky"
+    "prepare": "husky",
+    "rabbit-mq": "docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management",
+    "dev-front": "cd Frontend && npm run dev",
+    "dev-back": "cd Backend && npm run dev"
   },
   "lint-staged": {
-   "Frontend/**/*.{ts,tsx,js,jsx,json,css,scss,md}": [
-     "prettier --write",
-     "eslint --fix"
-   ],
-   "Backend/**/*.{ts,js,json,md}": [
-     "prettier --write",
-     "eslint --fix"
-   ]
+    "Frontend/**/*.{ts,tsx,js,jsx,json,css,scss,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "Backend/**/*.{ts,js,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
-
   "author": "Rishab",
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
+    "eslint": "^10.3.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0"
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3"
   }
 }

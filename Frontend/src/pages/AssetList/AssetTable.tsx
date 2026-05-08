@@ -10,39 +10,15 @@ import {
   type FormEvent,
 } from 'react';
 import useChunkedUpload from '../../hooks/useChunkedUpload';
+import usePagination from '../../hooks/usePagination';
+import Loader from '../../components/common/Loader';
 
 const AssetTable = () => {
-  const assets = [
-    {
-      id: 1,
-      name: 'Img1.jpg',
-      type: 'Img',
-      Approval: 'Approve',
-      owner: 'Public',
-      updated: '2 days ago',
-    },
-    {
-      id: 2,
-      name: 'Vid1.mp4',
-      type: 'Video',
-      Approval: 'Pending',
-      owner: 'Manager',
-      updated: 'Today',
-    },
-    {
-      id: 3,
-      name: 'Logo_Final.svg',
-      type: 'Vector',
-      Approval: 'Approve',
-      owner: 'Admin',
-      updated: '5 hours ago',
-    },
-  ];
-
   // file (asset chunk) upload
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [message, setMessage] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [searchValue, setSearchVallue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -96,9 +72,27 @@ const AssetTable = () => {
       setMessage('file uploading...');
     } else if (!isUploading && !error && Object.keys(progressMap).length !== 0) {
       setMessage('file uploaded !');
+      fetchAssets();
     }
   }, [error, isUploading]);
 
+  //get Asset list table
+  const { assets, pagination, loadingAssets, fetchAssets, setSearch, search } = usePagination();
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchVallue(e.target.value);
+  };
+  useEffect(() => {
+    const time = setTimeout(() => {
+      setSearch(searchValue);
+      fetchAssets();
+    }, 600);
+    return () => clearTimeout(time);
+  }, [searchValue, setSearch]);
+
+  useEffect(() => {
+    fetchAssets(1);
+  }, [search, fetchAssets]);
   return (
     <section className="mainContainer">
       <header className="header">
@@ -110,8 +104,14 @@ const AssetTable = () => {
       <div className={styles.tableContainer}>
         <div className={styles.toolbar}>
           <div className={styles.actionsLeft}>
-            <button className={styles.btn}>Filter</button>
-            <input type="text" placeholder="Search assets..." className={styles.searchInput} />
+            <span className={styles.btn}>Search</span>
+            <input
+              type="text"
+              placeholder="Search assets..."
+              className={styles.searchInput}
+              value={searchValue}
+              onChange={handleSearch}
+            />
           </div>
           <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={onModelOpen}>
             <div> + Upload</div>{' '}
@@ -119,40 +119,72 @@ const AssetTable = () => {
           </button>
         </div>
 
-        <div className={styles.tableResponsiveWrapper}>
-          <table className={styles.assetTable}>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Approval</th>
-                <th>Owner</th>
-                <th>Uploaded At</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assets.map((asset) => (
-                <tr key={asset.id}>
-                  <td style={{ fontWeight: 500 }}>{asset.name}</td>
-                  <td>{asset.type}</td>
-                  <td>
-                    <span
-                      className={`${styles.badge} ${asset.Approval === 'Approve' ? styles.approved : styles.pending}`}
-                    >
-                      {asset.Approval}
-                    </span>
-                  </td>
-                  <td>{asset.owner}</td>
-                  <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
-                  <td>
-                    <Link to={`${asset.id}`}>Open</Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {loadingAssets ? (
+          <Loader />
+        ) : (
+          <div className={styles.container}>
+            <div className={styles.tableResponsiveWrapper}>
+              <table className={styles.assetTable}>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Approval</th>
+                    <th>Owner</th>
+                    <th>Uploaded At</th>
+                    <th>View</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {assets.map((asset) => (
+                    <tr key={asset.id}>
+                      <td style={{ fontWeight: 500 }}>{asset.name}</td>
+                      <td>{asset.type}</td>
+                      <td>
+                        <span
+                          className={`${styles.badge} ${
+                            asset.Approval === 'Approved' ? styles.approved : styles.pending
+                          }`}
+                        >
+                          {asset.Approval}
+                        </span>
+                      </td>
+                      <td>{asset.owner}</td>
+                      <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
+                      <td>
+                        <Link to={`/asset/${asset.id}`}>Open</Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className={styles.pagination}>
+              <div className={styles.paginationInfo}>
+                Showing page <b>{pagination.page}</b> of <b>{pagination.totalPages}</b>
+              </div>
+              <div className={styles.paginationControls}>
+                <button
+                  className={styles.pageBtn}
+                  disabled={pagination.page === 1}
+                  onClick={() => fetchAssets(pagination.page - 1)}
+                >
+                  &larr; Previous
+                </button>
+
+                <button
+                  className={styles.pageBtn}
+                  disabled={pagination.page === pagination.totalPages}
+                  onClick={() => fetchAssets(pagination.page + 1)}
+                >
+                  Next &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* upload files Modal */}
