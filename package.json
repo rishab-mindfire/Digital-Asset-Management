@@ -1,7 +1,7 @@
 {
-  "name": "y",
+  "name": "asset-management-system-root",
   "version": "1.0.0",
-  "description": "Asset management system root",
+  "description": "A centralize plateform the manage digital assets",
   "type": "module",
   "scripts": {
     "lint:frontend": "cd Frontend && npm run lint",
@@ -13,20 +13,17 @@
     "prepare": "husky"
   },
   "lint-staged": {
-  "Frontend/**/*.{ts,tsx,js,jsx,json,css,scss,md}": [
-    "prettier --write",
-    "eslint --fix"
-  ],
+   "Frontend/**/*.{ts,tsx,js,jsx,json,css,scss,md}": [
+     "prettier --write",
+     "eslint --fix"
+   ],
+   "Backend/**/*.{ts,js,json,md}": [
+     "prettier --write",
+     "eslint --fix"
+   ]
+  },
 
-  "Backend/**/*.{ts,js,json,md}": [
-    "prettier --write",
-    "eslint --fix"
-  ]
-},
-
-
-
-  "author": "",
+  "author": "Rishab",
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^20.5.3",
