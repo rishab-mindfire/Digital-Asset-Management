@@ -4,8 +4,23 @@
   "description": "Asset management system root",
   "type": "module",
   "scripts": {
-  "test": "echo \"No tests yet\"",
+    "lint:frontend": "cd Frontend && npm run lint",
+    "format:frontend": "cd Frontend && npm run format",
+    "lint:backend": "cd Backend && npm run lint",
+    "format:backend": "cd Backend && npm run format",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "format": "npm run format:frontend && npm run format:backend",
     "prepare": "husky"
+  },
+  "lint-staged": {
+    "Frontend/**/*.{ts,tsx,js,jsx}": [
+      "cd Frontend && npx eslint --fix",
+      "cd Frontend && npx prettier --write"
+    ],
+    "Backend/**/*.{ts,js}": [
+      "cd Backend && npx eslint --fix",
+      "cd Backend && npx prettier --write"
+    ]
   },
   "author": "",
   "license": "ISC",
