@@ -2,10 +2,10 @@ import { FilterQuery } from 'mongoose';
 import { AssetModel } from '../models/asset.model.js';
 import { promises as fsPromises } from 'fs';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
-import { AuthUser, FileMetadata, IAsset, isValidId } from '../types/index.js';
+import { AuthUser, FileMetadata, IAsset } from '../types/index.js';
 
 class AssetManagement {
-  // ALL asset list
+  // ALL asset lists
   async assetListingService(query: {
     search?: string;
     type?: string;
@@ -19,34 +19,29 @@ class AssetManagement {
     const limitNum = Number.parseInt(limit, 10) || 10;
 
     const filter: FilterQuery<IAsset> = {};
-
     if (type) {
       filter.fileType = type;
     }
-
     if (status) {
       filter.status = status;
     }
-
     if (search) {
       filter.title = {
         $regex: search,
         $options: 'i',
       };
     }
-
     const assets = await AssetModel.find(filter, {
       metadata: 0,
-      localPath: 0,
-      version: 0,
       ownerID: 0,
+      uploadId: 0,
+      localPath: 0,
     })
       .sort({ updatedAt: -1 })
       .limit(limitNum)
       .skip((pageNum - 1) * limitNum);
 
     const total = await AssetModel.countDocuments(filter);
-
     return {
       assets,
       total,
@@ -55,18 +50,13 @@ class AssetManagement {
     };
   }
 
-  // Single Asset View
+  // Single Asset details
   async getAssetFullDetail(assetId: string, user: AuthUser) {
-    if (isValidId(assetId)) {
-      throw new Error('Invalid asset ID');
-    }
-
     const asset = await AssetModel.findById(assetId);
 
     if (!asset) {
       return null;
     }
-
     // Fire-and-forget tracking
     void UsageTrackingModel.create({
       assetId: asset._id,
@@ -99,9 +89,6 @@ class AssetManagement {
 
   // Archive asset
   async removeAsset(assetId: string) {
-    if (isValidId(assetId)) {
-      throw new Error(`INVALID_ID: ${assetId} is not a valid ObjectId`);
-    }
     return await AssetModel.findByIdAndUpdate(assetId, { status: 'archived' }, { new: true });
   }
 

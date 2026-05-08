@@ -57,7 +57,7 @@ function App() {
           />
 
           <Route
-            path="/asset/:assetId"
+            path="/asset/:id"
             element={
               <ProtectedRoute>
                 <Layout>
