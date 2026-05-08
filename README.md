@@ -34,7 +34,7 @@ The goal is to build a centralized platform that manages digital assets end-to-e
 
 ---
 
-## **4. Non-Functional **
+## **4. Non-Functional Coverage**
 
 - **Scalability**
 
@@ -67,7 +67,7 @@ The goal is to build a centralized platform that manages digital assets end-to-e
 
 ---
 
-## **5. Services to Be Developed (High-Level)**
+## **5. Services Developed (High-Level)**
 
 - **API / Client Access Service**
 
