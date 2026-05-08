@@ -13,15 +13,19 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "Frontend/**/*.{ts,tsx,js,jsx}": [
-      "cd Frontend && npx eslint --fix",
-      "cd Frontend && npx prettier --write"
-    ],
-    "Backend/**/*.{ts,js}": [
-      "cd Backend && npx eslint --fix",
-      "cd Backend && npx prettier --write"
-    ]
-  },
+  "Frontend/**/*.{ts,tsx,js,jsx,json,css,scss,md}": [
+    "prettier --write",
+    "eslint --fix"
+  ],
+
+  "Backend/**/*.{ts,js,json,md}": [
+    "prettier --write",
+    "eslint --fix"
+  ]
+},
+
+
+
   "author": "",
   "license": "ISC",
   "devDependencies": {

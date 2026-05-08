@@ -20,6 +20,7 @@ const RootRedirect = (): JSX.Element => {
 };
 
 function App() {
+  console.log('hello');
   return (
     <BrowserRouter>
       <Suspense
