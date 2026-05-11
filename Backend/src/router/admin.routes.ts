@@ -13,6 +13,7 @@ adminRouter.get('/assets', assetAdmin.getAllAssets);
 adminRouter.get('/assets/:id', assetAdmin.getAssetById);
 adminRouter.delete('/assets/:id', assetAdmin.deleteAssetById);
 adminRouter.get('/assetsDetails/:id', assetAdmin.metaDataDetalis);
+adminRouter.post('/markassets/:id', assetAdmin.markApprove);
 
 // Dashboard and upload files
 adminRouter.get('/dashboard/stats', adminCtr.dashboard);

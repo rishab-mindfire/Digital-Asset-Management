@@ -102,9 +102,35 @@ class AssetAdmin {
     }
   };
 
+  markApprove = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params as { id: string };
+      const { userEmail } = req;
+      // check for user email
+      if (!userEmail) {
+        return res.status(401).json({ message: 'Unauthorized: No user email provided' });
+      }
+      if (!id) {
+        return res.status(400).json({ message: 'Asset ID is required' });
+      }
+      const data = await assetService.markApprove(id);
+      return res.status(200).json(data);
+    } catch (error: unknown) {
+      // Log error
+      console.error(`Error fetching asset ${req.params.id}:`, error);
+      return res.status(500).json({
+        message: 'Internal server error while marking ',
+      });
+    }
+  };
+
   deleteAssetById = async (req: Request, res: Response) => {
     try {
-      //await assetService.removeAsset(req.params.id as string);
+      const { id } = req.params as { id: string };
+      if (!id) {
+        return res.status(400).json({ message: 'Asset ID is required' });
+      }
+      await assetService.deleteAsset(req.params.id as string);
       return res.status(200).json({ message: 'Asset moved to archive' });
     } catch (error: unknown) {
       if (error instanceof Error) {

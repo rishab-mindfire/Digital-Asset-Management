@@ -51,9 +51,11 @@ const AssetDashboard = () => {
     <div className="mainContainer">
       <header className="header">
         <h1 className="title">Asset Overview Dashboard</h1>
-        <Link className="routes" to="/asset">
-          Go to assets
-        </Link>
+        <span className="bread-scrumb">
+          <Link className="routes" to="/asset">
+            Asset Details
+          </Link>
+        </span>
       </header>
 
       {/* Stat Cards */}

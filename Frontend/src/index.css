@@ -72,6 +72,16 @@
   text-align: center;
 }
 
+.secondaryBtn {
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
 @media (min-width: 768px) {
   .title {
     font-size: 24px;
@@ -84,4 +94,41 @@
   .routes {
     display: none;
   }
+  .separator,
+  .bread-scrumb {
+    display: none;
+  }
+}
+/* The container */
+.bread-scrumb {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+/* Base link styling */
+.routes {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.routes:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Styling the separator */
+.separator {
+  margin: 0 10px;
+  color: #999;
+  user-select: none;
+}
+
+.bread-scrumb-bold {
+  color: #1a1a1a;
+  font-weight: 600;
 }

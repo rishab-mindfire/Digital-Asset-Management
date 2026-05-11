@@ -83,10 +83,8 @@
   margin-bottom: 10px;
   width: 100%;
 }
-
 label {
   font-size: 13px;
-  font-weight: 600;
   color: white;
   margin-bottom: 5px;
   margin-left: 2px;
@@ -239,5 +237,6 @@ label {
 @media screen and (max-width: 480px) {
   .loginForm {
     padding: 20px;
+    width: 90%;
   }
 }
