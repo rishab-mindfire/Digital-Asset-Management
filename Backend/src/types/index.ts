@@ -55,6 +55,9 @@ export interface IAsset extends Document {
   downloadCount: number;
   createdAt: Date;
   updatedAt: Date;
+  //asset expire
+  expiresAt: Date;
+  isExpired: { type: boolean; default: false };
 }
 
 //Collection Interface

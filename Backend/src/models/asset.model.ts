@@ -44,6 +44,8 @@ const assetSchema = new Schema<IAsset>(
       isDuplicate: { type: Boolean, default: false },
       originalAssetId: { type: Schema.Types.ObjectId, ref: 'Assets' },
     },
+    expiresAt: { type: Date, index: true },
+    isExpired: { type: Boolean, default: false },
     downloadCount: { type: Number, default: 0 },
   },
   { timestamps: true },

@@ -12,6 +12,7 @@ import {
   saveFileSesionDetails,
 } from '../helper/fileHandlers.js';
 import { getFileHash } from '../helper/duplicate.js';
+import { publishToExpirationQueue } from '../helper/expireAsset.js';
 
 class AdminServices {
   // dash board data for graph
@@ -154,8 +155,6 @@ class AdminServices {
       owner: user.userRole,
       department: validatedBody.department,
       status: isDuplicate ? 'uploaded' : 'pending',
-
-      // Inherit the existing thumbnail path if this is a duplicate
       ...(isDuplicate && { thumbnailPath: existingAsset.thumbnailPath }),
 
       metadata: {
@@ -165,7 +164,6 @@ class AdminServices {
         hash: currentFileHash,
         tags: [],
         dimensions: '',
-        // Only include the reference to the original asset if this is a duplicate
         ...(isDuplicate && { originalAssetId: existingAsset._id.toString() }),
       },
     };
@@ -203,6 +201,14 @@ class AdminServices {
           throw new Error(`Merge successful, but processing queue failed: ${error.message}`);
         }
         throw new Error('Merge successful, but failed to trigger background worker');
+      }
+      try {
+        // Schedule the expiration
+        await publishToExpirationQueue(assetData._id.toString());
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw new Error('publish to expiration not works');
+        }
       }
     }
 

@@ -59,7 +59,7 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
       const thumbnailName = `thumb-${Date.now()}-${assetId}.webp`;
       const absolutePath = path.join(THUMBNAIL_DIR, thumbnailName);
 
-      // Store relative/posix path for DB
+      // Store relative path for DB
       thumbnailPath = path.posix.join(
         process.env.RABBITMQ_THUMBNAILPATH || 'storage/thumbnails',
         thumbnailName,
