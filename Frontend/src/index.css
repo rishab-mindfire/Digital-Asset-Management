@@ -86,7 +86,6 @@
   .title {
     font-size: 24px;
   }
-
 }
 @media (max-width: 768px) {
   .title {
@@ -95,7 +94,8 @@
   .routes {
     display: none;
   }
-  .separator, .bread-scrumb {
+  .separator,
+  .bread-scrumb {
     display: none;
   }
 }

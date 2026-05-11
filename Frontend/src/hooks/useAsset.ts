@@ -4,7 +4,7 @@ import { api } from '../services/apiInterceptor';
 export type FileCategory = 'image' | 'video' | 'pdf' | 'png' | 'other';
 
 export const useAsset = (assetId: string | undefined) => {
-  const [data, setData] = useState<any | null>(null);
+  // const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<FileCategory>('other');
@@ -45,5 +45,5 @@ export const useAsset = (assetId: string | undefined) => {
     return assetId ? `/admin/assets/${assetId}?stream=true` : '';
   };
 
-  return { data, loading, error, category, getStreamUrl };
+  return { loading, error, category, getStreamUrl };
 };

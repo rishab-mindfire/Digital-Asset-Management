@@ -74,7 +74,7 @@
 .navLinks a:hover {
   color: #0984e3;
 }
-.myNavLink{
+.myNavLink {
   display: flex;
   flex-direction: column;
   gap: 18px;
