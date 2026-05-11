@@ -2,139 +2,124 @@ import { Request, Response } from 'express';
 import { getUserDetails } from '../services/authRole.service.js';
 import { assetService } from '../services/asset.service.js';
 import { streamAsset } from '../helper/stream.helper.js';
+import { AppError } from '../utils/globleError.js';
 
+/**
+ * Controller for managing individual assets and streaming services.
+ */
 class AssetAdmin {
-  // Assets list
+  // Retrieve paginated and filtered list of all assets
   getAllAssets = async (req: Request, res: Response) => {
     try {
       const result = await assetService.assetListingService(req.query);
       return res.status(200).json(result);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        return res
-          .status(500)
-          .json({ message: 'Error fetching assets', error: error.message || error });
-      }
+      this.handleControllerError(res, error, 'Error fetching assets');
     }
   };
-  //get by id
+
+  // Fetch full details of a specific asset with optional video streaming
   getAssetById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params as { id: string };
       const { userEmail } = req;
 
-      // chaeck for user email
       if (!userEmail) {
-        return res.status(401).json({ message: 'Unauthorized: No user email provided' });
+        throw new AppError('Unauthorized: No user email provided', 401);
       }
       if (!id) {
-        return res.status(400).json({ message: 'Asset ID is required' });
+        throw new AppError('Asset ID is required', 400);
       }
 
-      // Check if you actually need to fetch userDetails
       const userDetails = await getUserDetails(userEmail);
       if (!userDetails) {
-        return res.status(404).json({ message: 'User profile not found' });
+        throw new AppError('User profile not found', 404);
       }
 
-      // Fetch Asset Data
       const assetData = await assetService.getAssetFullDetail(id, {
         userID: userDetails.userID,
         userEmail: userDetails.userEmail,
       });
 
-      if (!assetData || !assetData.asset) {
-        return res.status(404).json({ message: 'Asset not found' });
+      if (!assetData?.asset) {
+        throw new AppError('Asset not found', 404);
       }
 
-      // Streaming Logic
-      // Validate localPath exists before passing to streamAsset to prevent 500 errors
       const filePath = assetData.asset.localPath;
       const isStreamRequested = req.headers.range || req.query.stream === 'true';
 
+      // Handle byte-range requests for video streaming
       if (isStreamRequested) {
         if (!filePath) {
-          return res
-            .status(422)
-            .json({ message: 'Asset exists but is not available for streaming' });
+          throw new AppError('Asset exists but is not available for streaming', 422);
         }
-        // Ensure streamAsset handles the response internally
         return streamAsset(res, filePath, req.headers.range as string);
       }
 
-      // Standard JSON Response
       return res.status(200).json(assetData);
     } catch (error: unknown) {
-      // Log the specific ID and User
-      console.error(`Error fetching asset ${req.params.id}:`, error);
-
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      return res.status(500).json({
-        message: 'Internal server error while loading asset',
-        error: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
-      });
+      this.handleControllerError(res, error, 'Internal server error while loading asset');
     }
   };
-  //get meta data
+
+  // Extract technical metadata from a specific asset
   metaDataDetalis = async (req: Request, res: Response) => {
     try {
       if (!req.userEmail) {
-        return res.status(401).json({ message: 'Invalid token' });
+        throw new AppError('Invalid token', 401);
       }
-      //grab user details
+
       const userDetails = await getUserDetails(req.userEmail);
       if (!userDetails) {
-        return res.status(404).json({ message: 'User details not found' });
+        throw new AppError('User details not found', 404);
       }
-      // call asset details
+
       const assetData = await assetService.getAssetMetadata(req.params.id as string);
       if (!assetData) {
-        return res.status(404).json({ message: 'Asset not found' });
+        throw new AppError('Asset not found', 404);
       }
-      // Return the JSON metadata
+
       return res.status(200).json(assetData);
     } catch (error: unknown) {
-      console.error(error);
-      return res.status(500).json({
-        message: 'Error loading asset',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      });
+      this.handleControllerError(res, error, 'Error loading asset metadata');
     }
   };
-  //mark approve
+
+  // Approve a pending asset for production use
   markApprove = async (req: Request, res: Response) => {
     try {
       const { id } = req.params as { id: string };
-      const { userEmail } = req;
-      // check for user email
-      if (!userEmail) {
-        return res.status(401).json({ message: 'Unauthorized: No user email provided' });
+      if (!req.userEmail) {
+        throw new AppError('Unauthorized', 401);
       }
       if (!id) {
-        return res.status(400).json({ message: 'Asset ID is required' });
+        throw new AppError('Asset ID is required', 400);
       }
+
       const data = await assetService.markApprove(id);
       return res.status(200).json(data);
     } catch (error: unknown) {
-      // Log error
-      console.error(`Error fetching asset ${req.params.id}:`, error);
-      return res.status(500).json({
-        message: 'Internal server error while marking ',
-      });
+      this.handleControllerError(res, error, 'Internal server error while marking approval');
     }
   };
-  //delete assets
+
+  // Remove asset from system and trigger cleanup
   deleteAssetController = async (req: Request, res: Response) => {
     try {
       const { id } = req.params as { id: string };
       const result = await assetService.deleteAssetService(id);
       return res.status(200).json(result);
-    } catch (error: any) {
-      return res.status(error.message === 'Asset not found' ? 404 : 500).json({
-        error: error.message,
-      });
+    } catch (error: unknown) {
+      this.handleControllerError(res, error, 'Asset deletion failed');
     }
   };
+
+  // Centralized response helper for consistent error delivery
+  private handleControllerError(res: Response, error: unknown, defaultMessage: string) {
+    const statusCode = error instanceof AppError ? error.statusCode : 500;
+    const message = error instanceof Error ? error.message : defaultMessage;
+    return res.status(statusCode).json({ message, error: message });
+  }
 }
 
 export const assetAdmin = new AssetAdmin();

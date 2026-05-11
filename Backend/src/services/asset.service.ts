@@ -2,7 +2,7 @@ import { FilterQuery } from 'mongoose';
 import { AssetModel } from '../models/asset.model.js';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import { AuthUser, IAsset } from '../types/index.js';
-import { removePhysicalFiles, transferOriginalStatus } from '../helper/removeFiles.js';
+import { removePhysicalFiles, transferOriginalStatus } from '../helper/removeFiles.helper.js';
 
 class AssetManagement {
   // ALL asset lists

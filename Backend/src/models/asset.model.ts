@@ -5,6 +5,7 @@ const assetSchema = new Schema<IAsset>(
   {
     uploadId: { type: String, required: true, unique: true, index: true },
     title: { type: String, required: true },
+    //file types
     fileType: {
       type: String,
       enum: ['image', 'video', 'document', 'audio'],
@@ -17,11 +18,11 @@ const assetSchema = new Schema<IAsset>(
       required: true,
       index: true,
     },
-    // Top-level duplicate tracking for easier querying
+    //duplicate tracking
     isDuplicate: { type: Boolean, default: false },
     originalAssetId: { type: Schema.Types.ObjectId, ref: 'Assets' },
     thumbnailPath: { type: String },
-
+    //file upload status
     status: {
       type: String,
       enum: ['pending', 'processing', 'uploaded', 'archived'],
@@ -35,6 +36,7 @@ const assetSchema = new Schema<IAsset>(
     ownerID: { type: String, required: true },
     owner: { type: String, required: true },
     department: { type: String },
+    //file mata data and duplicate
     metadata: {
       size: { type: Number },
       extension: { type: String },

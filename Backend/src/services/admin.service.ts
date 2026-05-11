@@ -10,8 +10,8 @@ import {
   mergeFinalChunks,
   saveChunkBasedChunkId,
   saveFileSesionDetails,
-} from '../helper/fileHandlers.js';
-import { getFileHash } from '../helper/duplicate.js';
+} from '../helper/fileHandlers.helper.js';
+import { getFileHash } from '../helper/duplicateAsset.helper.js';
 import { publishToExpirationQueue } from '../queuePublicer/expireAsset.js';
 
 class AdminServices {
@@ -172,8 +172,9 @@ class AdminServices {
 
     // Perform the physical merge and generate a hash for duplicate checking
     const finalPath = await mergeFinalChunks(uploadId, sessionMetadata.totalChunks, finalFilename);
-    const currentFileHash = await getFileHash(finalPath);
-    const stats = await fs.stat(finalPath);
+
+    const currentFileHash = await getFileHash(finalPath as string);
+    const stats = await fs.stat(finalPath as string);
 
     //Check for an existing processed duplicate in the database
     const existingAsset = await AssetModel.findOne({
