@@ -30,7 +30,7 @@ export const VideoPlayer = ({ assetId, ext }: { assetId: string; ext: string }) 
   }
 
   return (
-    <video controls style={{ width: '100%' }}>
+    <video controls style={{ height: '50vh' }}>
       <source src={src} type={`video/${ext === 'mov' ? 'mp4' : ext}`} />
     </video>
   );

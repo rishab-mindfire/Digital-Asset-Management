@@ -29,37 +29,35 @@ export interface IAsset extends Document {
   uploadId: string;
   title: string;
   fileType: 'image' | 'video' | 'document' | 'audio';
-  // Storage
   localPath: string;
   previewPath?: string;
-  // Lifecycle
+  fileHash: string;
+  thumbnailPath?: string;
+  // Duplicate Logic
+  isDuplicate: boolean;
+  originalAssetId?: string;
+
   status: 'pending' | 'processing' | 'uploaded' | 'archived';
-  approval: 'pending' | 'approved' | 'expired';
-  // Ownership
+  approval: 'pending' | 'approved';
   ownerID: string;
   owner: string;
   department?: string;
-  // Intelligence
+
   metadata: {
     size: number;
     extension: string;
     dimensions?: string;
     tags: string[];
     hash: string;
+    isDuplicate: boolean;
+    originalAssetId?: string;
   };
-  usageRights: string;
-  expiryDate?: Date;
-  version: number;
-  checksum: string; // To detect duplicates
-  versionHistory: [
-    {
-      versionNumber: number;
-      fileId: string;
-      createdAt: Date;
-    },
-  ];
-  isCompliant: { type: boolean; default: true };
-  downloadCount: { type: number; default: 0 };
+  downloadCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  //asset expire
+  expiresAt: Date;
+  isExpired: { type: boolean; default: false };
 }
 
 //Collection Interface

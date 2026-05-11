@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../../services/apiInterceptor';
-import style from '../AssetDetails.module.css';
 
 export const ImagePreview = ({ assetId }: { assetId: string }) => {
   const [src, setSrc] = useState('');
@@ -16,9 +15,5 @@ export const ImagePreview = ({ assetId }: { assetId: string }) => {
     };
   }, [assetId]);
 
-  return src ? (
-    <img src={src} alt="Preview" className={style.previewImage} />
-  ) : (
-    <p>Loading Image...</p>
-  );
+  return src ? <img src={src} alt="Preview" style={{ height: '50vh' }} /> : <p>Loading Image...</p>;
 };

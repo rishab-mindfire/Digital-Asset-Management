@@ -2,8 +2,26 @@ import Highcharts from 'highcharts';
 import { HighchartsReact } from 'highcharts-react-official';
 import styles from './Dashboard.module.css';
 import { Link } from 'react-router-dom';
+import { api } from '../../services/apiInterceptor';
+import { useEffect, useState } from 'react';
+import type { chartType, StateData } from '../../models/Types';
 
 const AssetDashboard = () => {
+  const [chartData, setChartData] = useState<chartType>({ date: [], count: [] });
+  const [cardData, setCardData] = useState<StateData>({
+    counts: {
+      totalAssets: 18,
+      expiringSoon: 0,
+      duplicates: 8,
+      expired: 0,
+      failed: 0,
+      riskLevel: '',
+    },
+    percentages: {
+      duplicatePercentage: '44.44%',
+      failedPercentage: '0.00%',
+    },
+  });
   const chartOptions = {
     chart: {
       type: 'area',
@@ -15,15 +33,7 @@ const AssetDashboard = () => {
     },
     title: { text: '' },
     xAxis: {
-      categories: [
-        '12-11-26',
-        '13-11-26',
-        '14-11-26',
-        '15-11-26',
-        '16-11-26',
-        '17-11-26',
-        '18-11-26',
-      ],
+      categories: chartData.date,
     },
     yAxis: { title: { text: 'Uploads' }, gridLineColor: '#f3f4f6' },
     plotOptions: {
@@ -40,12 +50,41 @@ const AssetDashboard = () => {
     series: [
       {
         name: 'Files Uploaded',
-        data: [30, 45, 32, 70, 55, 40, 80],
+        data: chartData.count,
         color: '#4993D2',
       },
     ],
     credits: { enabled: false },
   };
+
+  //get chart data
+  const getChartData = async () => {
+    try {
+      const response = await api.get('admin/dashboardChart/stats');
+      if (response.status === 200) {
+        setChartData(response.data);
+      }
+    } catch (error) {
+      console.log('getting error in data Dashboard');
+    }
+  };
+  //get chart data
+  const getCardData = async () => {
+    try {
+      const response = await api.get('admin/dashboardData/stats');
+      if (response.status === 200) {
+        console.log(response.data);
+        setCardData(response.data);
+      }
+    } catch (error) {
+      console.log('getting error in data Dashboard');
+    }
+  };
+
+  useEffect(() => {
+    getChartData();
+    getCardData();
+  }, []);
 
   return (
     <div className="mainContainer">
@@ -62,19 +101,19 @@ const AssetDashboard = () => {
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <p className={styles.statLabel}>Total Assets</p>
-          <p className={styles.statValue}>12,450</p>
+          <p className={styles.statValue}>{cardData.counts.totalAssets}</p>
         </div>
         <div className={`${styles.statCard} ${styles.expiring}`}>
           <p className={styles.statLabel}>Expiring Soon</p>
-          <p className={styles.statValue}>42</p>
+          <p className={styles.statValue}>{cardData.counts.expiringSoon}</p>
         </div>
         <div className={`${styles.statCard} ${styles.duplicates}`}>
           <p className={styles.statLabel}>Duplicates</p>
-          <p className={styles.statValue}>128</p>
+          <p className={styles.statValue}>{cardData.counts.duplicates}</p>
         </div>
         <div className={`${styles.statCard} ${styles.risk}`}>
           <p className={styles.statLabel}>Risk</p>
-          <p className={styles.statValue}>Low</p>
+          <p className={styles.statValue}>{cardData.counts.riskLevel}</p>
         </div>
       </div>
 
@@ -87,17 +126,17 @@ const AssetDashboard = () => {
 
         {/* Processing Status */}
         <div className={styles.cardPanel}>
-          <h3 className={styles.panelTitle}>Processing Status</h3>
+          <h3 className={styles.panelTitle}>Asset Status</h3>
 
           <div className={styles.statusItem}>
             <div className={styles.statusLabelRow}>
-              <span>Pending</span>
-              <span style={{ color: '#4993D2' }}>85%</span>
+              <span>Duplicated Assets</span>
+              <span style={{ color: '#4993D2' }}>{cardData.percentages.duplicatePercentage}</span>
             </div>
             <div className={styles.progressBg}>
               <div
                 className={`${styles.progressFill} ${styles.pendingFill}`}
-                style={{ width: '85%' }}
+                style={{ width: `${cardData.percentages.duplicatePercentage}` }}
               ></div>
             </div>
           </div>
@@ -105,12 +144,12 @@ const AssetDashboard = () => {
           <div className={styles.statusItem}>
             <div className={styles.statusLabelRow}>
               <span>Failed</span>
-              <span style={{ color: '#ef4444' }}>12%</span>
+              <span style={{ color: '#ef4444' }}>{cardData.percentages.failedPercentage}</span>
             </div>
             <div className={styles.progressBg}>
               <div
                 className={`${styles.progressFill} ${styles.failedFill}`}
-                style={{ width: '12%' }}
+                style={{ width: `${cardData.percentages.failedPercentage}` }}
               ></div>
             </div>
           </div>

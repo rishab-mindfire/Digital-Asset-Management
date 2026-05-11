@@ -12,6 +12,16 @@ const assetSchema = new Schema<IAsset>(
     },
     localPath: { type: String, required: false },
     previewPath: { type: String },
+    fileHash: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    // Top-level duplicate tracking for easier querying
+    isDuplicate: { type: Boolean, default: false },
+    originalAssetId: { type: Schema.Types.ObjectId, ref: 'Assets' },
+    thumbnailPath: { type: String },
+
     status: {
       type: String,
       enum: ['pending', 'processing', 'uploaded', 'archived'],
@@ -31,7 +41,11 @@ const assetSchema = new Schema<IAsset>(
       dimensions: { type: String },
       tags: [{ type: String }],
       hash: { type: String },
+      isDuplicate: { type: Boolean, default: false },
+      originalAssetId: { type: Schema.Types.ObjectId, ref: 'Assets' },
     },
+    expiresAt: { type: Date, index: true },
+    isExpired: { type: Boolean, default: false },
     downloadCount: { type: Number, default: 0 },
   },
   { timestamps: true },

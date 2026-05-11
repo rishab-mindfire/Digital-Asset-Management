@@ -4,10 +4,10 @@ import { adminServices } from '../services/admin.service.js';
 
 class AdminClass {
   // dashboard route
-  dashboard = async (req: Request, res: Response) => {
+  dashboardChart = async (req: Request, res: Response) => {
     try {
-      const stats = await adminServices.getDashboardStats();
-      return res.status(200).json({ summary: stats });
+      const stats = await adminServices.getChartDataService();
+      return res.status(200).json(stats);
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res
@@ -16,6 +16,21 @@ class AdminClass {
       }
     }
   };
+
+  // dashboard card data
+  dashboardCardData = async (req: Request, res: Response) => {
+    try {
+      const stats = await adminServices.getDashboardStats();
+      return res.status(200).json(stats);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res
+          .status(500)
+          .json({ message: 'Error loading dashboard', error: error.message || error });
+      }
+    }
+  };
+
   // upload file
   uploadChunk = async (req: Request, res: Response) => {
     try {
