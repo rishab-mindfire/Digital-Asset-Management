@@ -5,7 +5,6 @@ export async function initWorkers(): Promise<void> {
   try {
     // Start the asset processor worker
     await startAssetWorker();
-
     //Start expiration asset worker
     await consumeExpiration();
   } catch (error) {

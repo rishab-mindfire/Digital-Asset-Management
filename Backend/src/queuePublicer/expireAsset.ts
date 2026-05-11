@@ -11,8 +11,7 @@ export const publishToExpirationQueue = async (assetId: string): Promise<void> =
   const EXPIRY_EXCHANGE = 'asset_expiry_exchange';
   const FINAL_EXPIRY_QUEUE = 'asset_deletion_worker';
 
-  const dataOfExpire = Number(EXPIRY_DAYS) * 24 * 60 * 60 * 1000;
-
+  const expiredIn = Number(EXPIRY_DAYS) * 24 * 60 * 60 * 1000;
   try {
     connection = await amqp.connect(RABBITMQ_URL);
     const channel = await connection.createChannel();
@@ -27,9 +26,8 @@ export const publishToExpirationQueue = async (assetId: string): Promise<void> =
     await channel.assertQueue(DELAY_QUEUE, {
       durable: true,
       arguments: {
-        'x-dead-letter-exchange': EXPIRY_EXCHANGE,
-        'x-dead-letter-routing-key': 'expire_key',
-        'x-message-ttl': dataOfExpire, // Global TTL for this queue
+        'x-message-ttl': expiredIn,
+        'x-queue-mode': 'lazy',
       },
     });
 

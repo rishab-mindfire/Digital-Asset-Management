@@ -21,10 +21,10 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
   try {
     await fs.access(filePath);
 
-    // 1. Generate hash
+    // Generate hash
     const currentFileHash = await getFileHash(filePath);
 
-    // 2. Check for an existing processed duplicate
+    // Check for an existing processed duplicate
     const duplicate = await AssetModel.findOne({
       fileHash: currentFileHash,
       status: 'uploaded',
@@ -47,7 +47,7 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
       return channel.ack(msg);
     }
 
-    // 3. Update status to processing and save the hash
+    // Update status to processing and save the hash
     await AssetModel.findByIdAndUpdate(assetId, {
       status: 'processing',
       fileHash: currentFileHash,
@@ -74,7 +74,7 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
       await generateThumbnail(filePath, absolutePath);
     }
 
-    // 4. Final Save
+    // Final Save
     const stats = await fs.stat(filePath);
     await AssetModel.findByIdAndUpdate(assetId, {
       status: 'uploaded',

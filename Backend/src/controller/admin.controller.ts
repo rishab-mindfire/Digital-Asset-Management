@@ -17,6 +17,20 @@ class AdminClass {
     }
   };
 
+  // dashboard card data
+  dashboardCardData = async (req: Request, res: Response) => {
+    try {
+      const stats = await adminServices.getDashboardStats();
+      return res.status(200).json(stats);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res
+          .status(500)
+          .json({ message: 'Error loading dashboard', error: error.message || error });
+      }
+    }
+  };
+
   // upload file
   uploadChunk = async (req: Request, res: Response) => {
     try {

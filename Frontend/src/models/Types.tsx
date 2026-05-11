@@ -132,3 +132,24 @@ export type metaDataType = {
   owner: string;
   title: string;
 };
+
+// dash board
+interface data {
+  totalAssets: number;
+  expiringSoon: number;
+  duplicates: number;
+  expired: number;
+  failed: number;
+  riskLevel: string;
+}
+export interface StateData {
+  counts: data;
+  percentages: {
+    duplicatePercentage: string;
+    failedPercentage: string;
+  };
+}
+export interface chartType {
+  date: [];
+  count: [];
+}

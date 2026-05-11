@@ -1,7 +1,7 @@
 // All admin services flow to serve admin request from there route
 import { AssetModel } from '../models/asset.model.js';
 import { CollectionModel } from '../models/collection.model.js';
-import { publishToQueue } from '../helper/producer.js';
+import { publishToQueueForThumbnail } from '../queuePublicer/pushAsset.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { ChunkUploadBody, FinalizeMergeBody, IAsset } from '../types/index.js';
@@ -12,34 +12,75 @@ import {
   saveFileSesionDetails,
 } from '../helper/fileHandlers.js';
 import { getFileHash } from '../helper/duplicate.js';
-import { publishToExpirationQueue } from '../helper/expireAsset.js';
+import { publishToExpirationQueue } from '../queuePublicer/expireAsset.js';
 
 class AdminServices {
   // dash board data for graph
   async getDashboardStats() {
     try {
       const now = new Date();
-      const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const expiryDays = parseInt(process.env.EXPIRY_DAYS || '1', 10);
+      const expiringSoonThreshold = new Date(now.getTime() + expiryDays * 24 * 60 * 60 * 1000);
 
-      const stats = await AssetModel.aggregate([
-        {
-          $facet: {
-            total: [{ $count: 'count' }],
-            expiringSoon: [
-              { $match: { expiryDate: { $gte: now, $lte: thirtyDaysFromNow } } },
-              { $count: 'count' },
-            ],
-            byStatus: [{ $group: { _id: '$status', count: { $sum: 1 } } }],
-            riskAssets: [{ $match: { isCompliant: false } }, { $count: 'count' }],
-          },
-        },
+      // Run all counts in parallel
+      const [totalAssets, expiringSoon, duplicates, expired, failed] = await Promise.all([
+        AssetModel.countDocuments({}),
+
+        AssetModel.countDocuments({
+          isExpired: false,
+          expiryDate: { $gte: now, $lte: expiringSoonThreshold },
+        }),
+
+        AssetModel.countDocuments({
+          'metadata.isDuplicate': true,
+        }),
+
+        AssetModel.countDocuments({
+          isExpired: true,
+        }),
+
+        // Failed: Any asset where status is NOT 'uploaded'
+        AssetModel.countDocuments({
+          status: { $ne: 'uploaded' },
+        }),
       ]);
 
-      return stats[0] || { total: [], expiringSoon: [], byStatus: [], riskAssets: [] };
+      // Calculate Percentages (handling division by zero)
+      const duplicatePercentage =
+        totalAssets > 0 ? ((duplicates / totalAssets) * 100).toFixed(2) : '0.00';
+
+      const failedPercentage = totalAssets > 0 ? ((failed / totalAssets) * 100).toFixed(2) : '0.00';
+      function calculateRiskLevel(failedPct: number, expiredCount: number): string {
+        // Example Thresholds
+        if (failedPct > 15 || expiredCount > 50) {
+          return 'High';
+        }
+        if (failedPct > 5 || expiredCount > 10) {
+          return 'Medium';
+        }
+        return 'Low';
+      }
+      const riskLevel = calculateRiskLevel(parseFloat(failedPercentage), expired);
+
+      return {
+        counts: {
+          totalAssets,
+          expiringSoon,
+          duplicates,
+          expired,
+          failed,
+          riskLevel,
+        },
+        percentages: {
+          duplicatePercentage: `${duplicatePercentage}%`,
+          failedPercentage: `${failedPercentage}%`,
+        },
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
-        throw Error(error.message);
+        throw new Error(`Dashboard Stats Error: ${error.message}`);
       }
+      throw new Error('An unknown error occurred');
     }
   }
   //get chart data
@@ -188,7 +229,7 @@ class AdminServices {
     // Queue Worker: ONLY publish if the file is unique
     if (!isDuplicate) {
       try {
-        await publishToQueue({
+        await publishToQueueForThumbnail({
           assetId: assetData._id.toString(),
           filePath: finalPath,
           fileType: assetData.fileType,

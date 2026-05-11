@@ -6,15 +6,15 @@ dotenv.config({ path: envFile });
 
 import app from './index.js';
 import connectDB from './config/connectDB.config.js';
-import { initWorkers } from './workers/index.js';
+import { initWorkers } from './consumers/index.js';
 
 const port = process.env.PORT || 4001;
 
 const startServer = async () => {
   try {
-    //connection DB
+    // connection DB
     await connectDB();
-    //worker conection (consumner) to MQ
+    // all workers conection (consumner) to MQ
     await initWorkers();
     app.listen(port, () => {});
   } catch (err) {

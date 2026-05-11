@@ -16,6 +16,7 @@ adminRouter.get('/assetsDetails/:id', assetAdmin.metaDataDetalis);
 adminRouter.post('/markassets/:id', assetAdmin.markApprove);
 
 // Dashboard and upload files
+adminRouter.get('/dashboardData/stats', adminCtr.dashboardCardData);
 adminRouter.get('/dashboardChart/stats', adminCtr.dashboardChart);
 adminRouter.post('/upload/chunk', upload.single('file'), adminCtr.uploadChunk);
 adminRouter.post('/upload/merge', adminCtr.mergeChunks);

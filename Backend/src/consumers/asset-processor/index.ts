@@ -1,4 +1,3 @@
-// create channel with worker to listen task from MQ
 import amqp from 'amqplib';
 import { handleAssetTask } from './handleAssetTask.js';
 import { RABBITMQ_CONFIG } from '../../config/rabbitmq.config.js';

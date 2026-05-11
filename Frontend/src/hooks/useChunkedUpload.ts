@@ -16,7 +16,7 @@ const useChunkedUpload = (options: UploadOptions = {}) => {
 
   const [error, setError] = useState<string | null>(null);
 
-  const CHUNK_SIZE = options.chunkSize || 5 * 1024 * 1024; // 5kb
+  const CHUNK_SIZE = options.chunkSize || 1 * 1024 * 1024; // 1-mb
 
   const uploadSingleFile = async (file: File): Promise<UploadResponse> => {
     const uploadId = `chunkID-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
