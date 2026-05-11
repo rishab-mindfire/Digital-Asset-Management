@@ -50,6 +50,25 @@ const AssetDetails = () => {
     }
   }, [id]);
 
+  const markApprove = async (id: string) => {
+    try {
+      const res = await api.post(`admin/markassets/${id}`);
+
+      // Check if the request was successful
+      if (res.status === 200 || res.status === 201) {
+        // Update local state so the UI reflects the change immediately
+        setMetaData((prev) => {
+          if (!prev) {
+            return prev;
+          }
+          return { ...prev, approval: 'approved' };
+        });
+      }
+    } catch (error: unknown) {
+      console.error('Approval failed:', error);
+    }
+  };
+
   if (loading) {
     return (
       <section className="mainContainer">
@@ -69,9 +88,17 @@ const AssetDetails = () => {
     <section className="mainContainer">
       <header className="header">
         <h1 className="title">Asset Details</h1>
-        <Link className="routes" to="/asset">
-          Go to assets
-        </Link>
+        <span className="bread-scrumb">
+          <Link className="routes" to="/dashboard">
+            Go to dashboard
+          </Link>
+          <span className="separator"> / </span>
+          <Link className="routes" to="/asset">
+            Asset list
+          </Link>
+          <span className="separator"> / </span>
+          <span className="bread-scrumb-bold">Asset Details</span>
+        </span>
       </header>
 
       <div className={styles.container}>
@@ -105,6 +132,7 @@ const AssetDetails = () => {
               <div className={styles.metaItem}>
                 <label>File Type</label>
                 <p>{metaData?.metadata.extension?.toUpperCase()}</p>
+                <button>delete</button>
               </div>
               <div className={styles.metaItem}>
                 <label>Status</label>
@@ -112,13 +140,22 @@ const AssetDetails = () => {
                   <span className={styles.statusBadge}>Uploaded</span>
                 </p>
               </div>
-              {/* If data is an object, show owner */}
-              {
-                <div className={styles.metaItem}>
-                  <label>Owner</label>
-                  <p>{metaData?.owner || 'System'}</p>
-                </div>
-              }
+
+              <div className={styles.metaItem}>
+                <label>Owner</label>
+                <p>{metaData?.owner || 'System'}</p>
+              </div>
+              {metaData?.owner === 'admin' && (
+                <span>
+                  <button
+                    className="secondaryBtn"
+                    disabled={metaData.approval !== 'pending'}
+                    onClick={() => markApprove(metaData._id)}
+                  >
+                    Mark approve
+                  </button>
+                </span>
+              )}
             </div>
           </aside>
         </main>

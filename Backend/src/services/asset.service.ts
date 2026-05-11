@@ -69,6 +69,11 @@ class AssetManagement {
     return { asset, history };
   }
 
+  //mark markApprove
+  async markApprove(assetId: string) {
+    return await AssetModel.findByIdAndUpdate(assetId, { approval: 'approved' });
+  }
+
   //get meteData
   async getAssetMetadata(assetId: string) {
     const asset = await AssetModel.findById(assetId, {
@@ -82,6 +87,11 @@ class AssetManagement {
       return null;
     }
     return asset;
+  }
+
+  //delete Asset
+  async deleteAsset(assetId: string) {
+    const asset = await AssetModel.findById(assetId);
   }
 }
 

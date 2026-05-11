@@ -18,7 +18,7 @@ const AssetTable = () => {
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [message, setMessage] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [searchValue, setSearchVallue] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -80,7 +80,7 @@ const AssetTable = () => {
   const { assets, pagination, loadingAssets, fetchAssets, setSearch, search } = usePagination();
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchVallue(e.target.value);
+    setSearchValue(e.target.value);
   };
   useEffect(() => {
     const time = setTimeout(() => {
@@ -97,9 +97,13 @@ const AssetTable = () => {
     <section className="mainContainer">
       <header className="header">
         <h1 className="title">Asset Overview</h1>
-        <Link className="routes" to="/dashboard">
-          Go to dashboard
-        </Link>
+        <span className="bread-scrumb">
+          <Link className="routes" to="/dashboard">
+            Go to dashboard
+          </Link>
+          <span className="separator"> / </span>
+          <span className="bread-scrumb-bold">Asset Details</span>
+        </span>
       </header>
       <div className={styles.tableContainer}>
         <div className={styles.toolbar}>
@@ -112,6 +116,15 @@ const AssetTable = () => {
               value={searchValue}
               onChange={handleSearch}
             />
+            {searchValue && (
+              <button
+                className={styles.clearButton}
+                onClick={() => setSearchValue('')}
+                type="button"
+              >
+                &times;
+              </button>
+            )}
           </div>
           <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={onModelOpen}>
             <div> + Upload</div>{' '}
@@ -122,68 +135,73 @@ const AssetTable = () => {
         {loadingAssets ? (
           <Loader />
         ) : (
-          <div className={styles.container}>
-            <div className={styles.tableResponsiveWrapper}>
-              <table className={styles.assetTable}>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Approval</th>
-                    <th>Owner</th>
-                    <th>Uploaded At</th>
-                    <th>View</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {assets.map((asset) => (
-                    <tr key={asset.id}>
-                      <td style={{ fontWeight: 500 }}>{asset.name}</td>
-                      <td>{asset.type}</td>
-                      <td>
-                        <span
-                          className={`${styles.badge} ${
-                            asset.Approval === 'Approved' ? styles.approved : styles.pending
-                          }`}
-                        >
-                          {asset.Approval}
-                        </span>
-                      </td>
-                      <td>{asset.owner}</td>
-                      <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
-                      <td>
-                        <Link to={`/asset/${asset.id}`}>Open</Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <>
+            {assets.length > 0 ? (
+              <div className={styles.container}>
+                <div className={styles.tableResponsiveWrapper}>
+                  <table className={styles.assetTable}>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Approval</th>
+                        <th>Owner</th>
+                        <th>Uploaded At</th>
+                        <th>View</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {assets.map((asset) => (
+                        <tr key={asset.id}>
+                          <td style={{ fontWeight: 500 }}>{asset.name}</td>
+                          <td>{asset.type}</td>
+                          <td>
+                            <span
+                              className={`${styles.badge} ${
+                                asset.Approval === 'Approved' ? styles.approved : styles.pending
+                              }`}
+                            >
+                              {asset.Approval}
+                            </span>
+                          </td>
+                          <td>{asset.owner}</td>
+                          <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
+                          <td>
+                            <Link to={`/asset/${asset.id}`}>Open</Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* Pagination Controls */}
+                <div className={styles.pagination}>
+                  <div className={styles.paginationInfo}>
+                    Showing page <b>{pagination.page}</b> of <b>{pagination.totalPages}</b>
+                  </div>
+                  <div className={styles.paginationControls}>
+                    <button
+                      className={styles.pageBtn}
+                      disabled={pagination.page === 1}
+                      onClick={() => fetchAssets(pagination.page - 1)}
+                    >
+                      &larr; Previous
+                    </button>
 
-            {/* Pagination Controls */}
-            <div className={styles.pagination}>
-              <div className={styles.paginationInfo}>
-                Showing page <b>{pagination.page}</b> of <b>{pagination.totalPages}</b>
+                    <button
+                      className={styles.pageBtn}
+                      disabled={pagination.page === pagination.totalPages}
+                      onClick={() => fetchAssets(pagination.page + 1)}
+                    >
+                      Next &rarr;
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className={styles.paginationControls}>
-                <button
-                  className={styles.pageBtn}
-                  disabled={pagination.page === 1}
-                  onClick={() => fetchAssets(pagination.page - 1)}
-                >
-                  &larr; Previous
-                </button>
-
-                <button
-                  className={styles.pageBtn}
-                  disabled={pagination.page === pagination.totalPages}
-                  onClick={() => fetchAssets(pagination.page + 1)}
-                >
-                  Next &rarr;
-                </button>
-              </div>
-            </div>
-          </div>
+            ) : (
+              <div className={styles.noResult}>no result found !</div>
+            )}
+          </>
         )}
       </div>
 

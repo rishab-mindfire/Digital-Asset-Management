@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Header.module.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import logoutImage from '../../assets/logout.png';
 import logo from '../../assets/logo.png';
@@ -59,6 +59,10 @@ const Header: React.FC = () => {
       >
         <ul className={styles.navLinks}>
           <li className={styles.mobileLogout}>
+            <span className={styles.myNavLink}>
+              <Link to="/dashboard">Dashboard</Link>
+              <Link to="/asset">Asset list</Link>
+            </span>
             <button className={styles.btnLogout} onClick={handleLogout}>
               <span>Logout</span> <img src={logoutImage} alt="logout" />
             </button>
@@ -66,7 +70,7 @@ const Header: React.FC = () => {
         </ul>
       </nav>
 
-      {/* Logout button for smalll screen */}
+      {/* for smalll screen */}
       <div className={styles.desktopActions}>
         <button className={styles.btnLogout} onClick={handleLogout}>
           <span>Logout</span>

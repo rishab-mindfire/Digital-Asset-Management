@@ -69,13 +69,28 @@
   font-weight: 500;
   transition: color 0.2s;
   padding-bottom: 3px;
-  border-bottom: 1px solid;
 }
 
 .navLinks a:hover {
   color: #0984e3;
 }
+.myNavLink{
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.myNavLink a {
+  text-decoration: none;
+  color: #636e72;
+  font-weight: 500;
+  transition: color 0.2s;
+  padding-bottom: 3px;
+}
 
+.myNavLink a:hover {
+  color: #0984e3;
+}
 /* --- Logout Buttons --- */
 .btnLogout {
   display: flex;
@@ -103,6 +118,7 @@
 .mobileLogout {
   margin-top: 1rem;
   display: block;
+  width: 100%;
 }
 
 .desktopActions {
