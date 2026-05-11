@@ -2,6 +2,7 @@ import { FilterQuery } from 'mongoose';
 import { AssetModel } from '../models/asset.model.js';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import { AuthUser, IAsset } from '../types/index.js';
+import { removePhysicalFiles, transferOriginalStatus } from '../helper/removeFiles.js';
 
 class AssetManagement {
   // ALL asset lists
@@ -89,10 +90,34 @@ class AssetManagement {
     return asset;
   }
 
-  //delete Asset
-  async deleteAsset(assetId: string) {
+  //delet assets
+  deleteAssetService = async (assetId: string) => {
     const asset = await AssetModel.findById(assetId);
-  }
+    if (!asset) {
+      throw new Error('Asset not found');
+    }
+
+    //  Database Cleanup (Collections)
+    await AssetModel.updateMany({ assets: assetId }, { $pull: { assets: assetId } });
+
+    // Reference Counting
+    const sharingCount = await AssetModel.countDocuments({
+      fileHash: asset.fileHash,
+      _id: { $ne: assetId },
+    });
+
+    //  Conditional Deletion Logic
+    if (sharingCount === 0) {
+      await removePhysicalFiles([asset.localPath, asset.thumbnailPath, asset.previewPath]);
+    } else if (!asset.isDuplicate) {
+      await transferOriginalStatus(asset.fileHash, assetId);
+    }
+
+    // Final DB Removal
+    await AssetModel.findByIdAndDelete(assetId);
+
+    return { success: true };
+  };
 }
 
 export const assetService = new AssetManagement();

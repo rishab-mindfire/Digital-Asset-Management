@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { api } from '../../services/apiInterceptor';
 import styles from './AssetDetails.module.css';
@@ -9,6 +9,7 @@ import type { metaDataType } from '../../models/Types';
 
 const AssetDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const navigation = useNavigate();
   const [metaData, setMetaData] = useState<metaDataType>();
   const [category, setCategory] = useState<'image' | 'video' | 'pdf' | 'other'>('other');
   const [loading, setLoading] = useState(true);
@@ -53,10 +54,9 @@ const AssetDetails = () => {
   const markApprove = async (id: string) => {
     try {
       const res = await api.post(`admin/markassets/${id}`);
-
       // Check if the request was successful
       if (res.status === 200 || res.status === 201) {
-        // Update local state so the UI reflects the change immediately
+        // Update local state to change immediately
         setMetaData((prev) => {
           if (!prev) {
             return prev;
@@ -67,6 +67,20 @@ const AssetDetails = () => {
     } catch (error: unknown) {
       console.error('Approval failed:', error);
     }
+  };
+
+  const deleteAsset = async (id: string) => {
+    try {
+      setLoading(true);
+      const res = await api.delete(`admin/assets/${id}`);
+      // Check if the request was successful
+      if (res.status === 200) {
+        navigation('/asset');
+      }
+    } catch (error: unknown) {
+      console.error('Approval failed:', error);
+    }
+    setLoading(false);
   };
 
   if (loading) {
@@ -132,7 +146,15 @@ const AssetDetails = () => {
               <div className={styles.metaItem}>
                 <label>File Type</label>
                 <p>{metaData?.metadata.extension?.toUpperCase()}</p>
-                <button>delete</button>
+                <button
+                  onClick={() => {
+                    if (metaData?._id) {
+                      deleteAsset(metaData._id);
+                    }
+                  }}
+                >
+                  delete
+                </button>
               </div>
               <div className={styles.metaItem}>
                 <label>Status</label>

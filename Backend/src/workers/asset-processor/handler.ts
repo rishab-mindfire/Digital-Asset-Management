@@ -7,6 +7,7 @@ import fs from 'fs/promises';
 import { AssetModel } from '../../models/asset.model.js';
 import { MediaTaskPayload } from '../../types/index.js';
 import { generateThumbnail } from '../../helper/imageThumbnail.js';
+import { getFileHash } from '../../helper/duplicate.js';
 
 // path for thumbnails
 const THUMBNAIL_DIR = path.resolve(process.env.RABBITMQ_THUMBNAILPATH || 'storage/thumbnails');
@@ -18,32 +19,62 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
   const { assetId, filePath, fileType } = payload;
 
   try {
-    //  Initial Update
-    await AssetModel.findByIdAndUpdate(assetId, { status: 'processing' });
-
-    //  Pre-flight
     await fs.access(filePath);
+
+    // 1. Generate hash
+    const currentFileHash = await getFileHash(filePath);
+
+    // 2. Check for an existing processed duplicate
+    const duplicate = await AssetModel.findOne({
+      fileHash: currentFileHash,
+      status: 'uploaded',
+      _id: { $ne: assetId },
+    });
+
+    if (duplicate) {
+      // Re-use the existing thumbnail and metadata
+      await AssetModel.findByIdAndUpdate(assetId, {
+        status: 'uploaded',
+        fileHash: currentFileHash,
+        thumbnailPath: duplicate.thumbnailPath, // Use the actual file path from the original
+        'metadata.size': duplicate.metadata.size,
+        'metadata.isDuplicate': true,
+        'metadata.originalAssetId': duplicate._id,
+      });
+
+      // await fs.unlink(filePath);
+
+      return channel.ack(msg);
+    }
+
+    // 3. Update status to processing and save the hash
+    await AssetModel.findByIdAndUpdate(assetId, {
+      status: 'processing',
+      fileHash: currentFileHash,
+    });
+
     let thumbnailPath: string | undefined;
 
-    // Processing
     if (fileType === 'image') {
       const thumbnailName = `thumb-${Date.now()}-${assetId}.webp`;
       const absolutePath = path.join(THUMBNAIL_DIR, thumbnailName);
+
+      // Store relative/posix path for DB
       thumbnailPath = path.posix.join(
         process.env.RABBITMQ_THUMBNAILPATH || 'storage/thumbnails',
         thumbnailName,
       );
+
       const ext = path.extname(filePath).toLowerCase();
       if (!SUPPORTED_IMAGE_EXTENSIONS.includes(ext)) {
-        // Update DB to skip thumbnail or mark as uploaded
         await AssetModel.findByIdAndUpdate(assetId, { status: 'uploaded' });
         return channel.ack(msg);
       }
+
       await generateThumbnail(filePath, absolutePath);
     }
-    // Add video logic
 
-    // Final Metadata Retrieval & Update
+    // 4. Final Save
     const stats = await fs.stat(filePath);
     await AssetModel.findByIdAndUpdate(assetId, {
       status: 'uploaded',
@@ -57,7 +88,6 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
     if (assetId) {
       await AssetModel.findByIdAndUpdate(assetId, { status: 'failed' });
     }
-    // nack on corrupted files
     channel.nack(msg, false, false);
     throw err;
   }

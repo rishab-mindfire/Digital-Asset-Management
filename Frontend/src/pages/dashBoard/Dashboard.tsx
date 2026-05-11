@@ -2,8 +2,11 @@ import Highcharts from 'highcharts';
 import { HighchartsReact } from 'highcharts-react-official';
 import styles from './Dashboard.module.css';
 import { Link } from 'react-router-dom';
+import { api } from '../../services/apiInterceptor';
+import { useEffect, useState } from 'react';
 
 const AssetDashboard = () => {
+  const [chartData, setChartData] = useState<{ date: []; count: [] }>({ date: [], count: [] });
   const chartOptions = {
     chart: {
       type: 'area',
@@ -15,15 +18,7 @@ const AssetDashboard = () => {
     },
     title: { text: '' },
     xAxis: {
-      categories: [
-        '12-11-26',
-        '13-11-26',
-        '14-11-26',
-        '15-11-26',
-        '16-11-26',
-        '17-11-26',
-        '18-11-26',
-      ],
+      categories: chartData.date,
     },
     yAxis: { title: { text: 'Uploads' }, gridLineColor: '#f3f4f6' },
     plotOptions: {
@@ -40,12 +35,28 @@ const AssetDashboard = () => {
     series: [
       {
         name: 'Files Uploaded',
-        data: [30, 45, 32, 70, 55, 40, 80],
+        data: chartData.count,
         color: '#4993D2',
       },
     ],
     credits: { enabled: false },
   };
+
+  //get chart data
+  const getChartData = async () => {
+    try {
+      const response = await api.get('admin/dashboardChart/stats');
+      if (response.status === 200) {
+        setChartData(response.data);
+      }
+    } catch (error) {
+      console.log('getting error in data Dashboard');
+    }
+  };
+
+  useEffect(() => {
+    getChartData();
+  }, []);
 
   return (
     <div className="mainContainer">
@@ -87,11 +98,11 @@ const AssetDashboard = () => {
 
         {/* Processing Status */}
         <div className={styles.cardPanel}>
-          <h3 className={styles.panelTitle}>Processing Status</h3>
+          <h3 className={styles.panelTitle}>Asset Status</h3>
 
           <div className={styles.statusItem}>
             <div className={styles.statusLabelRow}>
-              <span>Pending</span>
+              <span>Duplicated Assets</span>
               <span style={{ color: '#4993D2' }}>85%</span>
             </div>
             <div className={styles.progressBg}>

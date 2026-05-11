@@ -4,13 +4,14 @@ import { CollectionModel } from '../models/collection.model.js';
 import { publishToQueue } from '../helper/producer.js';
 import fs from 'fs/promises';
 import path from 'path';
-import { ChunkUploadBody, FinalizeMergeBody } from '../types/index.js';
+import { ChunkUploadBody, FinalizeMergeBody, IAsset } from '../types/index.js';
 import {
   getFileSesionDetails,
   mergeFinalChunks,
   saveChunkBasedChunkId,
   saveFileSesionDetails,
 } from '../helper/fileHandlers.js';
+import { getFileHash } from '../helper/duplicate.js';
 
 class AdminServices {
   // dash board data for graph
@@ -39,6 +40,39 @@ class AdminServices {
         throw Error(error.message);
       }
     }
+  }
+  //get chart data
+  async getChartDataService() {
+    //  Run Aggregation
+    const data = await AssetModel.aggregate([
+      {
+        $match: {
+          status: 'uploaded',
+        },
+      },
+      {
+        $group: {
+          _id: {
+            // formate time
+            $dateToString: { format: '%Y-%m-%d', date: '$createdAt' },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        // Sort by date ascending
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    //  split the data into two arrays for the X and Y axes
+    const labels = data.map((item) => item._id);
+    const counts = data.map((item) => item.count);
+
+    return {
+      date: labels,
+      count: counts,
+    };
   }
 
   // upload chunk Asset
@@ -89,74 +123,90 @@ class AdminServices {
     validatedBody: FinalizeMergeBody,
     user: { userID: string; userRole: string },
   ) {
-    // Get metadata
-    const metadata = await getFileSesionDetails(uploadId);
-    const extension = path.extname(metadata.originalFilename).toLowerCase();
+    // Retrieve session metadata and prepare file paths
+    const sessionMetadata = await getFileSesionDetails(uploadId);
+    const extension = path.extname(sessionMetadata.originalFilename).toLowerCase();
     const finalFilename = `${uploadId}${extension}`;
 
-    // Merge chunks
-    const finalPath = await mergeFinalChunks(uploadId, metadata.totalChunks, finalFilename);
+    // Perform the physical merge and generate a hash for duplicate checking
+    const finalPath = await mergeFinalChunks(uploadId, sessionMetadata.totalChunks, finalFilename);
+    const currentFileHash = await getFileHash(finalPath);
     const stats = await fs.stat(finalPath);
 
-    // File type detection
+    //Check for an existing processed duplicate in the database
+    const existingAsset = await AssetModel.findOne({
+      fileHash: currentFileHash,
+      status: 'uploaded',
+    });
+
     const isVideo = /\.(mp4|webm|mov)$/i.test(extension);
+    const isDuplicate = !!existingAsset;
 
-    // Database update
-    const asset = await AssetModel.findOneAndUpdate(
-      { uploadId },
-      {
-        uploadId,
-        title: validatedBody.title || metadata.originalFilename,
-        fileType: isVideo ? 'video' : 'image',
-        localPath: finalPath,
-        ownerID: user.userID,
-        owner: user.userRole,
-        department: validatedBody.department,
-        status: 'pending',
-        metadata: {
-          extension: extension.replace('.', ''),
-          size: stats.size,
-        },
-      },
-      {
-        upsert: true,
-        new: true,
-      },
-    );
+    // Construct the update payload
+    // We use spread operators to conditionally include duplicate-specific fields
+    const updatePayload: Partial<IAsset> = {
+      uploadId,
+      fileHash: currentFileHash,
+      title: validatedBody.title || sessionMetadata.originalFilename,
+      fileType: (isVideo ? 'video' : 'image') as 'video' | 'image',
+      localPath: finalPath,
+      ownerID: user.userID,
+      owner: user.userRole,
+      department: validatedBody.department,
+      status: isDuplicate ? 'uploaded' : 'pending',
 
-    if (!asset) {
-      throw new Error('Failed to create asset');
+      // Inherit the existing thumbnail path if this is a duplicate
+      ...(isDuplicate && { thumbnailPath: existingAsset.thumbnailPath }),
+
+      metadata: {
+        extension: extension.replace('.', ''),
+        size: stats.size,
+        isDuplicate: isDuplicate,
+        hash: currentFileHash,
+        tags: [],
+        dimensions: '',
+        // Only include the reference to the original asset if this is a duplicate
+        ...(isDuplicate && { originalAssetId: existingAsset._id.toString() }),
+      },
+    };
+
+    // Update the Database (Upsert ensures the document is created if it doesn't exist)
+    const assetData = await AssetModel.findOneAndUpdate({ uploadId }, updatePayload, {
+      upsert: true,
+      new: true,
+    });
+
+    if (!assetData) {
+      throw new Error('Failed to create or update asset document');
     }
 
-    // Collection handling
+    // Associate with a collection if provided
     if (validatedBody.collectionId) {
       await CollectionModel.findByIdAndUpdate(validatedBody.collectionId, {
-        $addToSet: {
-          assets: asset._id,
-        },
+        $addToSet: { assets: assetData._id },
       });
     }
 
-    // Queue worker
-    try {
-      await publishToQueue({
-        assetId: asset._id.toString(),
-        filePath: finalPath,
-        fileType: asset.fileType,
-      });
-    } catch (error: unknown) {
-      await AssetModel.findByIdAndUpdate(asset._id, {
-        status: 'error',
-      });
+    // Queue Worker: ONLY publish if the file is unique
+    if (!isDuplicate) {
+      try {
+        await publishToQueue({
+          assetId: assetData._id.toString(),
+          filePath: finalPath,
+          fileType: assetData.fileType,
+        });
+      } catch (error: unknown) {
+        // Rollback status to error if queueing fails
+        await AssetModel.findByIdAndUpdate(assetData._id, { status: 'failed' });
 
-      if (error instanceof Error) {
-        throw new Error(`Merged successful but queue processing failed: ${error.message}`);
+        if (error instanceof Error) {
+          throw new Error(`Merge successful, but processing queue failed: ${error.message}`);
+        }
+        throw new Error('Merge successful, but failed to trigger background worker');
       }
-
-      throw new Error('Merged successful but failed to trigger processing worker');
     }
 
-    return asset;
+    return assetData;
   }
 }
 

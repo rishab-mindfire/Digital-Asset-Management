@@ -4,7 +4,7 @@ import { assetService } from '../services/asset.service.js';
 import { streamAsset } from '../helper/stream.helper.js';
 
 class AssetAdmin {
-  // Assets
+  // Assets list
   getAllAssets = async (req: Request, res: Response) => {
     try {
       const result = await assetService.assetListingService(req.query);
@@ -17,7 +17,7 @@ class AssetAdmin {
       }
     }
   };
-
+  //get by id
   getAssetById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params as { id: string };
@@ -75,7 +75,7 @@ class AssetAdmin {
       });
     }
   };
-
+  //get meta data
   metaDataDetalis = async (req: Request, res: Response) => {
     try {
       if (!req.userEmail) {
@@ -101,7 +101,7 @@ class AssetAdmin {
       });
     }
   };
-
+  //mark approve
   markApprove = async (req: Request, res: Response) => {
     try {
       const { id } = req.params as { id: string };
@@ -123,19 +123,16 @@ class AssetAdmin {
       });
     }
   };
-
-  deleteAssetById = async (req: Request, res: Response) => {
+  //delete assets
+  deleteAssetController = async (req: Request, res: Response) => {
     try {
       const { id } = req.params as { id: string };
-      if (!id) {
-        return res.status(400).json({ message: 'Asset ID is required' });
-      }
-      await assetService.deleteAsset(req.params.id as string);
-      return res.status(200).json({ message: 'Asset moved to archive' });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return res.status(500).json({ message: 'Delete failed', error: error.message || error });
-      }
+      const result = await assetService.deleteAssetService(id);
+      return res.status(200).json(result);
+    } catch (error: any) {
+      return res.status(error.message === 'Asset not found' ? 404 : 500).json({
+        error: error.message,
+      });
     }
   };
 }
