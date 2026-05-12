@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { AssetApiResponse, AssetListType, FormattedAsset } from '../models/Types';
 import { api } from '../services/apiInterceptor';
+import { logger } from '../utils/logger';
 
 const usePagination = () => {
   const [assets, setAssets] = useState<FormattedAsset[]>([]);
@@ -51,7 +52,7 @@ const usePagination = () => {
           });
         }
       } catch (error) {
-        console.error('Error fetching assets:', error);
+        logger.error('Error fetching assets:', error);
       } finally {
         setAssetLoading(false);
       }

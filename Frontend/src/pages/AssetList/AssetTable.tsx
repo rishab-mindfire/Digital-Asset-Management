@@ -168,9 +168,11 @@ const AssetTable = () => {
                           </td>
                           <td>{asset.owner}</td>
                           <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
-                          <td>
-                            {userRole === 'admin' && <Link to={`/asset/${asset.id}`}>Open</Link>}
-                          </td>
+                          {userRole === 'admin' && (
+                            <td>
+                              <Link to={`/asset/${asset.id}`}>Open</Link>
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>

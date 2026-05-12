@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../../services/apiInterceptor';
 import { useEffect, useState } from 'react';
 import type { chartType, StateData } from '../../models/Types';
+import { logger } from '../../utils/logger';
 
 const AssetDashboard = () => {
   const [chartData, setChartData] = useState<chartType>({ date: [], count: [] });
@@ -65,7 +66,7 @@ const AssetDashboard = () => {
         setChartData(response.data);
       }
     } catch (error) {
-      console.log('getting error in data Dashboard');
+      logger.info(`getting error in data Dashboar : ${error}`);
     }
   };
   //get chart data
@@ -73,11 +74,10 @@ const AssetDashboard = () => {
     try {
       const response = await api.get('/dashboardData/stats');
       if (response.status === 200) {
-        console.log(response.data);
         setCardData(response.data);
       }
     } catch (error) {
-      console.log('getting error in data Dashboard');
+      logger.error(`getting error in data Dashboard ${error}`);
     }
   };
 
@@ -85,7 +85,6 @@ const AssetDashboard = () => {
     getChartData();
     getCardData();
   }, []);
-
   return (
     <div className="mainContainer">
       <header className="header">

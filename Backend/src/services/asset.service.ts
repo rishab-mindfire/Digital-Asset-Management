@@ -3,6 +3,7 @@ import { AssetModel } from '../models/asset.model.js';
 import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import { AuthUser, IAsset } from '../types/index.js';
 import { removePhysicalFiles, transferOriginalStatus } from '../helper/removeFiles.helper.js';
+import { logger } from '../utils/logger.js';
 
 class AssetManagement {
   // ALL asset lists
@@ -63,7 +64,7 @@ class AssetManagement {
       performerId: user.userID,
       performerEmail: user.userEmail,
       action: 'view',
-    }).catch((err) => console.error('Tracking Error:', err));
+    }).catch((err) => logger.error('Tracking Error:', err));
 
     const history = await UsageTrackingModel.find({ assetId }).sort({ createdAt: -1 }).limit(10);
 

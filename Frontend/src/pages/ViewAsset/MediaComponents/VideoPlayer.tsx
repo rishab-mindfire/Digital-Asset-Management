@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../../services/apiInterceptor';
+import { logger } from '../../../utils/logger';
 
 export const VideoPlayer = ({ assetId, ext }: { assetId: string; ext: string }) => {
   const [src, setSrc] = useState('');
@@ -12,7 +13,7 @@ export const VideoPlayer = ({ assetId, ext }: { assetId: string; ext: string }) 
         const url = URL.createObjectURL(res.data);
         setSrc(url);
       } catch (e) {
-        console.error('Video failed', e);
+        logger.error('Video failed', e);
       } finally {
         setLoading(false);
       }

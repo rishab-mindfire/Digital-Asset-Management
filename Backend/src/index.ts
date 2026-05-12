@@ -7,6 +7,7 @@ import { userRouter } from './router/user.routes.js';
 import { adminRouter } from './router/admin.routes.js';
 import { publicRouter } from './router/public.routes.js';
 import rateLimit from 'express-rate-limit';
+import logRouter from './router/logRoute.route.js';
 
 const app = express();
 
@@ -27,8 +28,6 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 
-// Apply the rate limiter to all requests
-app.use(limiter);
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
@@ -36,10 +35,15 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// rate limiter to all requests
+app.use(limiter);
+
 //Routes
 app.use('/user', userRouter);
 app.use('/admin', authRoleBased('admin'), adminRouter);
 app.use('/public', authRoleBased('public'), publicRouter);
+// log router
+// app.use('/api', authRoleBased('admin'), logRouter);
 
 app.get('/', (req, res) => {
   res.send('Server is running...');
