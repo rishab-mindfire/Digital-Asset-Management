@@ -6,7 +6,7 @@ import type { SignInErrors } from '../../models/Types';
 import logoImage from '../../assets/logo.png';
 import backgroundImage from '../../assets/Glass Effect Login Page - Blue.webp';
 import { initialSignInState, sigupReducer } from '../../reducers/sigupReducer';
-import { signupApi } from '../../services/signupService';
+import { signupApi } from '../../services/signup.service';
 
 export default function Signup() {
   const [formState, dispatch] = useReducer(sigupReducer, initialSignInState);
