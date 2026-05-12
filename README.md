@@ -34,6 +34,67 @@ DIGITA-ASSET-MANAGEMENT/
 ├── README.md
 
 ```
+## App folder **
 
+ ```
+ ├── Frontend/ # Front end (React app)
+    ├── node_modeules
+    ├── public
+     ├── src
+        ├── assets                      ( files, img , logo)
+        ├── auth                        ( authentication logics)
+        ├── components                  ( components)
+        ├── context                     ( context, auth-context)
+        ├── hooks                       ( custome hookes, pagination hook)
+        ├── models                      ( type declearation)
+        ├── pages                       ( layout pages)
+        ├── reducers                    ( api call, reducers and actions, login, singin)
+        ├── services                    ( API services, interceptors)
+        ├── App.tsx                     ( main app, routes)
+        ├── index.css
+        ├── main.tsx
+    ├── test
+    ├── .env
+    ├── .prettierignore
+    ├── .prettierrc
+    ├── dockerfile
+    ├── eslint.config.js
+    ├── index.html
+    ├── ngnix.config
+    ├── packege-lock.json
+    ├── tsconfig.app.json
+    ├── tsconfig.node.json
+    ├── vite.config.ts
 
+ ├── Backend/  # Backend App (node+express)
+    ├── node_module
+    ├── src
+       ├── config                          ( DB configuration, Rabbit MQ config)
+       ├── consumer                        ( Consumer, worker deligation )
+       ├── controller                      ( controlers for admin, public, managers)
+       ├── helper                          ( helpers for id generator, other)
+       ├── middlewares                     ( authentication middleware)
+       ├── models                          ( DB schema design and type initialization)
+       ├── queuePublicer                   ( public tasks to queue)
+       ├── router                          ( routes for admin, public, managers)
+       ├── services                        ( services for API routes)
+       ├── types                           ( type decleratons)
+       ├── utilis                          ( utility folder, globle errror hander)
+       ├── validation                      ( validation sanitize frontend payloads)
+       ├── index.ts
+       ├── server.ts
+    ├── storage
+    ├── test
+    ├── .env.dev
+    ├── .env.production
+    ├── .prettierignore
+    ├── .prettierrc
+    ├── dockerfile
+    ├── eslint.config.js
+    ├── .dockerignore
+    ├── packege-lock.json
+    ├── tsconfig.app.json
+    ├── tsconfig.node.json
+    ├── vite.config.ts
+ ```
 
