@@ -99,7 +99,7 @@ DIGITA-ASSET-MANAGEMENT/
  ```
 
 
-## **5. Installation & Setup  **
+## **5. Installation & Setup**
 
 ```
 # 1. Clone & Install
@@ -107,7 +107,7 @@ git clone https://github.com/rishab-mindfire/Digital-Asset-Management
 cd Digital-Asset-Management
 ```
 
-## env file example  **
+## env file example
 
 ```
 # frontend
@@ -129,7 +129,7 @@ EXPIRY_DAYS=1
 
 ```
 
- ## Setup and run appp **
+ ## Setup and run appp
  ````
 # 1. installation forntend
    cd Frontend
@@ -167,7 +167,7 @@ EXPIRY_DAYS=1
 ## Testing
 
 ```bash
-npm run test      # All tests
+npm run test      # All tests (before test went to frontend, backend folders )
 ```
 
 
@@ -202,45 +202,6 @@ H -- No --> I[Show Error]
 H -- Yes --> J[Store Token]
 
 J --> K[Set Auth State]
-K --> L[Go to Projects]
+K --> L[Go to Dashboard]
 
-B -- Yes --> L
-
-%% PROJECT FLOW
-L --> M[Project List]
-M --> N[Fetch Projects]
-N --> O[Display Projects]
-
-O --> P[Create Project]
-O --> Q[Delete Project]
-O --> R[Open Project]
-
-%% DETAILS
-R --> S[Project Details]
-S --> T[Load Files & Jobs]
-
-%% FILE FLOW
-T --> U[Upload Files]
-U --> V[Validate]
-V --> W[Preview]
-W --> X[Upload API]
-X --> Y[Update File List]
-
-Y --> Z[Select Files]
-
-%% ZIP FLOW
-Z --> AA[Create ZIP Job]
-AA --> AB[Get jobId]
-AB --> AC[Polling Loop]
-
-AC --> AD{Status}
-AD -- Processing --> AC
-AD -- Completed --> AE[Show Download]
-AD -- Failed --> AF[Show Error]
-
-AE --> AG[Download ZIP]
-
-%% DELETE
-AE --> AH[Delete Job]
-Y --> AI[Delete File]
 ```
