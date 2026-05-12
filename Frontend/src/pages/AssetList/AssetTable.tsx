@@ -12,6 +12,7 @@ import {
 import useChunkedUpload from '../../hooks/useChunkedUpload';
 import usePagination from '../../hooks/usePagination';
 import Loader from '../../components/common/Loader';
+import { toast } from 'react-toastify';
 
 const AssetTable = () => {
   const userRole = localStorage.getItem('userRole-DAM');
@@ -51,6 +52,7 @@ const AssetTable = () => {
       setSelectedFiles([]);
     } catch (err: unknown) {
       if (err instanceof Error) {
+        toast.error(err.message);
         setErrorMessage(err.message);
       }
     }
@@ -72,6 +74,7 @@ const AssetTable = () => {
     if (isUploading) {
       setMessage('file uploading...');
     } else if (!isUploading && !error && Object.keys(progressMap).length !== 0) {
+      toast('file uploaded successfully !');
       setMessage('file uploaded !');
       fetchAssets();
     }

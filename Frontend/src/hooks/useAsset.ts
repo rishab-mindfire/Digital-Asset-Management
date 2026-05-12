@@ -31,8 +31,9 @@ export const useAsset = (assetId: string | undefined) => {
         } else {
           setCategory('other');
         }
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to load asset');
+      } catch (err: unknown) {
+        const error = err as { response?: { data?: { message?: string } } };
+        setError(error.response?.data?.message || 'Failed to load asset');
       } finally {
         setLoading(false);
       }

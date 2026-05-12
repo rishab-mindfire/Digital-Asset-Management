@@ -407,3 +407,7 @@
 {"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:09:41"}
 {"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:10:08"}
 {"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:10:08"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:10:56"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:10:56"}
+{"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":13},"percentages":{"duplicatePercentage":"23.08%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T13:45:05.850Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 19:15:05"}
+{"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":13},"percentages":{"duplicatePercentage":"23.08%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T13:45:05.852Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 19:15:05"}

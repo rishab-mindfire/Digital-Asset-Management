@@ -24,7 +24,7 @@ const AssetDetails = () => {
         setLoading(true);
         const response = await api.get(`/assetsDetails/${id}`);
 
-        // Handle if response.data is a string ("jpg") or an object
+        // Handle response data for images
         const rawData = response.data;
         const data: string = rawData?.metadata?.extension;
         const extension = data.toLowerCase();
