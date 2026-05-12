@@ -98,3 +98,59 @@ DIGITA-ASSET-MANAGEMENT/
     ├── vite.config.ts
  ```
 
+
+## Installation & Setup  **
+
+```
+# 1. Clone & Install
+git clone https://github.com/rishab-mindfire/Digital-Asset-Management
+cd Digital-Asset-Management
+```
+
+## env file example  **
+
+```
+# frontend
+VITE_BASE_URL=http://localhost:4001
+VITE_TOKEN_KEY='File-System'
+
+# backend
+PORT=4001
+FRONTEND_URL="http://localhost:3001"
+DB_CONNECTION_STRING="mongodb://localhost:27017/asset-management"
+JWT_SECRET="DLCEOeL8Xf5TMDBaWnFeVAL86GoAEwdRjERMdO84Dg5"
+JWT_REFRESH_SECRET="ZCVUdZRg8XI"
+UPLOAD_DIR="./storage/raw"
+RABBITMQ_URL="amqp://127.0.0.1:5672"
+RABBITMQ_QUEUE_NAME="asset_upload_processing"
+RABBITMQ_THUMBNAILPATH="storage/thumbnails"
+EXPIRY_DAYS=1
+
+
+```
+
+ ## Setup and run appp **
+ ````
+# 1. installation forntend
+   cd Frontend
+   npm i
+
+   # 2. Run frontend
+   npm run dev
+
+# 3. setup docker for rabbit MQ run
+   (open in other terminal start docker by : )
+
+   docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+   (make sure rabbit mq is running on correct port else create env for port)
+
+# 4. installation backend
+   cd Backend
+   npm i
+
+# 2. Run backend
+   npm run dev                 (for dev mood)
+   npm run prod                (for production mood)
+
+ ````
+
