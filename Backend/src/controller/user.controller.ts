@@ -5,6 +5,7 @@ import { verifyEmplyeeRole } from '../services/authRole.service.js';
 import jwt from 'jsonwebtoken';
 import { userLoginValidation, userRegistrationValidation } from '../validation/user.validation.js';
 import { AppError } from '../utils/globleError.js';
+import { logger } from '../utils/logger.js';
 
 class UserClass {
   // create user
@@ -87,6 +88,7 @@ class UserClass {
         accessToken: accessToken,
       });
     } catch (err: unknown) {
+      logger.error(err);
       return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
@@ -131,12 +133,13 @@ class UserClass {
       );
       res.cookie('DigitalAssetApp', newRefreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'dev', // for testing
+        secure: true,
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({ accessToken: newAccessToken });
     } catch (error) {
+      logger.error(`Error in sending cookie ${error}`);
       // If verification fails, clear the stale cookie from the client
       res.clearCookie('DigitalAssetApp');
       throw new AppError('Session expired, please login again', 403);

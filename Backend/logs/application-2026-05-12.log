@@ -395,3 +395,15 @@
 {"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:05:38"}
 {"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:06:48"}
 {"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:06:48"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:07:13"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:07:13"}
+{"frontendMeta":{"message":"Network Error","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2030:16)"},"frontendTime":"2026-05-12T13:37:13.318Z","level":"error","message":"[FE] Error fetching assets:","timestamp":"2026-05-12 19:07:13"}
+{"frontendMeta":{"message":"Network Error","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2030:16)"},"frontendTime":"2026-05-12T13:37:13.319Z","level":"error","message":"[FE] Error fetching assets:","timestamp":"2026-05-12 19:07:13"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:09:00"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:09:00"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:09:31"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:09:31"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:09:41"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:09:41"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:10:08"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:10:08"}
