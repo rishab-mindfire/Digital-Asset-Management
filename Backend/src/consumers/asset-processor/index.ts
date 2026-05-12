@@ -1,17 +1,28 @@
 import amqp from 'amqplib';
 import { handleAssetTask } from './handleAssetTask.js';
 import { RABBITMQ_CONFIG } from '../../config/rabbitmq.config.js';
+import { handleGlobalError } from '../../utils/globleError.js';
 
-export async function startAssetWorker() {
-  const connection = await amqp.connect(RABBITMQ_CONFIG.URL);
-  const channel = await connection.createChannel();
+/**
+ * Initializes and starts the background worker for asset processing.
+ */
+export async function startAssetWorker(): Promise<void> {
+  try {
+    const connection = await amqp.connect(RABBITMQ_CONFIG.URL);
+    const channel = await connection.createChannel();
 
-  await channel.assertQueue(RABBITMQ_CONFIG.QUEUES.QUEUE_NAME, { durable: true });
-  await channel.prefetch(1);
+    // Ensure persistent queue and limit concurrent processing to one task
+    await channel.assertQueue(RABBITMQ_CONFIG.QUEUES.QUEUE_NAME, { durable: true });
+    await channel.prefetch(1);
 
-  channel.consume(RABBITMQ_CONFIG.QUEUES.QUEUE_NAME, (msg) => {
-    if (msg) {
-      handleAssetTask(channel, msg);
-    }
-  });
+    // Subscribe to queue and delegate message handling
+    channel.consume(RABBITMQ_CONFIG.QUEUES.QUEUE_NAME, (msg) => {
+      if (msg) {
+        handleAssetTask(channel, msg);
+      }
+    });
+  } catch (error: unknown) {
+    // Handle startup or connection failures
+    handleGlobalError(error);
+  }
 }

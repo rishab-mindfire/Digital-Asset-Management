@@ -1,5 +1,4 @@
 import type { LoginType } from '../models/Types';
-import { api } from './apiInterceptor';
 import axios from 'axios';
 
 const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY;
@@ -16,7 +15,7 @@ export const loginApi = async (
   credentials: Pick<LoginType, 'userEmail' | 'userPassword'>,
 ): Promise<string> => {
   try {
-    const response = await api.post('/user/login', credentials);
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`, credentials);
 
     // Axios normalizes headers to lowercase
     const authHeader = response.headers?.authorization;
@@ -38,6 +37,9 @@ export const loginApi = async (
 
     // Store token
     localStorage.setItem(TOKEN_KEY, token);
+    // store role
+    localStorage.setItem('userRole-DAM', response.data.userRole);
+
     return token;
   } catch (err: unknown) {
     // Normalize error

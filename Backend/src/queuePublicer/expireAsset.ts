@@ -31,7 +31,7 @@ export const publishToExpirationQueue = async (assetId: string): Promise<void> =
       },
     });
 
-    // 3. Publish the message
+    //  Publish the message
     const payload = Buffer.from(JSON.stringify({ assetId }));
     channel.sendToQueue(DELAY_QUEUE, payload, { persistent: true });
 

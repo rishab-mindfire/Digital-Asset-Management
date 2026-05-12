@@ -53,7 +53,7 @@ const AssetDetails = () => {
 
   const markApprove = async (id: string) => {
     try {
-      const res = await api.post(`admin/markassets/${id}`);
+      const res = await api.post(`/markassets/${id}`);
       // Check if the request was successful
       if (res.status === 200 || res.status === 201) {
         // Update local state to change immediately
@@ -72,7 +72,7 @@ const AssetDetails = () => {
   const deleteAsset = async (id: string) => {
     try {
       setLoading(true);
-      const res = await api.delete(`admin/assets/${id}`);
+      const res = await api.delete(`/assets/${id}`);
       // Check if the request was successful
       if (res.status === 200) {
         navigation('/asset');

@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { userServices } from '../services/users.service.js';
-import { generateToken } from '../services/authGeneral.service.js';
 import { UsersModel } from '../models/users.model.js';
 import { verifyEmplyeeRole } from '../services/authRole.service.js';
+import jwt from 'jsonwebtoken';
 import { userLoginValidation, userRegistrationValidation } from '../validation/user.validation.js';
+import { AppError } from '../utils/globleError.js';
 
 class UserClass {
   // create user
@@ -41,14 +42,11 @@ class UserClass {
 
   // login user
   userLogin = async (req: Request, res: Response) => {
-    // Check for empty request body
     if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: 'Request body is missing or empty' });
     }
 
-    // Validate login request
     const { error, value } = userLoginValidation.validate(req.body);
-
     if (error) {
       return res.status(400).json({
         message: 'Validation failed',
@@ -59,27 +57,36 @@ class UserClass {
     const { userEmail, userPassword } = value;
 
     try {
-      // Verify user credentials
       const checkPassword = await userServices.checkSigninPassword(userEmail, userPassword);
-
       if (!checkPassword) {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      // Generate JWT token
-      const JWTtoken = generateToken({ userEmail });
+      // Generate both Access and Refresh Tokens
+      // Secret for Refresh token
+      const accessToken = jwt.sign({ userEmail }, process.env.JWT_SECRET!, { expiresIn: '1d' });
+      const DigitalAssetApp = jwt.sign({ userEmail }, process.env.JWT_REFRESH_SECRET!, {
+        expiresIn: '7d',
+      });
 
-      // Fetch user role (for RBAC)
       const userRole = await verifyEmplyeeRole(userEmail);
 
-      // Attach token in response header
-      res.setHeader('Authorization', 'Bearer ' + JWTtoken);
+      //  Set the Refresh Token in a secure HTTP-only cookie
+      res.cookie('DigitalAssetApp', DigitalAssetApp, {
+        httpOnly: true, // Protects against XSS
+        sameSite: 'strict', // Protects against CSRF
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      //  Send Access Token in Header and Body
+      res.setHeader('Authorization', 'Bearer ' + accessToken);
 
       return res.status(200).json({
         message: 'Login successful',
         userRole: userRole,
+        accessToken: accessToken,
       });
-    } catch {
+    } catch (err: unknown) {
       return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
@@ -93,6 +100,46 @@ class UserClass {
       res.status(200).send(user);
     } else {
       res.status(404).send('Email not found !');
+    }
+  };
+
+  // refresh token
+  refreshTokenController = async (req: Request, res: Response) => {
+    const refreshToken = req.cookies?.DigitalAssetApp;
+
+    if (!refreshToken) {
+      throw new AppError('Refresh token required', 401);
+    }
+
+    try {
+      const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as {
+        userEmail: string;
+      };
+      //Check DB to see if user is still active or token is revoked
+      const user = await UsersModel.findOne({ userEmail: payload.userEmail });
+      if (!user) {
+        throw new Error();
+      }
+      const newAccessToken = jwt.sign({ userEmail: payload.userEmail }, process.env.JWT_SECRET!, {
+        expiresIn: '15m',
+      });
+      //Issue a fresh refresh token (Rotation)
+      const newRefreshToken = jwt.sign(
+        { userEmail: payload.userEmail },
+        process.env.JWT_REFRESH_SECRET!,
+        { expiresIn: '7d' },
+      );
+      res.cookie('DigitalAssetApp', newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'dev', // for testing
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      return res.status(200).json({ accessToken: newAccessToken });
+    } catch (error) {
+      // If verification fails, clear the stale cookie from the client
+      res.clearCookie('DigitalAssetApp');
+      throw new AppError('Session expired, please login again', 403);
     }
   };
 }

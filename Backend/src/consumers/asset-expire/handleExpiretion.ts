@@ -1,35 +1,47 @@
 import amqp from 'amqplib';
 import { AssetModel } from '../../models/asset.model.js';
+import { handleGlobalError } from '../../utils/globleError.js';
 
-// Rabit mq url
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
 
-export const consumeExpiration = async () => {
-  const connection = await amqp.connect(RABBITMQ_URL);
-  const channel = await connection.createChannel();
-  const queue = 'asset_deletion_worker';
+/**
+ * Worker to process expired assets from RabbitMQ.
+ */
+export const consumeExpiration = async (): Promise<void> => {
+  try {
+    const connection = await amqp.connect(RABBITMQ_URL);
+    const channel = await connection.createChannel();
+    const queue = 'asset_deletion_worker';
 
-  await channel.assertQueue(queue, { durable: true });
+    // Ensure queue exists and survives server restarts
+    await channel.assertQueue(queue, { durable: true });
 
-  channel.consume(queue, async (msg) => {
-    if (msg) {
-      const { assetId } = JSON.parse(msg.content.toString());
+    channel.consume(queue, async (msg) => {
+      try {
+        if (!msg) {
+          return;
+        }
 
-      // Logic to delete from DB and Disk
-      const asset = await AssetModel.findById(assetId);
-      if (asset) {
-        // hard Delete
-        // if (fs.existsSync(asset.localPath)) {
-        //   await fs.promises.unlink(asset.localPath);
-        // }
+        const { assetId } = JSON.parse(msg.content.toString());
+        const asset = await AssetModel.findById(assetId);
 
-        //soft delete
-        await AssetModel.findByIdAndUpdate(assetId, { expiresAt: new Date(), isExpired: true });
+        if (asset) {
+          // Perform soft delete by flagging expiration status
+          await AssetModel.findByIdAndUpdate(assetId, {
+            expiresAt: new Date(),
+            isExpired: true,
+          });
+        }
 
-        //console.log(`Asset ${assetId} expired and deleted.`);
+        // Acknowledge successful processing to remove from queue
+        channel.ack(msg);
+      } catch (innerError) {
+        // Prevent worker crash on message processing failure
+        handleGlobalError(innerError);
       }
-
-      channel.ack(msg);
-    }
-  });
+    });
+  } catch (error: unknown) {
+    // Handle connection or channel setup failures
+    handleGlobalError(error);
+  }
 };

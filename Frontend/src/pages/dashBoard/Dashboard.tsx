@@ -60,7 +60,7 @@ const AssetDashboard = () => {
   //get chart data
   const getChartData = async () => {
     try {
-      const response = await api.get('admin/dashboardChart/stats');
+      const response = await api.get('/dashboardChart/stats');
       if (response.status === 200) {
         setChartData(response.data);
       }
@@ -71,7 +71,7 @@ const AssetDashboard = () => {
   //get chart data
   const getCardData = async () => {
     try {
-      const response = await api.get('admin/dashboardData/stats');
+      const response = await api.get('/dashboardData/stats');
       if (response.status === 200) {
         console.log(response.data);
         setCardData(response.data);
