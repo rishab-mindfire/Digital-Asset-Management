@@ -17,7 +17,7 @@ The current approach breaks down under scale because manual tagging, searching, 
 The goal is to build a centralized platform that manages digital assets end-to-end, automates intelligence around content, and provides visibility into usage, compliance, and performance—without slowing down day-to-day operations.
 
 
-## **3. Folder Structure **
+## **3. Folder Structure**
 
 ```
 DIGITA-ASSET-MANAGEMENT/
@@ -34,7 +34,7 @@ DIGITA-ASSET-MANAGEMENT/
 ├── README.md
 
 ```
-## App folder **
+## **4. App folder**
 
  ```
  ├── Frontend/ # Front end (React app)
@@ -99,7 +99,7 @@ DIGITA-ASSET-MANAGEMENT/
  ```
 
 
-## Installation & Setup  **
+## **5. Installation & Setup  **
 
 ```
 # 1. Clone & Install
@@ -154,3 +154,93 @@ EXPIRY_DAYS=1
 
  ````
 
+
+## **6. Scripts**
+
+| Command         | Description        |
+| --------------- | ------------------ |
+| `npm run dev`   | Development server |
+| `npm run build` | Production build   |
+| `npm run test`  | Run tests          |
+
+
+## Testing
+
+```bash
+npm run test      # All tests
+```
+
+
+| Category     | Technology                     |
+| ------------ | ------------------------------ |
+| **Frontend** | React 19 + TypeScript          |
+| **State**    | useReducer + Context API       |
+| **Routing**  | React Router                   |
+| **HTTP**     | Axios                          |
+| **Styling**  | CSS Modules                    |
+| **Testing**  | Vitest + React Testing Library |
+
+## **7. System Architecture**
+
+
+
+```mermaid
+    flowchart TD
+
+%% AUTH FLOW
+A[User Opens App] --> B{Authenticated?}
+
+B -- No --> C[Login Page]
+C --> D[Enter Credentials]
+D --> E[Validate Input]
+
+E -- Invalid --> F[Show Errors]
+E -- Valid --> G[Call Login API]
+
+G --> H{Success?}
+H -- No --> I[Show Error]
+H -- Yes --> J[Store Token]
+
+J --> K[Set Auth State]
+K --> L[Go to Projects]
+
+B -- Yes --> L
+
+%% PROJECT FLOW
+L --> M[Project List]
+M --> N[Fetch Projects]
+N --> O[Display Projects]
+
+O --> P[Create Project]
+O --> Q[Delete Project]
+O --> R[Open Project]
+
+%% DETAILS
+R --> S[Project Details]
+S --> T[Load Files & Jobs]
+
+%% FILE FLOW
+T --> U[Upload Files]
+U --> V[Validate]
+V --> W[Preview]
+W --> X[Upload API]
+X --> Y[Update File List]
+
+Y --> Z[Select Files]
+
+%% ZIP FLOW
+Z --> AA[Create ZIP Job]
+AA --> AB[Get jobId]
+AB --> AC[Polling Loop]
+
+AC --> AD{Status}
+AD -- Processing --> AC
+AD -- Completed --> AE[Show Download]
+AD -- Failed --> AF[Show Error]
+
+AE --> AG[Download ZIP]
+
+%% DELETE
+AE --> AH[Delete Job]
+Y --> AI[Delete File]
+```
