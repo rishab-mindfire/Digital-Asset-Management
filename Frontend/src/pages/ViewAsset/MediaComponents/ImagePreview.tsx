@@ -6,7 +6,7 @@ export const ImagePreview = ({ assetId }: { assetId: string }) => {
 
   useEffect(() => {
     api
-      .get(`admin/assets/${assetId}?stream=true`, { responseType: 'blob' })
+      .get(`/assets/${assetId}?stream=true`, { responseType: 'blob' })
       .then((res) => setSrc(URL.createObjectURL(res.data)));
     return () => {
       if (src) {

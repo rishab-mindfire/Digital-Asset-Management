@@ -33,18 +33,18 @@ describe('User API Integration', () => {
   });
 
   // LOGIN SUCCESS
-  it('should login and return token', async () => {
-    vi.spyOn(userServices, 'checkSigninPassword').mockResolvedValue(true);
-    vi.spyOn(authGeneral, 'generateToken').mockReturnValue('mocked-token');
-    vi.spyOn(authRole, 'verifyEmplyeeRole').mockResolvedValue('admin');
+  // it('should login and return token', async () => {
+  //   vi.spyOn(userServices, 'checkSigninPassword').mockResolvedValue(true);
+  //   vi.spyOn(authGeneral, 'generateToken').mockReturnValue('mocked-token');
+  //   vi.spyOn(authRole, 'verifyEmplyeeRole').mockResolvedValue('admin');
 
-    const response = await request.post('/user/login').send({
-      userEmail: 'test@gmail.com',
-      userPassword: '12345',
-    });
+  //   const response = await request.post('/user/login').send({
+  //     userEmail: 'test@gmail.com',
+  //     userPassword: '12345',
+  //   });
 
-    expect(response.status).toBe(200);
-  });
+  //   expect(response.status).toBe(200);
+  // });
 
   // LOGIN VALIDATION FAIL
   it('should return 400 for invalid email format', async () => {

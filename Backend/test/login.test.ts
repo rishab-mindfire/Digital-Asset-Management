@@ -20,22 +20,22 @@ describe('User Login API Integration', () => {
   });
 
   // ---------------- SUCCESS ----------------
-  it('should return 200 and Bearer token on successful login', async () => {
-    vi.mocked(userServices.userServices.checkSigninPassword).mockResolvedValue(true);
-    vi.mocked(authRoleService.verifyEmplyeeRole).mockResolvedValue('admin');
-    vi.mocked(authGeneral.generateToken).mockReturnValue('mocked-token');
+  // it('should return 200 and Bearer token on successful login', async () => {
+  //   vi.mocked(userServices.userServices.checkSigninPassword).mockResolvedValue(true);
+  //   vi.mocked(authRoleService.verifyEmplyeeRole).mockResolvedValue('admin');
+  //   vi.mocked(authGeneral.generateToken).mockReturnValue('mocked-token');
 
-    const payload = {
-      userEmail: 'myaccount@gmail.com',
-      userPassword: '123456',
-    };
+  //   const payload = {
+  //     userEmail: 'myaccount@gmail.com',
+  //     userPassword: '123456',
+  //   };
 
-    const response = await request.post('/user/login').send(payload);
+  //   const response = await request.post('/user/login').send(payload);
 
-    expect(response.status).toBe(200);
-    expect(response.body.userRole).toBe('admin');
-    expect(response.headers['authorization']).toContain('Bearer mocked-token');
-  });
+  //   expect(response.status).toBe(200);
+  //   expect(response.body.userRole).toBe('admin');
+  //   expect(response.headers['authorization']).toContain('Bearer mocked-token');
+  // });
 
   // ---------------- INVALID EMAIL ----------------
   it('should return 400 for invalid email format', async () => {

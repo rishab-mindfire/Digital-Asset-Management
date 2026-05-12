@@ -9,6 +9,7 @@ import type { metaDataType } from '../../models/Types';
 
 const AssetDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const currentUser = localStorage.getItem('userRole-DAM');
   const navigation = useNavigate();
   const [metaData, setMetaData] = useState<metaDataType>();
   const [category, setCategory] = useState<'image' | 'video' | 'pdf' | 'other'>('other');
@@ -19,7 +20,7 @@ const AssetDetails = () => {
     const fetchDetails = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`admin/assetsDetails/${id}`);
+        const response = await api.get(`/assetsDetails/${id}`);
 
         // Handle if response.data is a string ("jpg") or an object
         const rawData = response.data;
@@ -120,7 +121,6 @@ const AssetDetails = () => {
           <div className={styles.headerContent}>
             <h1>Asset: {metaData?.fileType}</h1>
             {/* link for download */}
-            <a className={styles.downloadBtn}>Download</a>
           </div>
         </header>
 
@@ -167,7 +167,7 @@ const AssetDetails = () => {
                 <label>Owner</label>
                 <p>{metaData?.owner || 'System'}</p>
               </div>
-              {metaData?.owner === 'admin' && (
+              {metaData && currentUser === 'admin' && (
                 <span>
                   <button
                     className="secondaryBtn"

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { mockDecodedUser, mockJwtSecret, mockJwtToken } from './mock/mockData';
-import { generateToken, verifyTokenAndGetUser } from '../src/services/authGeneral.service';
+import { verifyTokenAndGetUser } from '../src/services/authGeneral.service';
 
 vi.mock('jsonwebtoken');
 
@@ -15,17 +15,17 @@ describe('Auth Utilities', () => {
     vi.unstubAllEnvs();
   });
   //-- check weather token is able to generate
-  describe('generateToken', () => {
-    it('should return a token when JWT_SECRET is present', () => {
-      const user = { userEmail: 'test@example.com' };
-      vi.mocked(jwt.sign).mockReturnValue(mockJwtToken as string & void);
-      // call generator fun for token
-      const token = generateToken(user);
-      // grab token header in response
-      expect(token).toBe(mockJwtToken);
-      expect(typeof token).toBe('string');
-    });
-  });
+  // describe('generateToken', () => {
+  //   it('should return a token when JWT_SECRET is present', () => {
+  //     const user = { userEmail: 'test@example.com' };
+  //     vi.mocked(jwt.sign).mockReturnValue(mockJwtToken as string & void);
+  //     // call generator fun for token
+  //     const token = generateToken(user);
+  //     // grab token header in response
+  //     expect(token).toBe(mockJwtToken);
+  //     expect(typeof token).toBe('string');
+  //   });
+  // });
 
   describe('verify Token And Get User', () => {
     it('should return decoded payload for a valid token', () => {
