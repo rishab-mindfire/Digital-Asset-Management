@@ -14,6 +14,7 @@ adminRouter.get('/assets/:id', assetAdmin.getAssetById);
 adminRouter.delete('/assets/:id', assetAdmin.deleteAssetController);
 adminRouter.get('/assetsDetails/:id', assetAdmin.metaDataDetalis);
 adminRouter.post('/markassets/:id', assetAdmin.markApprove);
+adminRouter.get('/downloadAsset/:id', assetAdmin.downloadAssets);
 
 // Dashboard and upload files
 adminRouter.get('/dashboardData/stats', adminCtr.dashboardCardData);

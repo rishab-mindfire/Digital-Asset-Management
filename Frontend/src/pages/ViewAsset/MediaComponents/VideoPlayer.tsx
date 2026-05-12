@@ -9,7 +9,7 @@ export const VideoPlayer = ({ assetId, ext }: { assetId: string; ext: string }) 
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const res = await api.get(`admin/assets/${assetId}?stream=true`, { responseType: 'blob' });
+        const res = await api.get(`/assets/${assetId}?stream=true`, { responseType: 'blob' });
         const url = URL.createObjectURL(res.data);
         setSrc(url);
       } catch (e) {

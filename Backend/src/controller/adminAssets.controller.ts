@@ -114,6 +114,29 @@ class AssetAdmin {
     }
   };
 
+  // Download Assets
+  downloadAssets = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params as { id: string };
+      const { userEmail } = req;
+
+      if (!userEmail) {
+        throw new AppError('Unauthorized: No user email provided', 401);
+      }
+      if (!id) {
+        throw new AppError('Asset ID is required', 400);
+      }
+
+      const userDetails = await getUserDetails(userEmail);
+      if (!userDetails) {
+        throw new AppError('User profile not found', 404);
+      }
+      await assetService.getAssetForDownload(id, res);
+    } catch (error: unknown) {
+      this.handleControllerError(res, error, 'Asset deletion failed');
+    }
+  };
+
   // Centralized response helper for consistent error delivery
   private handleControllerError(res: Response, error: unknown, defaultMessage: string) {
     const statusCode = error instanceof AppError ? error.statusCode : 500;

@@ -173,3 +173,225 @@
 {"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:05:49"}
 {"level":"info","message":"[Queue Success] Task sent for Asset  :","timestamp":"2026-05-12 16:06:00"}
 {"content":{"data":[123,34,97,115,115,101,116,73,100,34,58,34,54,97,48,51,48,50,57,48,52,53,101,53,51,53,56,102,54,57,99,57,56,99,102,53,34,44,34,102,105,108,101,80,97,116,104,34,58,34,68,58,92,92,77,69,82,78,92,92,68,105,103,105,116,97,108,45,65,115,115,101,116,45,77,97,110,97,103,101,109,101,110,116,92,92,66,97,99,107,101,110,100,92,92,115,116,111,114,97,103,101,92,92,117,112,108,111,97,100,115,92,92,99,104,117,110,107,73,68,45,49,55,55,56,53,56,50,49,54,48,53,50,53,45,51,97,52,108,112,116,113,46,112,110,103,34,44,34,102,105,108,101,84,121,112,101,34,58,34,105,109,97,103,101,34,125],"type":"Buffer"},"fields":{"consumerTag":"amq.ctag-7XiaC12QQjwKf7RhL3lCbg","deliveryTag":1,"exchange":"","redelivered":false,"routingKey":"asset_upload_processing"},"level":"info","message":"[QUEUE PROCESS ]: Asset queue !","properties":{"deliveryMode":2,"headers":{}},"timestamp":"2026-05-12 16:06:00"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:06:47"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:06:47"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:12:00"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:12:00"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:12:12"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:12:12"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:12:24"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:12:24"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:13:24"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:13:24"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:13:33"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:13:33"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:13:58"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:13:58"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:15:25"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:15:25"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:15:35"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:15:35"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:15:48"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:15:48"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:16:24"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:16:24"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:16:39"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:16:39"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:16:44"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:16:44"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:17:33"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:17:33"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:18:16"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:18:16"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:18:31"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:18:31"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:18:59"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:18:59"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:32:58"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:32:58"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:34:00"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:34:00"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:34:15"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:34:15"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:35:19"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:35:19"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:35:31"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:35:31"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:35:46"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:35:46"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:47:07"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:47:07"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:47:21"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:47:21"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:47:50"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:47:50"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:48:01"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:48:01"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:48:33"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:48:33"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:48:51"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:48:51"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:50:17"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:50:17"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:50:41"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:50:41"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:51:24"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:51:24"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:52:09"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:52:09"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:52:38"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:52:38"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:53:34"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:53:34"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:54:17"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:54:17"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:54:29"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:54:29"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:54:49"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:54:49"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:55:55"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:55:55"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:56:19"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:56:19"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:57:29"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:57:29"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 16:57:36"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 16:57:36"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:06:17"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:06:17"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:06:34"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:06:34"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:06:44"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:06:44"}
+{"level":"info","message":"png","timestamp":"2026-05-12 17:06:58"}
+{"level":"info","message":"image/png","timestamp":"2026-05-12 17:06:58"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:07:21"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:07:21"}
+{"frontendTime":"2026-05-12T11:43:27.951Z","level":"warn","message":"[FE] null","timestamp":"2026-05-12 17:13:27"}
+{"frontendTime":"2026-05-12T11:44:02.293Z","level":"warn","message":"[FE] null","timestamp":"2026-05-12 17:14:02"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:16:07"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:16:07"}
+{"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":9},"percentages":{"duplicatePercentage":"33.33%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T11:47:36.938Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 17:17:36"}
+{"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":9},"percentages":{"duplicatePercentage":"33.33%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T11:47:36.968Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 17:17:36"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:24:45"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:24:45"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:26:55"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:26:55"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:27:21"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:27:21"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:27:31"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:27:31"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:28:09"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:28:09"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:28:23"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:28:23"}
+{"level":"info","message":"path","timestamp":"2026-05-12 17:28:28"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:28:52"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:28:52"}
+{"level":"info","message":"path D:\\MERN\\Digital-Asset-Management\\Backend\\storage\\uploads\\chunkID-1778559939062-wkqxxu1.webp","timestamp":"2026-05-12 17:28:56"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:30:20"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:30:20"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:31:16"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:31:16"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:33:06"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:33:06"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:33:23"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:33:23"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:34:24"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:34:24"}
+{"frontendTime":"2026-05-12T12:05:14.102Z","level":"warn","message":"[FE] null","timestamp":"2026-05-12 17:35:14"}
+{"frontendTime":"2026-05-12T12:06:09.187Z","level":"warn","message":"[FE] null","timestamp":"2026-05-12 17:36:09"}
+{"level":"info","message":"[Queue Success] Task sent for Asset  :","timestamp":"2026-05-12 17:37:48"}
+{"content":{"data":[123,34,97,115,115,101,116,73,100,34,58,34,54,97,48,51,49,56,49,52,52,53,101,53,51,53,56,102,54,57,99,57,56,99,102,54,34,44,34,102,105,108,101,80,97,116,104,34,58,34,68,58,92,92,77,69,82,78,92,92,68,105,103,105,116,97,108,45,65,115,115,101,116,45,77,97,110,97,103,101,109,101,110,116,92,92,66,97,99,107,101,110,100,92,92,115,116,111,114,97,103,101,92,92,117,112,108,111,97,100,115,92,92,99,104,117,110,107,73,68,45,49,55,55,56,53,56,55,54,54,56,48,49,52,45,55,121,55,99,122,109,119,46,102,109,112,49,50,34,44,34,102,105,108,101,84,121,112,101,34,58,34,105,109,97,103,101,34,125],"type":"Buffer"},"fields":{"consumerTag":"amq.ctag-DHiqvLhcKS3CfuslOaQ-vg","deliveryTag":1,"exchange":"","redelivered":false,"routingKey":"asset_upload_processing"},"level":"info","message":"[QUEUE PROCESS ]: Asset queue !","properties":{"deliveryMode":2,"headers":{}},"timestamp":"2026-05-12 17:37:48"}
+{"frontendTime":"2026-05-12T12:07:55.514Z","level":"warn","message":"[FE] null","timestamp":"2026-05-12 17:37:55"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:41:31"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:41:31"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:43:05"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:43:05"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:47:00"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:47:00"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:47:10"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:47:10"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:52:37"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:52:37"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:58:08"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:58:08"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 17:58:24"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 17:58:24"}
+{"frontendMeta":{"message":"Request failed with status code 429","stack":"AxiosError: Request failed with status code 429\n    at settle (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:1669:14)\n    at XMLHttpRequest.onloadend (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2002:4)"},"frontendTime":"2026-05-12T12:33:08.819Z","level":"error","message":"[FE] Error fetching assets:","timestamp":"2026-05-12 18:03:08"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:04:06"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:04:06"}
+{"level":"info","message":"[Queue Success] Task sent for Asset  :","timestamp":"2026-05-12 18:04:48"}
+{"content":{"data":[123,34,97,115,115,101,116,73,100,34,58,34,54,97,48,51,49,101,54,56,52,53,101,53,51,53,56,102,54,57,99,57,56,99,102,55,34,44,34,102,105,108,101,80,97,116,104,34,58,34,68,58,92,92,77,69,82,78,92,92,68,105,103,105,116,97,108,45,65,115,115,101,116,45,77,97,110,97,103,101,109,101,110,116,92,92,66,97,99,107,101,110,100,92,92,115,116,111,114,97,103,101,92,92,117,112,108,111,97,100,115,92,92,99,104,117,110,107,73,68,45,49,55,55,56,53,56,57,50,53,51,55,57,50,45,102,107,49,53,118,120,115,46,101,120,101,34,44,34,102,105,108,101,84,121,112,101,34,58,34,105,109,97,103,101,34,125],"type":"Buffer"},"fields":{"consumerTag":"amq.ctag-59gozRUL9_BBQXsPaeSpPw","deliveryTag":1,"exchange":"","redelivered":false,"routingKey":"asset_upload_processing"},"level":"info","message":"[QUEUE PROCESS ]: Asset queue !","properties":{"deliveryMode":2,"headers":{}},"timestamp":"2026-05-12 18:04:48"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:07:44"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:07:44"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:07:51"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:07:51"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:09:52"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:09:52"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:13:15"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:13:15"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:13:38"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:13:38"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:14:28"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:14:28"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:18:23"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:18:23"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:19:36"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:19:36"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:21:28"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:21:28"}
+{"level":"info","message":"[Queue Success] Task sent for Asset  :","timestamp":"2026-05-12 18:22:25"}
+{"content":{"data":[123,34,97,115,115,101,116,73,100,34,58,34,54,97,48,51,50,50,56,57,52,53,101,53,51,53,56,102,54,57,99,57,56,99,102,56,34,44,34,102,105,108,101,80,97,116,104,34,58,34,68,58,92,92,77,69,82,78,92,92,68,105,103,105,116,97,108,45,65,115,115,101,116,45,77,97,110,97,103,101,109,101,110,116,92,92,66,97,99,107,101,110,100,92,92,115,116,111,114,97,103,101,92,92,117,112,108,111,97,100,115,92,92,99,104,117,110,107,73,68,45,49,55,55,56,53,57,48,51,52,48,55,54,51,45,97,114,57,49,121,115,114,46,119,101,98,109,34,44,34,102,105,108,101,84,121,112,101,34,58,34,118,105,100,101,111,34,125],"type":"Buffer"},"fields":{"consumerTag":"amq.ctag-y36k4kKeUS7I29IGD2jW9w","deliveryTag":1,"exchange":"","redelivered":false,"routingKey":"asset_upload_processing"},"level":"info","message":"[QUEUE PROCESS ]: Asset queue !","properties":{"deliveryMode":2,"headers":{}},"timestamp":"2026-05-12 18:22:25"}
+{"frontendMeta":{"message":"Request failed with status code 404","stack":"AxiosError: Request failed with status code 404\n    at settle (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:1669:14)\n    at XMLHttpRequest.onloadend (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2002:4)"},"frontendTime":"2026-05-12T12:52:31.123Z","level":"error","message":"[FE] Video failed","timestamp":"2026-05-12 18:22:31"}
+{"frontendMeta":{"message":"Request failed with status code 404","stack":"AxiosError: Request failed with status code 404\n    at settle (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:1669:14)\n    at XMLHttpRequest.onloadend (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2002:4)"},"frontendTime":"2026-05-12T12:52:31.184Z","level":"error","message":"[FE] Video failed","timestamp":"2026-05-12 18:22:31"}
+{"frontendTime":"2026-05-12T12:52:38.943Z","level":"warn","message":"[FE] null","timestamp":"2026-05-12 18:22:38"}
+{"frontendMeta":{"message":"Request failed with status code 404","stack":"AxiosError: Request failed with status code 404\n    at settle (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:1669:14)\n    at XMLHttpRequest.onloadend (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2002:4)"},"frontendTime":"2026-05-12T12:52:49.939Z","level":"error","message":"[FE] Video failed","timestamp":"2026-05-12 18:22:49"}
+{"frontendMeta":{"message":"Request failed with status code 404","stack":"AxiosError: Request failed with status code 404\n    at settle (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:1669:14)\n    at XMLHttpRequest.onloadend (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2002:4)"},"frontendTime":"2026-05-12T12:52:49.949Z","level":"error","message":"[FE] Video failed","timestamp":"2026-05-12 18:22:49"}
+{"frontendMeta":{"message":"Request failed with status code 404","stack":"AxiosError: Request failed with status code 404\n    at settle (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:1669:14)\n    at XMLHttpRequest.onloadend (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2002:4)"},"frontendTime":"2026-05-12T12:53:01.542Z","level":"error","message":"[FE] Video failed","timestamp":"2026-05-12 18:23:01"}
+{"frontendMeta":{"message":"Request failed with status code 404","stack":"AxiosError: Request failed with status code 404\n    at settle (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:1669:14)\n    at XMLHttpRequest.onloadend (http://localhost:3001/node_modules/.vite/deps/axios.js?v=71302a16:2002:4)"},"frontendTime":"2026-05-12T12:53:01.560Z","level":"error","message":"[FE] Video failed","timestamp":"2026-05-12 18:23:01"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:26:28"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:26:28"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:27:02"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:27:02"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:28:54"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:28:54"}
+{"level":"info","message":"encodedName :FlexiReports_guide.webm  , FlexiReports_guide.webm","timestamp":"2026-05-12 18:28:58"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:31:17"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:31:17"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:36:15"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:36:15"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:37:47"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:37:47"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:38:11"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:38:11"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:38:22"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:38:22"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:40:51"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:40:51"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:42:53"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:42:53"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:43:03"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:43:03"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:44:23"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:44:23"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:44:34"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:44:34"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:48:40"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:48:40"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:48:48"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:48:48"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:49:05"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:49:05"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:49:25"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:49:25"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:50:49"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:50:49"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 18:51:12"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 18:51:12"}
+{"level":"info","message":"[Queue Success] Task sent for Asset  :","timestamp":"2026-05-12 19:01:53"}
+{"content":{"data":[123,34,97,115,115,101,116,73,100,34,58,34,54,97,48,51,50,98,99,57,52,53,101,53,51,53,56,102,54,57,99,57,56,99,102,57,34,44,34,102,105,108,101,80,97,116,104,34,58,34,68,58,92,92,77,69,82,78,92,92,68,105,103,105,116,97,108,45,65,115,115,101,116,45,77,97,110,97,103,101,109,101,110,116,92,92,66,97,99,107,101,110,100,92,92,115,116,111,114,97,103,101,92,92,117,112,108,111,97,100,115,92,92,99,104,117,110,107,73,68,45,49,55,55,56,53,57,50,55,49,50,55,54,50,45,49,119,113,99,107,56,114,46,122,105,112,34,44,34,102,105,108,101,84,121,112,101,34,58,34,105,109,97,103,101,34,125],"type":"Buffer"},"fields":{"consumerTag":"amq.ctag-yPnLuWcSQ8nkF3bgulHodQ","deliveryTag":1,"exchange":"","redelivered":false,"routingKey":"asset_upload_processing"},"level":"info","message":"[QUEUE PROCESS ]: Asset queue !","properties":{"deliveryMode":2,"headers":{}},"timestamp":"2026-05-12 19:01:53"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:05:38"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:05:38"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:06:48"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:06:48"}

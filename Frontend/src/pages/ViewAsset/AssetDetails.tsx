@@ -72,6 +72,60 @@ const AssetDetails = () => {
     }
   };
 
+  const handleDownloadFile = async (id: string) => {
+    try {
+      // Make the call (ensuring responseType 'blob' is set)
+      const response = await api.get(`/admin/downloadAsset/${id}`, {
+        responseType: 'blob',
+      });
+
+      // Validate that we have data
+      if (!response || !response.data) {
+        throw new Error('No data received from server');
+      }
+
+      //  Extract Filename from headers
+      const disposition = response.headers['content-disposition'];
+      let fileName = 'downloaded_file'; // Initial fallback
+
+      if (disposition) {
+        // Logic to prefer filename* (UTF-8) then fallback to filename=
+        const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+        const standardMatch = disposition.match(/filename="?([^";]+)"?/i);
+
+        const rawName = utf8Match ? utf8Match[1] : standardMatch ? standardMatch[1] : null;
+
+        if (rawName) {
+          fileName = decodeURIComponent(rawName);
+        }
+      }
+
+      // Create the Blob and URL
+      // We use the content-type from the header (image/png) for better browser handling
+      const rawMimeType = response.headers['content-type'];
+      const blobType = typeof rawMimeType === 'string' ? rawMimeType : 'application/octet-stream';
+
+      const blob = new Blob([response.data], { type: blobType });
+      const url = window.URL.createObjectURL(blob);
+
+      // Trigger the Browser Download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+
+      document.body.appendChild(a);
+      a.click();
+
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+    } catch (err) {
+      console.error('Download process failed:', err);
+    }
+  };
+
   const deleteAsset = async (id: string) => {
     try {
       setLoading(true);
@@ -124,6 +178,16 @@ const AssetDetails = () => {
           <div className={styles.headerContent}>
             <h1>Asset: {metaData?.fileType}</h1>
             {/* link for download */}
+            <button
+              className={styles.downloadBtn}
+              onClick={() => {
+                if (metaData?._id) {
+                  handleDownloadFile(metaData._id);
+                }
+              }}
+            >
+              download
+            </button>
           </div>
         </header>
 

@@ -18,7 +18,7 @@ const corsOptions = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 200,
-  exposedHeaders: ['Authorization'],
+  exposedHeaders: ['Authorization', 'Content-Disposition'],
 };
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -26,7 +26,7 @@ app.use(cookieParser());
 //  Rate Limiters
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // number of requests
+  max: 100 * 10000000000000, // number of requests
   message: 'Too many requests, please try again later.',
 });
 // log limiter
