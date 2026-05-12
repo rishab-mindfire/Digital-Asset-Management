@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getUserDetails } from '../services/authRole.service.js';
 import { assetService } from '../services/asset.service.js';
 import { streamAsset } from '../helper/stream.helper.js';
-import { AppError } from '../utils/globleError.js';
+import { AppError, handleControllerError } from '../utils/globleError.js';
 
 /**
  * Controller for managing individual assets and streaming services.
@@ -14,7 +14,7 @@ class AssetAdmin {
       const result = await assetService.assetListingService(req.query);
       return res.status(200).json(result);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Error fetching assets');
+      handleControllerError(res, error, 'Error fetching assets');
     }
   };
 
@@ -58,7 +58,7 @@ class AssetAdmin {
 
       return res.status(200).json(assetData);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Internal server error while loading asset');
+      handleControllerError(res, error, 'Internal server error while loading asset');
     }
   };
 
@@ -81,7 +81,7 @@ class AssetAdmin {
 
       return res.status(200).json(assetData);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Error loading asset metadata');
+      handleControllerError(res, error, 'Error loading asset metadata');
     }
   };
 
@@ -99,7 +99,7 @@ class AssetAdmin {
       const data = await assetService.markApprove(id);
       return res.status(200).json(data);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Internal server error while marking approval');
+      handleControllerError(res, error, 'Internal server error while marking approval');
     }
   };
 
@@ -110,7 +110,7 @@ class AssetAdmin {
       const result = await assetService.deleteAssetService(id);
       return res.status(200).json(result);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Asset deletion failed');
+      handleControllerError(res, error, 'Asset deletion failed');
     }
   };
 
@@ -133,16 +133,9 @@ class AssetAdmin {
       }
       await assetService.getAssetForDownload(id, res);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Asset deletion failed');
+      handleControllerError(res, error, 'Asset deletion failed');
     }
   };
-
-  // Centralized response helper for consistent error delivery
-  private handleControllerError(res: Response, error: unknown, defaultMessage: string) {
-    const statusCode = error instanceof AppError ? error.statusCode : 500;
-    const message = error instanceof Error ? error.message : defaultMessage;
-    return res.status(statusCode).json({ message, error: message });
-  }
 }
 
 export const assetAdmin = new AssetAdmin();

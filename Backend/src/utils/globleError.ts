@@ -1,9 +1,10 @@
+import { Response } from 'express';
+
 /**
  * Custom operational error class to standardize application failures.
  */
 export class AppError extends Error {
   public readonly statusCode: number;
-
   constructor(message: string, statusCode: number = 500) {
     super(message);
     this.statusCode = statusCode;
@@ -28,4 +29,11 @@ export const handleGlobalError = (error: unknown): never => {
 
   // Fallback for edge cases where a non-Error object is thrown
   throw new AppError('An unexpected error occurred', 500);
+};
+
+// Centralized response helper for controller-level error handling
+export const handleControllerError = (res: Response, error: unknown, defaultMessage: string) => {
+  const statusCode = error instanceof AppError ? error.statusCode : 500;
+  const message = error instanceof Error ? error.message : defaultMessage;
+  return res.status(statusCode).json({ message, error: message });
 };
