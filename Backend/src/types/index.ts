@@ -110,8 +110,3 @@ export interface AuthUser {
   userID: string;
   userEmail: string;
 }
-
-// // Utility to prevent CastErrors
-// export const isValidId = (id: string) => {
-//   return mongoose.Types.ObjectId.isValid(id);
-// };

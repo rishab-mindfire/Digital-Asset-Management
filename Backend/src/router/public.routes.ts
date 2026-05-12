@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { adminCtr } from '../controller/admin.controller.js';
 import multer from 'multer';
-import { assetAdmin } from '../controller/adminAssets.controller.js';
+import { publicCtr } from '../controller/public.controller.js';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -9,7 +9,7 @@ const upload = multer({ storage });
 export const publicRouter = Router();
 
 // Assets
-publicRouter.get('/assets', assetAdmin.getAllAssets);
+publicRouter.get('/assets', publicCtr.getAllAssets);
 
 // Dashboard and upload files
 publicRouter.get('/dashboardData/stats', adminCtr.dashboardCardData);
