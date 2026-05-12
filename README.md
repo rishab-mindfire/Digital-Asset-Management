@@ -118,8 +118,8 @@ VITE_TOKEN_KEY='File-System'
 PORT=4001
 FRONTEND_URL="http://localhost:3001"
 DB_CONNECTION_STRING="mongodb://localhost:27017/asset-management"
-JWT_SECRET="DLCEOeL8Xf5TMDBaWnFeVAL86GoAEwdRjERMdO84Dg5"
-JWT_REFRESH_SECRET="ZCVUdZRg8XI"
+JWT_SECRET=""
+JWT_REFRESH_SECRET=""
 UPLOAD_DIR="./storage/raw"
 RABBITMQ_URL="amqp://127.0.0.1:5672"
 RABBITMQ_QUEUE_NAME="asset_upload_processing"
@@ -129,7 +129,7 @@ EXPIRY_DAYS=1
 
 ```
 
- ## Setup and run appp
+ ## Setup and run app
  ````
 # 1. installation forntend
    cd Frontend
