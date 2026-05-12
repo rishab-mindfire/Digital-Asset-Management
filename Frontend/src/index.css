@@ -82,6 +82,11 @@
   font-weight: 500;
 }
 
+.secondaryBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 @media (min-width: 768px) {
   .title {
     font-size: 24px;

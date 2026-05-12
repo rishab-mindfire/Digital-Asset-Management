@@ -7,7 +7,7 @@ export const PdfViewer = ({ assetId }: { assetId: string }) => {
 
   useEffect(() => {
     let url = '';
-    api.get(`admin/assets/${assetId}?stream=true`, { responseType: 'blob' }).then((res) => {
+    api.get(`/assets/${assetId}?stream=true`, { responseType: 'blob' }).then((res) => {
       url = URL.createObjectURL(res.data);
       setSrc(url);
     });
