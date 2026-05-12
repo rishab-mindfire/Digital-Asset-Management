@@ -1,35 +1,29 @@
 import axios from 'axios';
 
-/**
- * Axios instance configuration
- *
- * - Sets base URL from environment
- * - Attaches auth token automatically
- * - Handles JSON vs FormData requests
- */
 export const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
+  // allows the browser to send the HttpOnly refresh cookie
+  withCredentials: true,
 });
 
-/**
- * Request Interceptor
- *
- * - Adds Authorization header if token exists
- * - Sets Content-Type for non-FormData requests
- */
 api.interceptors.request.use(
   (config) => {
+    //  Get Token and Role from localStorage
     const token = localStorage.getItem(import.meta.env.VITE_TOKEN_KEY);
+    const userRole = localStorage.getItem('userRole-DAM');
 
-    // Ensure headers object exists
     config.headers = config.headers ?? {};
 
-    // Attach token if available
+    //  Dynamic URL Suffix Injection
+    // Only prepend if a role exists and the URL doesn't already have it
+    if (userRole && config.url && !config.url.startsWith(`/${userRole}`)) {
+      config.url = `/${userRole}${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Set JSON content type only when not sending FormData
     if (!(config.data instanceof FormData)) {
       config.headers['Content-Type'] = 'application/json';
     }
@@ -39,23 +33,45 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-/**
- * Response Interceptor
- *
- * - Handles global API errors
- * - Example: auto logout on 401 or 405 invalid/expired
- */
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
     const status = error?.response?.status;
+    const errorCode = error?.response?.data?.code;
+    //  Check for specific "Expired" error
+    if (status === 401 && errorCode === 'TOKEN_EXPIRED' && !originalRequest._retry) {
+      originalRequest._retry = true; // Prevent infinite loops
 
-    // Handle unauthorized (token  invalid/expired)
-    if (status === 401 || status === 405) {
+      try {
+        // Attempt to get a new Access Token
+        // This call automatically includes the cookie
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/user/refresh`,
+          {},
+          { withCredentials: true },
+        );
+
+        const { accessToken } = response.data;
+
+        //  Update LocalStorage and original request headers
+        localStorage.setItem(import.meta.env.VITE_TOKEN_KEY, accessToken);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+        // Retry the original request with the new token
+        return api(originalRequest);
+      } catch (refreshError) {
+        //  If Refresh fails (cookie expired), clean up and redirect
+        localStorage.removeItem(import.meta.env.VITE_TOKEN_KEY);
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+
+    // Handle other non-refreshable auth errors
+    if (status === 405) {
       localStorage.removeItem(import.meta.env.VITE_TOKEN_KEY);
-
-      // redirect to login
-      // window.location.href = '/login';
+      window.location.href = '/login';
     }
 
     return Promise.reject(error);

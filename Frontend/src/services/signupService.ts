@@ -1,5 +1,4 @@
 import type { SignupType } from '../models/Types';
-import { api } from './apiInterceptor';
 import axios from 'axios';
 
 /**
@@ -14,7 +13,7 @@ export const signupApi = async (
   payload: Pick<SignupType, 'userEmail' | 'userPassword' | 'userName' | 'userRole'>,
 ): Promise<string | undefined> => {
   try {
-    const response = await api.post('/user/register', payload);
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, payload);
     if (response.status === 201) {
       return response.data;
     }

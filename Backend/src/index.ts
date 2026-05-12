@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import authRoleBased from './middlewares/authRoleBased.middleware.js';
 import { userRouter } from './router/user.routes.js';
@@ -17,6 +18,7 @@ const corsOptions = {
   exposedHeaders: ['Authorization'],
 };
 app.use(cors(corsOptions));
+app.use(cookieParser());
 
 // JSON parser for body JSON
 app.use(express.json());
@@ -25,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 //Routes
 app.use('/user', userRouter);
 app.use('/admin', authRoleBased('admin'), adminRouter);
+app.use('/public', authRoleBased('public'), adminRouter);
 
 app.get('/', (req, res) => {
   res.send('Server is running...');
