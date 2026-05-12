@@ -7,6 +7,7 @@ import { ImagePreview } from './MediaComponents/ImagePreview';
 import { PdfViewer } from './MediaComponents/PdfViewer';
 import type { metaDataType } from '../../models/Types';
 import { logger } from '../../utils/logger';
+import PageNotFound from '../errorPage/PageNotFound';
 
 const AssetDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -95,7 +96,8 @@ const AssetDetails = () => {
   if (error) {
     return (
       <section className="mainContainer">
-        <p className={styles.error}>{error}</p>
+        {/* <p className={styles.error}>{error}</p> */}
+        <PageNotFound />
       </section>
     );
   }

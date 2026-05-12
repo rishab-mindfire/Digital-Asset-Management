@@ -11,7 +11,7 @@ export const logToServer = async (level: LogLevel, message: string, data?: unkno
       body: JSON.stringify({
         level,
         message,
-        meta: data, // JSON.stringify handles strings, arrays, and objects correctly
+        meta: data instanceof Error ? { message: data.message, stack: data.stack } : data,
         timestamp: new Date().toISOString(),
       }),
     });
@@ -24,12 +24,12 @@ export const logToServer = async (level: LogLevel, message: string, data?: unkno
 //function for logging
 export const logger = {
   info: (msg: string, data?: unknown) => {
-    // logToServer('info', msg, data);
+    logToServer('info', msg, data);
   },
   warn: (msg: string, data?: unknown) => {
-    // logToServer('warn', msg, data);
+    logToServer('warn', msg, data);
   },
   error: (msg: string, data?: unknown) => {
-    // logToServer('error', msg, data);
+    logToServer('error', msg, data);
   },
 };

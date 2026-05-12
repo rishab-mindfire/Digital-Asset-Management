@@ -4,9 +4,22 @@ import 'winston-daily-rotate-file';
 const { combine, timestamp, json, printf, colorize } = winston.format;
 
 // Format for the Console
-const consoleFormat = printf(({ level, message, timestamp, meta }) => {
-  const metaString = meta ? ` | Meta: ${JSON.stringify(meta)}` : '';
-  return `${timestamp} [${level}]: ${message}${metaString}`;
+const consoleFormat = printf(({ level, message, timestamp, ...meta }) => {
+  //  Check if the message itself is an object
+  const displayMessage = typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
+
+  //  Handle additional meta arguments (the rest of the arguments)
+  // We exclude internal winston keys like timestamp and level using rest syntax
+  const metaFiltered = { ...meta };
+  delete metaFiltered[Symbol.for('level')];
+  delete metaFiltered[Symbol.for('splat')];
+  delete metaFiltered[Symbol.for('message')];
+
+  const metaString = Object.keys(metaFiltered).length
+    ? ` | Meta: ${JSON.stringify(metaFiltered)}`
+    : '';
+
+  return `${timestamp} [${level}]: ${displayMessage}${metaString}`;
 });
 
 const transport = new winston.transports.DailyRotateFile({

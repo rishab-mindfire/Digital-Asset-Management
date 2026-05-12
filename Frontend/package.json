@@ -30,6 +30,7 @@
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.2",
+    "react-toastify": "^11.1.0",
     "vitest": "^4.1.5",
     "winston-daily-rotate": "^0.0.1"
   },

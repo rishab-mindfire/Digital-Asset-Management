@@ -75,6 +75,7 @@ const AssetDashboard = () => {
       const response = await api.get('/dashboardData/stats');
       if (response.status === 200) {
         setCardData(response.data);
+        logger.info('data', response.data);
       }
     } catch (error) {
       logger.error(`getting error in data Dashboard ${error}`);
@@ -85,6 +86,7 @@ const AssetDashboard = () => {
     getChartData();
     getCardData();
   }, []);
+
   return (
     <div className="mainContainer">
       <header className="header">
