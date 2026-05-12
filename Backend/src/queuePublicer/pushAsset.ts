@@ -1,4 +1,5 @@
 import amqp from 'amqplib';
+import { logger } from '../utils/logger.js';
 
 // Rabit mq url
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
@@ -21,9 +22,9 @@ export const publishToQueueForThumbnail = async (data: Record<string, unknown>):
       persistent: true,
     });
 
-    // if (messageSent) {
-    //   console.log(`[Queue Success] Task sent for Asset: ${data.assetId}`);
-    // }
+    if (messageBuffer) {
+      logger.info('[Queue Success] Task sent for Asset  :', data.assetId);
+    }
 
     // Clean up
     await channel.close();

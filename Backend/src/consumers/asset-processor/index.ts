@@ -2,6 +2,7 @@ import amqp from 'amqplib';
 import { handleAssetTask } from './handleAssetTask.js';
 import { RABBITMQ_CONFIG } from '../../config/rabbitmq.config.js';
 import { handleGlobalError } from '../../utils/globleError.js';
+import { logger } from '../../utils/logger.js';
 
 /**
  * Initializes and starts the background worker for asset processing.
@@ -19,6 +20,7 @@ export async function startAssetWorker(): Promise<void> {
     channel.consume(RABBITMQ_CONFIG.QUEUES.QUEUE_NAME, (msg) => {
       if (msg) {
         handleAssetTask(channel, msg);
+        logger.info('[QUEUE PROCESS ]: Asset queue !', msg);
       }
     });
   } catch (error: unknown) {

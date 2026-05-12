@@ -1,17 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
 
 import authRoleBased from './middlewares/authRoleBased.middleware.js';
 import { userRouter } from './router/user.routes.js';
 import { adminRouter } from './router/admin.routes.js';
 import { publicRouter } from './router/public.routes.js';
-import rateLimit from 'express-rate-limit';
+import logRouter from './router/logRoute.route.js';
 
 const app = express();
-
 const frontend_url = process.env.FRONTEND_URL || 'http://localhost:3001';
-//cros policy :
+
+// CORS Policy
 const corsOptions = {
   origin: [frontend_url],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -19,30 +20,40 @@ const corsOptions = {
   optionsSuccessStatus: 200,
   exposedHeaders: ['Authorization'],
 };
-
-// Set up rate limiter: maximum of 100 requests per 15 minutes per IP
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  message: 'Too many requests from this IP, please try again after 15 minutes',
-});
-
-// Apply the rate limiter to all requests
-app.use(limiter);
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-// JSON parser for body JSON
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+//  Rate Limiters
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // number of requests
+  message: 'Too many requests, please try again later.',
+});
+// log limiter
+const logLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Stricter limit for logs
+  message: 'Log limit exceeded for this IP.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-//Routes
+// Routes
+// Log Route: Very strict payload limit (2kb )
+app.use('/api', logLimiter, express.json({ limit: '2kb' }), logRouter);
+
+//  Body json size and Parsing
+app.use(express.json({ limit: '50kb' }));
+app.use(express.urlencoded({ extended: true, limit: '50kb' }));
+app.use(globalLimiter);
+
+//  API Endpoints
 app.use('/user', userRouter);
 app.use('/admin', authRoleBased('admin'), adminRouter);
 app.use('/public', authRoleBased('public'), publicRouter);
 
 app.get('/', (req, res) => {
-  res.send('Server is running...');
+  res.send('Server is running and secure.');
 });
 
 export default app;

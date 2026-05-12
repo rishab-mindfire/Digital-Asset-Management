@@ -6,6 +6,8 @@ import { VideoPlayer } from './MediaComponents/VideoPlayer';
 import { ImagePreview } from './MediaComponents/ImagePreview';
 import { PdfViewer } from './MediaComponents/PdfViewer';
 import type { metaDataType } from '../../models/Types';
+import { logger } from '../../utils/logger';
+import PageNotFound from '../errorPage/PageNotFound';
 
 const AssetDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -66,7 +68,7 @@ const AssetDetails = () => {
         });
       }
     } catch (error: unknown) {
-      console.error('Approval failed:', error);
+      logger.error('Approval failed:', error);
     }
   };
 
@@ -79,7 +81,7 @@ const AssetDetails = () => {
         navigation('/asset');
       }
     } catch (error: unknown) {
-      console.error('Approval failed:', error);
+      logger.error('Approval failed:', error);
     }
     setLoading(false);
   };
@@ -94,7 +96,8 @@ const AssetDetails = () => {
   if (error) {
     return (
       <section className="mainContainer">
-        <p className={styles.error}>{error}</p>
+        {/* <p className={styles.error}>{error}</p> */}
+        <PageNotFound />
       </section>
     );
   }

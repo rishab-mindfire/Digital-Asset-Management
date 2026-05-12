@@ -1,4 +1,5 @@
 import amqp from 'amqplib';
+import { logger } from '../utils/logger.js';
 
 // Rabit mq url
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
@@ -38,6 +39,6 @@ export const publishToExpirationQueue = async (assetId: string): Promise<void> =
     await channel.close();
     await connection.close();
   } catch (error) {
-    console.error('Failed to queue expiration:', error);
+    logger.error('Failed to queue expiration:', error);
   }
 };

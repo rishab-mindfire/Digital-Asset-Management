@@ -1,6 +1,7 @@
 import amqp from 'amqplib';
 import { AssetModel } from '../../models/asset.model.js';
 import { handleGlobalError } from '../../utils/globleError.js';
+import { logger } from '../../utils/logger.js';
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
 
@@ -35,6 +36,7 @@ export const consumeExpiration = async (): Promise<void> => {
 
         // Acknowledge successful processing to remove from queue
         channel.ack(msg);
+        logger.info('[QUEUE PROCESS ]: Asset expiration queue !', assetId);
       } catch (innerError) {
         // Prevent worker crash on message processing failure
         handleGlobalError(innerError);
