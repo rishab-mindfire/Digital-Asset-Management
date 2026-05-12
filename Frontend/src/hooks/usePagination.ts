@@ -37,7 +37,7 @@ const usePagination = () => {
           search: search,
         });
 
-        const response = await api.get(`/admin/assets?${params.toString()}`);
+        const response = await api.get(`/assets?${params.toString()}`);
 
         // the data  response.data
         const data: AssetApiResponse = response.data;

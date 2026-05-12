@@ -17,7 +17,7 @@ export const useAsset = (assetId: string | undefined) => {
     const fetchDetails = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`admin/assetsDetails/${assetId}`);
+        const response = await api.get(`/assetsDetails/${assetId}`);
         const assetExtension = response.data;
         const ext = assetExtension || '';
 
@@ -42,7 +42,7 @@ export const useAsset = (assetId: string | undefined) => {
   }, [assetId]);
 
   const getStreamUrl = () => {
-    return assetId ? `/admin/assets/${assetId}?stream=true` : '';
+    return assetId ? `/assets/${assetId}?stream=true` : '';
   };
 
   return { loading, error, category, getStreamUrl };

@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authRoleBased from './middlewares/authRoleBased.middleware.js';
 import { userRouter } from './router/user.routes.js';
 import { adminRouter } from './router/admin.routes.js';
+import { publicRouter } from './router/public.routes.js';
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 //Routes
 app.use('/user', userRouter);
 app.use('/admin', authRoleBased('admin'), adminRouter);
-app.use('/public', authRoleBased('public'), adminRouter);
+app.use('/public', authRoleBased('public'), publicRouter);
 
 app.get('/', (req, res) => {
   res.send('Server is running...');

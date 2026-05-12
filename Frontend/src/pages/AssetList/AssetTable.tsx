@@ -14,6 +14,7 @@ import usePagination from '../../hooks/usePagination';
 import Loader from '../../components/common/Loader';
 
 const AssetTable = () => {
+  const userRole = localStorage.getItem('userRole-DAM');
   // file (asset chunk) upload
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -82,6 +83,7 @@ const AssetTable = () => {
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
+
   useEffect(() => {
     const time = setTimeout(() => {
       setSearch(searchValue);
@@ -147,7 +149,7 @@ const AssetTable = () => {
                         <th>Approval</th>
                         <th>Owner</th>
                         <th>Uploaded At</th>
-                        <th>View</th>
+                        {userRole === 'admin' && <th>View</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -167,7 +169,7 @@ const AssetTable = () => {
                           <td>{asset.owner}</td>
                           <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
                           <td>
-                            <Link to={`/asset/${asset.id}`}>Open</Link>
+                            {userRole === 'admin' && <Link to={`/asset/${asset.id}`}>Open</Link>}
                           </td>
                         </tr>
                       ))}

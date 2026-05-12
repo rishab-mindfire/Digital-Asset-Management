@@ -36,7 +36,7 @@ const useChunkedUpload = (options: UploadOptions = {}) => {
       formData.append('uploadId', uploadId);
       formData.append('totalChunks', totalChunks.toString());
 
-      await api.post('/admin/upload/chunk', formData);
+      await api.post('/upload/chunk', formData);
 
       // Update progress for this specific file
       const currentProgress = Math.round((i / totalChunks) * 100);
@@ -53,7 +53,7 @@ const useChunkedUpload = (options: UploadOptions = {}) => {
       totalChunks,
     };
 
-    const response = await api.post<UploadResponse>('/admin/upload/merge', mergePayload);
+    const response = await api.post<UploadResponse>('/upload/merge', mergePayload);
 
     return response.data;
   };
