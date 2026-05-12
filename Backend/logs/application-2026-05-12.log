@@ -411,3 +411,59 @@
 {"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:10:56"}
 {"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":13},"percentages":{"duplicatePercentage":"23.08%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T13:45:05.850Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 19:15:05"}
 {"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":13},"percentages":{"duplicatePercentage":"23.08%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T13:45:05.852Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 19:15:05"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:41:51"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:41:51"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:42:26"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:42:26"}
+{"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":14},"percentages":{"duplicatePercentage":"21.43%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T14:16:19.711Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 19:46:19"}
+{"frontendMeta":{"counts":{"duplicates":3,"expired":0,"expiringSoon":0,"failed":0,"riskLevel":"Low","totalAssets":14},"percentages":{"duplicatePercentage":"21.43%","failedPercentage":"0.00%"}},"frontendTime":"2026-05-12T14:16:19.712Z","level":"info","message":"[FE] data","timestamp":"2026-05-12 19:46:19"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:51:04"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:51:04"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:51:52"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:51:52"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:52:14"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:52:14"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:52:25"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:52:25"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:52:38"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:52:38"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:53:37"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:53:37"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:53:53"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:53:53"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:54:18"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:54:18"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:54:29"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:54:29"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:54:40"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:54:40"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:54:47"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:54:47"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:55:16"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:55:16"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:55:38"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:55:38"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:56:10"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:56:10"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:56:28"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:56:28"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:56:52"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:56:52"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 19:56:59"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 19:56:59"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:01:07"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:01:07"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:03:06"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:03:06"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:03:20"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:03:20"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:03:32"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:03:32"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:04:50"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:04:50"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:05:37"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:05:37"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:06:10"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:06:10"}
+{"level":"info","message":"db-connected ! ","timestamp":"2026-05-12 20:06:20"}
+{"level":"info","message":"workers initiated ! ","timestamp":"2026-05-12 20:06:20"}

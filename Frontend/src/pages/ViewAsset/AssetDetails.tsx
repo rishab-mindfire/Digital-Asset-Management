@@ -208,43 +208,45 @@ const AssetDetails = () => {
           </section>
 
           <aside className={styles.metadataPane}>
-            <h3>Metadata</h3>
-            <div className={styles.metaGrid}>
-              <div className={styles.metaItem}>
-                <label>File Type</label>
-                <p>{metaData?.metadata.extension?.toUpperCase()}</p>
-                <button
-                  onClick={() => {
-                    if (metaData?._id) {
-                      deleteAsset(metaData._id);
-                    }
-                  }}
-                >
-                  delete
-                </button>
-              </div>
-              <div className={styles.metaItem}>
-                <label>Status</label>
-                <p>
-                  <span className={styles.statusBadge}>Uploaded</span>
-                </p>
-              </div>
-
-              <div className={styles.metaItem}>
-                <label>Owner</label>
-                <p>{metaData?.owner || 'System'}</p>
-              </div>
-              {metaData && currentUser === 'admin' && (
-                <span>
+            <div className={styles.mainBox}>
+              <h3>Metadata</h3>
+              <div className={styles.metaGrid}>
+                <div className={styles.metaItem}>
+                  <label>File Type</label>
+                  <p>{metaData?.metadata.extension?.toUpperCase()}</p>
                   <button
-                    className="secondaryBtn"
-                    disabled={metaData.approval !== 'pending'}
-                    onClick={() => markApprove(metaData._id)}
+                    onClick={() => {
+                      if (metaData?._id) {
+                        deleteAsset(metaData._id);
+                      }
+                    }}
                   >
-                    Mark approve
+                    delete
                   </button>
-                </span>
-              )}
+                </div>
+                <div className={styles.metaItem}>
+                  <label>Status</label>
+                  <p>
+                    <span className={styles.statusBadge}>Uploaded</span>
+                  </p>
+                </div>
+
+                <div className={styles.metaItem}>
+                  <label>Owner</label>
+                  <p>{metaData?.owner || 'System'}</p>
+                </div>
+                {metaData && currentUser === 'admin' && (
+                  <span className={styles.buttomBtn}>
+                    <button
+                      className="secondaryBtn"
+                      disabled={metaData.approval !== 'pending'}
+                      onClick={() => markApprove(metaData._id)}
+                    >
+                      Mark approve
+                    </button>
+                  </span>
+                )}
+              </div>
             </div>
           </aside>
         </main>

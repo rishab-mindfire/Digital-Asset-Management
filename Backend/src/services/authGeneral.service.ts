@@ -1,20 +1,6 @@
 // JWT Authentication Utility Module
 // Provides secure methods for generating and validating JSON Web Tokens
-// Manages user session persistence through cryptographic signature verification
-// Abstracts the complexity of token signing and payload extraction for the auth layer
 import jwt from 'jsonwebtoken';
-
-// Generates a signed JWT token containing the user email with a 1 day expiration
-// export function generateToken(user: { userEmail: string }) {
-//   const secret = process.env.JWT_SECRET;
-
-//   // Ensure the cryptographic secret is defined before attempting to sign
-//   if (secret) {
-//     return jwt.sign(user, secret, {
-//       expiresIn: 60 * 60 * 12 * 2,
-//     });
-//   }
-// }
 
 // Validates the provided token string and returns the decoded user information
 export function verifyTokenAndGetUser(token: string) {
@@ -35,12 +21,3 @@ export function verifyTokenAndGetUser(token: string) {
     }
   }
 }
-
-// refresh token generation
-// export const generateTokens = (userPayload: object) => {
-//   const accessToken = jwt.sign(userPayload, process.env.JWT_SECRET!, { expiresIn: '15m' });
-//   const refreshToken = jwt.sign(userPayload, process.env.REFRESH_TOKEN_SECRET!, {
-//     expiresIn: '7d',
-//   });
-//   return { accessToken, refreshToken };
-// };

@@ -19,6 +19,7 @@ pnpm-lock.yaml
 **/npm-debug.log*
 **/yarn-debug.log*
 **/yarn-error.log*
+**/.log*
 
 # Production Build Folders
 Frontend/dist/
@@ -26,6 +27,7 @@ Frontend/build/
 Frontend/out/
 Backend/dist/
 Backend/storage/
+Backend/logs/
 
 # IDE / System files
 .DS_Store
