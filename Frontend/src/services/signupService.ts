@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import type { SignupType } from '../models/Types';
 import axios from 'axios';
 
@@ -15,6 +16,7 @@ export const signupApi = async (
   try {
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, payload);
     if (response.status === 201) {
+      toast('registration successful !');
       return response.data;
     }
   } catch (err: unknown) {
@@ -22,6 +24,7 @@ export const signupApi = async (
     if (axios.isAxiosError(err)) {
       const message =
         err.response?.data?.message || err.response?.data?.error || 'Server unavailable';
+      toast.error(message);
 
       throw new Error(message, { cause: err });
     }

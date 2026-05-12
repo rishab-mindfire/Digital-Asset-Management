@@ -29,7 +29,7 @@ export function loginReducer(state: LoginType, action: LoginAction): LoginType {
       return {
         ...state,
 
-        // Dynamically update field (email or password)
+        // Dynamically update field
         [action.field]: action.value,
 
         // Clear error for that specific field

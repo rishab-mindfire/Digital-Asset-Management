@@ -80,6 +80,7 @@ span.routes {
 
 .downloadBtn {
   background: var(--logo-color, #007bff);
+  border: none;
   color: white;
   text-decoration: none;
   padding: 10px 20px;

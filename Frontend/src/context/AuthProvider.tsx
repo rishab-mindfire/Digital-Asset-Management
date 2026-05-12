@@ -6,7 +6,6 @@ import { AuthContext } from './AuthContext';
 type Action = { type: 'LOGIN'; payload: string } | { type: 'LOGOUT' };
 
 // Initial token from localStorage
-
 const token = localStorage.getItem(import.meta.env.VITE_TOKEN_KEY);
 
 // Initial authentication state

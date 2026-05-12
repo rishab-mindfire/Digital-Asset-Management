@@ -4,6 +4,10 @@ import { UsageTrackingModel } from '../models/usagetracking.model.js';
 import { AuthUser, IAsset } from '../types/index.js';
 import { removePhysicalFiles, transferOriginalStatus } from '../helper/removeFiles.helper.js';
 import { logger } from '../utils/logger.js';
+import fs from 'fs';
+import { Response } from 'express';
+import path from 'path';
+import { getMimeType } from '../helper/fileMimeType.js';
 
 class AssetManagement {
   // ALL asset lists
@@ -71,12 +75,12 @@ class AssetManagement {
     return { asset, history };
   }
 
-  //mark markApprove
+  // mark markApprove
   async markApprove(assetId: string) {
     return await AssetModel.findByIdAndUpdate(assetId, { approval: 'approved' });
   }
 
-  //get meteData
+  // get meteData
   async getAssetMetadata(assetId: string) {
     const asset = await AssetModel.findById(assetId, {
       title: 1,
@@ -91,7 +95,7 @@ class AssetManagement {
     return asset;
   }
 
-  //delet assets
+  // delet assets
   deleteAssetService = async (assetId: string) => {
     const asset = await AssetModel.findById(assetId);
     if (!asset) {
@@ -118,6 +122,66 @@ class AssetManagement {
     await AssetModel.findByIdAndDelete(assetId);
 
     return { success: true };
+  };
+
+  // download assets
+  /**
+   * Streams an asset from the local filesystem to the client.
+   * Handles dynamic content types and filenames.
+   */
+  getAssetForDownload = async (assetId: string, res: Response) => {
+    try {
+      // Fetch Asset from DB
+      const asset = await AssetModel.findById(assetId);
+      if (!asset) {
+        return res.status(404).json({ message: 'Asset not found' });
+      }
+
+      const absolutePath = path.resolve(asset.localPath);
+      if (!fs.existsSync(absolutePath)) {
+        return res.status(404).json({ message: 'Physical file missing' });
+      }
+
+      //  Resolve Filename & Extension
+      const metadataExt = asset.metadata?.extension || '';
+      const dotExt = metadataExt.startsWith('.') ? metadataExt : `.${metadataExt}`;
+
+      let finalFileName = asset.title;
+      if (!finalFileName.toLowerCase().endsWith(dotExt.toLowerCase())) {
+        finalFileName = `${finalFileName}${dotExt}`;
+      }
+
+      //  Dynamic MIME Type
+      const mimeType = getMimeType(finalFileName);
+
+      //  Encode for Header Safety
+      const encodedName = encodeURIComponent(finalFileName);
+
+      // Set Headers
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Content-Length', asset.metadata?.size || 0);
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${encodedName}"; filename*=UTF-8''${encodedName}`,
+      );
+
+      // Stream the file
+      const readStream = fs.createReadStream(absolutePath);
+
+      readStream.on('error', (error) => {
+        console.error('Streaming error:', error);
+        if (!res.headersSent) {
+          res.status(500).send('Streaming failed');
+        }
+      });
+
+      readStream.pipe(res);
+    } catch (error) {
+      console.error('Download Service Error:', error);
+      if (!res.headersSent) {
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+    }
   };
 }
 

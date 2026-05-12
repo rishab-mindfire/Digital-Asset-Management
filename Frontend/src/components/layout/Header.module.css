@@ -96,7 +96,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 10px;
   background: none;
   cursor: pointer;
   border: 1px solid var(--secondary-color);
@@ -111,8 +111,8 @@
   transform: scale(1.02);
 }
 .btnLogout img {
-  height: 32px;
-  width: 32px;
+  height: 24px;
+  width: 24px;
 }
 
 .mobileLogout {

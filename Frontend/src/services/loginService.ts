@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import type { LoginType } from '../models/Types';
 import axios from 'axios';
 
@@ -39,13 +40,14 @@ export const loginApi = async (
     localStorage.setItem(TOKEN_KEY, token);
     // store role
     localStorage.setItem('userRole-DAM', response.data.userRole);
-
+    toast('login success !');
     return token;
   } catch (err: unknown) {
     // Normalize error
     if (axios.isAxiosError(err)) {
       const message =
         err.response?.data?.message || err.response?.data?.error || 'Server unavailable';
+      toast.error(message);
       throw new Error(message, { cause: err });
     }
 
