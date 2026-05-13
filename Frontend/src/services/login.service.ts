@@ -40,7 +40,7 @@ export const loginApi = async (
     localStorage.setItem(TOKEN_KEY, token);
     // store role
     localStorage.setItem('userRole-DAM', response.data.userRole);
-    toast('login success !');
+    toast.success('login success !');
     return token;
   } catch (err: unknown) {
     // Normalize error

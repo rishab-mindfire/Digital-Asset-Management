@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import logoutImage from '../../assets/logout.png';
 import logo from '../../assets/logo.png';
+import { toast } from 'react-toastify';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -29,6 +30,7 @@ const Header: React.FC = () => {
     localStorage.removeItem(import.meta.env.VITE_TOKEN_KEY);
     logout();
     navigate('/login');
+    toast.success('logout successfully !');
   };
 
   return (

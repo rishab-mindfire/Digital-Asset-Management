@@ -48,11 +48,13 @@ class AssetManagement {
       .skip((pageNum - 1) * limitNum);
 
     const total = await AssetModel.countDocuments(filter);
+    const totalNumberOfAssets = await AssetModel.countDocuments();
     return {
       assets,
       total,
       page: pageNum,
       totalPages: Math.ceil(total / limitNum),
+      totalNumberOfAssets: search ? total : totalNumberOfAssets,
     };
   }
 

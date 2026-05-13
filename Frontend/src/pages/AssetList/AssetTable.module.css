@@ -305,14 +305,12 @@
 }
 
 @media (max-width: 768px) {
-
-.pagination {
-  gap: 8px;
-  flex-direction: column;
-}
-.toolbar {
-  display: flex;
-  justify-content: center;
-}
-
+  .pagination {
+    gap: 8px;
+    flex-direction: column;
+  }
+  .toolbar {
+    display: flex;
+    justify-content: center;
+  }
 }

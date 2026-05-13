@@ -5,6 +5,7 @@ import { logger } from '../utils/logger';
 
 const usePagination = () => {
   const [assets, setAssets] = useState<FormattedAsset[]>([]);
+  const [totalNumberOfAssets, setTotalNumberOfAssets] = useState<number>(0);
   const [loadingAssets, setAssetLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [pagination, setPagination] = useState({
@@ -50,6 +51,7 @@ const usePagination = () => {
             page: data.page,
             totalPages: data.totalPages,
           });
+          setTotalNumberOfAssets(data.totalNumberOfAssets);
         }
       } catch (error) {
         logger.error('Error fetching assets:', error);
@@ -60,7 +62,7 @@ const usePagination = () => {
     [search],
   );
 
-  return { assets, pagination, loadingAssets, fetchAssets, setSearch, search };
+  return { assets, pagination, loadingAssets, fetchAssets, setSearch, search, totalNumberOfAssets };
 };
 
 export default usePagination;

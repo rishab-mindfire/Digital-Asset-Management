@@ -103,7 +103,7 @@
   border-radius: 4px;
   color: var(--primary-color);
   font-size: 16px;
-  padding-inline: 14px;
+  padding: 4px;
   width: 100px;
 }
 .btnLogout:hover {
@@ -111,8 +111,8 @@
   transform: scale(1.02);
 }
 .btnLogout img {
-  height: 24px;
-  width: 24px;
+  height: 22px;
+  width: 20px;
 }
 
 .mobileLogout {
