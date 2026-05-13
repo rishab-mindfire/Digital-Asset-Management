@@ -25,6 +25,7 @@ const connectDB = async (): Promise<typeof mongoose> => {
     }
 
     // Attempt to establish connection with defined options
+    mongoose.set('strictQuery', true);
     await mongoose.connect(connectionString, options);
     logger.info(`Db connected ${connectionString}`);
 

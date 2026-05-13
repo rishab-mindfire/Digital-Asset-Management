@@ -110,3 +110,8 @@ export interface AuthUser {
   userID: string;
   userEmail: string;
 }
+
+export interface MockMulterFile {
+  buffer: Buffer;
+  originalname: string;
+}

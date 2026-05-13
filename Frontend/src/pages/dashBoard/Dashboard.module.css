@@ -25,7 +25,7 @@
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border-left: 5px solid #3b82f6;
+  border-left: 5px solid  #10b981;;
   display: flex;
   flex-direction: column;
 }
@@ -38,7 +38,7 @@
   border-left-color: #ef4444;
 }
 .risk {
-  border-left-color: #10b981;
+  border-left-color:#3b82f6;
 }
 
 .statLabel {
@@ -63,6 +63,9 @@
   grid-template-columns: 1fr;
   gap: 24px;
 }
+.highRisk{
+  color: #E74242;
+}
 
 /* Desktop: Side-by-Side */
 @media (min-width: 1024px) {
@@ -72,6 +75,25 @@
   .graphPanel {
     padding: 0%;
   }
+}
+@media (max-width:750px) {
+  .statCard {
+    flex-direction: row;
+    width: 100%;
+  }
+   .statCard p{
+    width: 100%;
+   }
+   .statLabel {
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+   .statValue{
+    display: flex;
+    justify-content: flex-end;
+   }
 }
 .graphPanel {
   padding: 20px;

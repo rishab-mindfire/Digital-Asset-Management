@@ -16,16 +16,16 @@ export const loginApi = async (
   credentials: Pick<LoginType, 'userEmail' | 'userPassword'>,
 ): Promise<string> => {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`, credentials);
-
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`, credentials, {
+      withCredentials: true,
+    });
     // Axios normalizes headers to lowercase
     const authHeader = response.headers?.authorization;
-
     if (!authHeader) {
       throw new Error('Authorization header missing');
     }
 
-    // Expected format: "Bearer <token>"
+    // "Bearer <token>"
     const parts = authHeader.split(' ');
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
       throw new Error('Invalid authorization header format');
@@ -39,7 +39,7 @@ export const loginApi = async (
     // Store token
     localStorage.setItem(TOKEN_KEY, token);
     // store role
-    localStorage.setItem('userRole-DAM', response.data.userRole);
+    localStorage.setItem(import.meta.env.USERROLE_KEY || 'userRole-DAM', response.data.userRole);
     toast.success('login success !');
     return token;
   } catch (err: unknown) {

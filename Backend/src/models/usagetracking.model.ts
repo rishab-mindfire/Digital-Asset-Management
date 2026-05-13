@@ -23,12 +23,20 @@ const usageTrackingSchema = new Schema<IUsageTracking>(
       required: true,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    strict: true,
+    strictQuery: true,
+  },
 );
 
-// Indexes for the Analytics Service
-// These make generating reports
-usageTrackingSchema.index({ assetId: 1, action: 1 });
-usageTrackingSchema.index({ performerEmail: 1 });
+// Asset Analytics
+usageTrackingSchema.index({ assetId: 1, action: 1, createdAt: -1 });
+
+// User Activity Audit
+usageTrackingSchema.index({ performerId: 1, createdAt: -1 });
+
+// Global Action Trends
+usageTrackingSchema.index({ action: 1, createdAt: -1 });
 
 export const UsageTrackingModel = model<IUsageTracking>('UsageLogs', usageTrackingSchema);

@@ -70,7 +70,7 @@ class UserClass {
       const userRole = await verifyEmplyeeRole(userEmail);
 
       //  Set the Refresh Token in a secure HTTP-only cookie
-      res.cookie('DigitalAssetApp', DigitalAssetApp, {
+      res.cookie(process.env.COOKIES_NAME || 'DigitalAssetApp', DigitalAssetApp, {
         httpOnly: true, // Protects against XSS
         sameSite: 'strict', // Protects against CSRF
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days

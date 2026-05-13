@@ -32,9 +32,15 @@ const collectionSchema = new Schema<ICollection>(
       default: false,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    strict: true,
+    strictQuery: true,
+  },
 );
 
+// Indexing for lookup owner and assset creation
+collectionSchema.index({ createdBy: 1, timestamps: 1 });
 // Indexing for lookups by owner name or email
 collectionSchema.index({ name: 1, ownerEmail: 1 });
 

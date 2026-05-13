@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import logoutImage from '../../assets/logout.png';
 import logo from '../../assets/logo.png';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -28,6 +29,7 @@ const Header: React.FC = () => {
   // log-out
   const handleLogout = () => {
     localStorage.removeItem(import.meta.env.VITE_TOKEN_KEY);
+    Cookies.remove(import.meta.env.COOKIES_NAME);
     logout();
     navigate('/login');
     toast.success('logout successfully !');

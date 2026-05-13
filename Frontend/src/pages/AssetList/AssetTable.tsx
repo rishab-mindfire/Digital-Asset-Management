@@ -15,7 +15,7 @@ import Loader from '../../components/common/Loader';
 import { toast } from 'react-toastify';
 
 const AssetTable = () => {
-  const userRole = localStorage.getItem('userRole-DAM');
+  const userRole = localStorage.getItem(import.meta.env.USERROLE_KEY || 'userRole-DAM');
   // file (asset chunk) upload
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [message, setMessage] = useState('');
