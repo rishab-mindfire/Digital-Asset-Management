@@ -17,10 +17,8 @@ const startServer = async () => {
     await connectDB();
     // all workers conection (consumner) to MQ
     await initWorkers();
-    app.listen(port, () => {
-      logger.info('db-connected ! ');
-      logger.info('workers initiated ! ');
-    });
+    app.listen(port, () => {});
+    logger.info('workers initiated ! ');
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(err.message);

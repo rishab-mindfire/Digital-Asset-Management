@@ -2,6 +2,7 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import dotenv from 'dotenv';
 import { handleGlobalError, AppError } from '../utils/globleError.js';
+import { logger } from '../utils/logger.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ const connectDB = async (): Promise<typeof mongoose> => {
 
     // Attempt to establish connection with defined options
     await mongoose.connect(connectionString, options);
+    logger.info(`Db connected ${connectionString}`);
 
     return mongoose;
   } catch (error: unknown) {

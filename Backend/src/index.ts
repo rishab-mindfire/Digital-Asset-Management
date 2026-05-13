@@ -26,7 +26,7 @@ app.use(cookieParser());
 //  Rate Limiters
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 * 10000000000000, // number of requests
+  max: 100 * 10000000000000, // number of requests for testing
   message: 'Too many requests, please try again later.',
 });
 // log limiter
