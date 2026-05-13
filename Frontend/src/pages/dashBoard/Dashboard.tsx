@@ -120,7 +120,11 @@ const AssetDashboard = () => {
 
         <div className={`${styles.statCard} ${styles.risk}`}>
           <p className={styles.statLabel}>Risk</p>
-          <p className={styles.statValue}>{cardData.counts.riskLevel}</p>
+          <p
+            className={`${styles.statValue} ${cardData.counts.riskLevel === 'High' ? styles.highRisk : ''}`}
+          >
+            {cardData.counts.riskLevel}
+          </p>
         </div>
       </div>
 
@@ -156,8 +160,7 @@ const AssetDashboard = () => {
           <div className={styles.statusItem}>
             <div className={styles.statusLabelRow}>
               <span>Failed</span>
-
-              <span style={{ color: '#ef4444' }}>{cardData.percentages.failedPercentage}</span>
+              <span className={styles.highRisk}>{cardData.percentages.failedPercentage}</span>
             </div>
 
             <div className={styles.progressBg}>

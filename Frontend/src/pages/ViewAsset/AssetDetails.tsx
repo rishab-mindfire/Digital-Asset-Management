@@ -18,7 +18,7 @@ import {
 
 const AssetDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const currentUser = localStorage.getItem('userRole-DAM');
+  const currentUser = localStorage.getItem(import.meta.env.USERROLE_KEY || 'userRole-DAM');
   const navigation = useNavigate();
   const [metaData, setMetaData] = useState<metaDataType>();
   const [category, setCategory] = useState<'image' | 'video' | 'pdf' | 'other'>('other');

@@ -10,7 +10,7 @@ api.interceptors.request.use(
   (config) => {
     //  Get Token and Role from localStorage
     const token = localStorage.getItem(import.meta.env.VITE_TOKEN_KEY);
-    const userRole = localStorage.getItem('userRole-DAM');
+    const userRole = localStorage.getItem(import.meta.env.USERROLE_KEY || 'userRole-DAM');
 
     config.headers = config.headers ?? {};
 
