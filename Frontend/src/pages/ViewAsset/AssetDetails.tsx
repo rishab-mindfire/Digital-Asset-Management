@@ -1,13 +1,20 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { api } from '../../services/apiInterceptor';
 import styles from './AssetDetails.module.css';
 import { VideoPlayer } from './MediaComponents/VideoPlayer';
 import { ImagePreview } from './MediaComponents/ImagePreview';
 import { PdfViewer } from './MediaComponents/PdfViewer';
 import type { metaDataType } from '../../models/Types';
 import { logger } from '../../utils/logger';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 import PageNotFound from '../errorPage/PageNotFound';
+
+import {
+  getAssetDetails,
+  approveAsset,
+  removeAsset,
+  downloadAsset,
+} from '../../services/asset.service';
 
 const AssetDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,14 +29,12 @@ const AssetDetails = () => {
     const fetchDetails = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/assetsDetails/${id}`);
+        if (!id) {
+          return;
+        }
 
-        // Handle response data for images
-        const rawData = response.data;
-        const data: string = rawData?.metadata?.extension;
-        const extension = data.toLowerCase();
-
-        // Store the raw data for metadata
+        const rawData = await getAssetDetails(id);
+        const extension = rawData?.metadata?.extension?.toLowerCase() || '';
         setMetaData(rawData);
 
         if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension)) {
@@ -41,103 +46,80 @@ const AssetDetails = () => {
         } else {
           setCategory('other');
         }
-      } catch (err: unknown) {
-        const error = err as { response?: { data?: { message?: string } } };
-        setError(error.response?.data?.message || 'Failed to load details');
+      } catch (error: unknown) {
+        setError(getErrorMessage(error));
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchDetails();
-    }
+    fetchDetails();
   }, [id]);
 
   const markApprove = async (id: string) => {
     try {
-      const res = await api.post(`/markassets/${id}`);
-      // Check if the request was successful
-      if (res.status === 200 || res.status === 201) {
-        // Update local state to change immediately
-        setMetaData((prev) => {
-          if (!prev) {
-            return prev;
-          }
-          return { ...prev, approval: 'approved' };
-        });
-      }
+      await approveAsset(id);
+      setMetaData((prev) => {
+        if (!prev) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          approval: 'approved',
+        };
+      });
     } catch (error: unknown) {
-      logger.error('Approval failed:', error);
+      logger.error(getErrorMessage(error));
     }
   };
 
   const handleDownloadFile = async (id: string) => {
     try {
-      // Make the call (ensuring responseType 'blob' is set)
-      const response = await api.get(`/admin/downloadAsset/${id}`, {
-        responseType: 'blob',
-      });
-
-      // Validate that we have data
-      if (!response || !response.data) {
-        throw new Error('No data received from server');
-      }
-
-      //  Extract Filename from headers
+      const response = await downloadAsset(id);
       const disposition = response.headers['content-disposition'];
-      let fileName = 'downloaded_file'; // Initial fallback
-
+      let fileName = 'downloaded_file';
       if (disposition) {
-        // Logic to prefer filename* (UTF-8) then fallback to filename=
         const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
         const standardMatch = disposition.match(/filename="?([^";]+)"?/i);
-
         const rawName = utf8Match ? utf8Match[1] : standardMatch ? standardMatch[1] : null;
-
         if (rawName) {
           fileName = decodeURIComponent(rawName);
         }
       }
 
-      // Create the Blob and URL
-      // We use the content-type from the header (image/png) for better browser handling
       const rawMimeType = response.headers['content-type'];
       const blobType = typeof rawMimeType === 'string' ? rawMimeType : 'application/octet-stream';
+      const blob = new Blob([response.data], {
+        type: blobType,
+      });
 
-      const blob = new Blob([response.data], { type: blobType });
       const url = window.URL.createObjectURL(blob);
-
-      // Trigger the Browser Download
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
-
       document.body.appendChild(a);
       a.click();
 
-      // Cleanup
       setTimeout(() => {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       }, 100);
-    } catch (err) {
-      console.error('Download process failed:', err);
+    } catch (error: unknown) {
+      logger.error(getErrorMessage(error));
     }
   };
 
   const deleteAsset = async (id: string) => {
     try {
       setLoading(true);
-      const res = await api.delete(`/assets/${id}`);
-      // Check if the request was successful
-      if (res.status === 200) {
-        navigation('/asset');
-      }
+      await removeAsset(id);
+      navigation('/asset');
     } catch (error: unknown) {
-      logger.error('Approval failed:', error);
+      logger.error(getErrorMessage(error));
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   if (loading) {
@@ -147,10 +129,10 @@ const AssetDetails = () => {
       </section>
     );
   }
+
   if (error) {
     return (
       <section className="mainContainer">
-        {/* <p className={styles.error}>{error}</p> */}
         <PageNotFound />
       </section>
     );
@@ -160,6 +142,7 @@ const AssetDetails = () => {
     <section className="mainContainer">
       <header className="header">
         <h1 className="title">Asset Details</h1>
+
         <span className="bread-scrumb">
           <Link className="routes" to="/dashboard">
             Go to dashboard
@@ -177,7 +160,6 @@ const AssetDetails = () => {
         <header className={styles.header}>
           <div className={styles.headerContent}>
             <h1>Asset: {metaData?.fileType}</h1>
-            {/* link for download */}
             <button
               className={styles.downloadBtn}
               onClick={() => {
@@ -201,7 +183,7 @@ const AssetDetails = () => {
               {category === 'pdf' && <PdfViewer assetId={id!} />}
               {category === 'other' && (
                 <div className={styles.imagePlaceholder}>
-                  <span>No Preview Available (.{metaData?.metadata.extension})</span>
+                  <span>No Preview Available ( .{metaData?.metadata.extension})</span>
                 </div>
               )}
             </div>
@@ -210,6 +192,7 @@ const AssetDetails = () => {
           <aside className={styles.metadataPane}>
             <div className={styles.mainBox}>
               <h3>Metadata</h3>
+
               <div className={styles.metaGrid}>
                 <div className={styles.metaItem}>
                   <label>File Type</label>
@@ -224,6 +207,7 @@ const AssetDetails = () => {
                     delete
                   </button>
                 </div>
+
                 <div className={styles.metaItem}>
                   <label>Status</label>
                   <p>
@@ -235,6 +219,7 @@ const AssetDetails = () => {
                   <label>Owner</label>
                   <p>{metaData?.owner || 'System'}</p>
                 </div>
+
                 {metaData && currentUser === 'admin' && (
                   <span className={styles.buttomBtn}>
                     <button

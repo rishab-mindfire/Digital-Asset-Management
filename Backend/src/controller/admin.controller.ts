@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getUserDetails } from '../services/authRole.service.js';
 import { adminServices } from '../services/admin.service.js';
-import { AppError } from '../utils/globleError.js';
+import { AppError, handleControllerError } from '../utils/globleError.js';
 
 /**
  * Controller handling administrative dashboard actions and file management.
@@ -13,7 +13,7 @@ class AdminClass {
       const stats = await adminServices.getChartDataService();
       return res.status(200).json(stats);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Error loading dashboard chart');
+      handleControllerError(res, error, 'Error loading dashboard chart');
     }
   };
 
@@ -23,7 +23,7 @@ class AdminClass {
       const stats = await adminServices.getDashboardStats();
       return res.status(200).json(stats);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Error loading dashboard cards');
+      handleControllerError(res, error, 'Error loading dashboard cards');
     }
   };
 
@@ -46,7 +46,7 @@ class AdminClass {
       });
       return res.status(200).json(result);
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Chunk upload failed');
+      handleControllerError(res, error, 'Chunk upload failed');
     }
   };
 
@@ -80,16 +80,9 @@ class AdminClass {
 
       return res.status(201).json({ message: 'Merge complete. Asset pending processing.', asset });
     } catch (error: unknown) {
-      this.handleControllerError(res, error, 'Merging failed');
+      handleControllerError(res, error, 'Merging failed');
     }
   };
-
-  // Centralized response helper for controller-level error handling
-  private handleControllerError(res: Response, error: unknown, defaultMessage: string) {
-    const statusCode = error instanceof AppError ? error.statusCode : 500;
-    const message = error instanceof Error ? error.message : defaultMessage;
-    return res.status(statusCode).json({ message, error: message });
-  }
 }
 
 export const adminCtr = new AdminClass();

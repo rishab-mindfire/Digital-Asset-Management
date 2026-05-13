@@ -7,7 +7,7 @@ import type { LoginErrors } from '../../models/Types';
 import logoImage from '../../assets/logo.png';
 import backgroundImage from '../../assets/Glass Effect Login Page - Blue.webp';
 import { initialLoginState, loginReducer } from '../../reducers/loginReducer';
-import { loginApi } from '../../services/loginService';
+import { loginApi } from '../../services/login.service';
 
 /**
  * Login Component

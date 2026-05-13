@@ -1,8 +1,6 @@
 import { JwtPayload } from 'jsonwebtoken';
 import { userServices } from '../../src/services/users.service';
 
-// --- other services Mocks ---
-
 // --- User service Mocks ---
 export const mockAuthUser = {
   _id: '65f1a2b3c4d5e6f7a8b9c0d1',

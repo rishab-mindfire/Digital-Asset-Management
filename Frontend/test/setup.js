@@ -18,6 +18,35 @@ import '@testing-library/jest-dom';
  * @example
  * expect(element).toBeInTheDocument(); // provided by jest-dom
  */
+
+// Highcharts TypeError: tj.CSS?.supports is not a function
+Object.defineProperty(globalThis, 'CSS', {
+  value: {
+    supports: () => false,
+  },
+  writable: true,
+  enumerable: true,
+  configurable: true,
+});
+
+// Mocking PointerEvent for Highcharts interactions
+if (!globalThis.PointerEvent) {
+  globalThis.PointerEvent = class PointerEvent extends MouseEvent {};
+}
+
+// Polyfill DataTransfer for JSDOM
+if (typeof Array.from !== 'undefined' && typeof globalThis.DataTransfer === 'undefined') {
+  globalThis.DataTransfer = class DataTransfer {
+    items = {
+      add: vi.fn(),
+    };
+    files = [];
+    setData = vi.fn();
+    getData = vi.fn();
+    clearData = vi.fn();
+  };
+}
+
 afterEach(() => {
   // Unmounts React trees and clears the DOM after each test.
   cleanup();
