@@ -1,13 +1,13 @@
 import { handleGlobalError } from '../utils/globleError.js';
-import { consumeExpiration } from './asset-expire/handleExpiretion.js';
-import { startAssetWorker } from './asset-processor/index.js';
+import { assetExpirationWorker } from './asset-expire/handleExpiretion.js';
+import { assetUploadWorker } from './asset-processor/index.js';
 
 export async function initWorkers(): Promise<void> {
   try {
     // Start the asset processor worker
-    await startAssetWorker();
+    await assetUploadWorker();
     //Start expiration asset worker
-    await consumeExpiration();
+    await assetExpirationWorker();
   } catch (error) {
     handleGlobalError(error);
   }

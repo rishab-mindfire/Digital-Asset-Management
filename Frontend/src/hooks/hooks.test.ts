@@ -13,14 +13,14 @@ vi.mock('../services/apiInterceptor', () => ({
   },
 }));
 
-describe('usePagination Hook', () => {
+describe('usePagination Hook test', () => {
   // Cast api as Mocked to get type-safe mock methods
   const mockedApi = api as Mocked<typeof api>;
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
-
+  //initially page will be 1 with 0 data innitially
   it('should initialize with default values', () => {
     const { result } = renderHook(() => usePagination());
 

@@ -18,17 +18,12 @@ class AdminServices {
   // dash board data for graph
   async getDashboardStats() {
     try {
-      const now = new Date();
-      const expiryDays = parseInt(process.env.EXPIRY_DAYS || '1', 10);
-      const expiringSoonThreshold = new Date(now.getTime() + expiryDays * 24 * 60 * 60 * 1000);
-
       // Run all counts in parallel
       const [totalAssets, expiringSoon, duplicates, expired, failed] = await Promise.all([
         AssetModel.countDocuments({}),
 
         AssetModel.countDocuments({
-          isExpired: false,
-          expiryDate: { $gte: now, $lte: expiringSoonThreshold },
+          isExpired: true,
         }),
 
         AssetModel.countDocuments({
