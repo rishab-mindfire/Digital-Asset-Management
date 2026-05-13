@@ -11,7 +11,7 @@ import {
   saveChunkBasedChunkId,
   saveFileSesionDetails,
 } from '../helper/fileHandlers.helper.js';
-import { getFileHash } from '../helper/duplicateAsset.helper.js';
+import { calculateRiskLevel, getFileHash } from '../helper/Asset.helper.js';
 import { publishToExpirationQueue } from '../queuePublicer/expireAsset.js';
 
 class AdminServices {
@@ -45,16 +45,6 @@ class AdminServices {
         totalAssets > 0 ? ((duplicates / totalAssets) * 100).toFixed(2) : '0.00';
 
       const failedPercentage = totalAssets > 0 ? ((failed / totalAssets) * 100).toFixed(2) : '0.00';
-      function calculateRiskLevel(failedPct: number, expiredCount: number): string {
-        // Example Thresholds
-        if (failedPct > 15 || expiredCount > 50) {
-          return 'High';
-        }
-        if (failedPct > 5 || expiredCount > 10) {
-          return 'Medium';
-        }
-        return 'Low';
-      }
       const riskLevel = calculateRiskLevel(parseFloat(failedPercentage), expired);
 
       return {
@@ -78,6 +68,7 @@ class AdminServices {
       throw new Error('An unknown error occurred');
     }
   }
+
   //get chart data
   async getChartDataService() {
     //  Run Aggregation

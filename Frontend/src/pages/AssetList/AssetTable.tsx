@@ -113,7 +113,7 @@ const AssetTable = () => {
       <div className={styles.tableContainer}>
         <div className={styles.toolbar}>
           <div className={styles.actionsLeft}>
-            <span className={styles.btn}>Search</span>
+            <span className={styles.btn}>Total : {assets.length}</span>
             <input
               type="text"
               placeholder="Search assets..."
