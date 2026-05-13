@@ -117,6 +117,7 @@ export interface AssetApiResponse {
   total: number;
   page: number;
   totalPages: number;
+  totalNumberOfAssets: number;
 }
 
 //meta data

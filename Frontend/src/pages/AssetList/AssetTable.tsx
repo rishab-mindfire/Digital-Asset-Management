@@ -81,7 +81,8 @@ const AssetTable = () => {
   }, [error, isUploading]);
 
   //get Asset list table
-  const { assets, pagination, loadingAssets, fetchAssets, setSearch, search } = usePagination();
+  const { assets, pagination, loadingAssets, fetchAssets, setSearch, search, totalNumberOfAssets } =
+    usePagination();
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -113,7 +114,7 @@ const AssetTable = () => {
       <div className={styles.tableContainer}>
         <div className={styles.toolbar}>
           <div className={styles.actionsLeft}>
-            <span className={styles.btn}>Total : {assets.length}</span>
+            <span className={styles.btn}>Total : {totalNumberOfAssets}</span>
             <input
               type="text"
               placeholder="Search assets..."
