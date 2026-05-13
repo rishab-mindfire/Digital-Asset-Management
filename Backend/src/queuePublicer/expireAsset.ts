@@ -3,6 +3,8 @@ import { logger } from '../utils/logger.js';
 
 // Rabit mq url
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
+const FINAL_EXPIRY_QUEUE = process.env.QUEUE_EXPIRATION_ASSET_NAME || 'asset_expiration_worker';
+
 //days to expire
 const EXPIRY_DAYS = process.env.EXPIRY_DAYS || 10;
 
@@ -10,7 +12,6 @@ export const publishToExpirationQueue = async (assetId: string): Promise<void> =
   let connection;
   const DELAY_QUEUE = 'asset_expiry_delay';
   const EXPIRY_EXCHANGE = 'asset_expiry_exchange';
-  const FINAL_EXPIRY_QUEUE = 'asset_deletion_worker';
 
   const expiredIn = Number(EXPIRY_DAYS) * 24 * 60 * 60 * 1000;
   try {

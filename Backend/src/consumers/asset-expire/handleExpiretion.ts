@@ -12,36 +12,41 @@ export const consumeExpiration = async (): Promise<void> => {
   try {
     const connection = await amqp.connect(RABBITMQ_URL);
     const channel = await connection.createChannel();
-    const queue = 'asset_deletion_worker';
 
     // Ensure queue exists and survives server restarts
-    await channel.assertQueue(queue, { durable: true });
+    await channel.assertQueue(
+      process.env.QUEUE_EXPIRATION_ASSET_NAME || 'asset_expiration_worker',
+      { durable: true },
+    );
 
-    channel.consume(queue, async (msg) => {
-      try {
-        if (!msg) {
-          return;
+    channel.consume(
+      process.env.QUEUE_EXPIRATION_ASSET_NAME || 'asset_expiration_worker',
+      async (msg) => {
+        try {
+          if (!msg) {
+            return;
+          }
+
+          const { assetId } = JSON.parse(msg.content.toString());
+          const asset = await AssetModel.findById(assetId);
+
+          if (asset) {
+            // Perform soft delete by flagging expiration status
+            await AssetModel.findByIdAndUpdate(assetId, {
+              expiresAt: new Date(),
+              isExpired: true,
+            });
+          }
+
+          // Acknowledge successful processing to remove from queue
+          channel.ack(msg);
+          logger.info('[QUEUE PROCESS ]: Asset expiration queue !', assetId);
+        } catch (innerError) {
+          // Prevent worker crash on message processing failure
+          handleGlobalError(innerError);
         }
-
-        const { assetId } = JSON.parse(msg.content.toString());
-        const asset = await AssetModel.findById(assetId);
-
-        if (asset) {
-          // Perform soft delete by flagging expiration status
-          await AssetModel.findByIdAndUpdate(assetId, {
-            expiresAt: new Date(),
-            isExpired: true,
-          });
-        }
-
-        // Acknowledge successful processing to remove from queue
-        channel.ack(msg);
-        logger.info('[QUEUE PROCESS ]: Asset expiration queue !', assetId);
-      } catch (innerError) {
-        // Prevent worker crash on message processing failure
-        handleGlobalError(innerError);
-      }
-    });
+      },
+    );
   } catch (error: unknown) {
     // Handle connection or channel setup failures
     handleGlobalError(error);

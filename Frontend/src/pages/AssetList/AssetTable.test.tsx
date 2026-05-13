@@ -33,8 +33,7 @@ describe('AssetTable Component', () => {
   const mockSetSearch: Mock = vi.fn();
   const mockUploadFiles: Mock = vi.fn();
 
-  // Matches your hook: { total, page, totalPages }
-
+  // Matches hook: { total, page, totalPages }
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
@@ -71,7 +70,7 @@ describe('AssetTable Component', () => {
     expect(screen.getByText('Admin User')).toBeInTheDocument();
     expect(screen.getByText('Approved')).toBeInTheDocument();
   });
-
+  //search debounce test for 600 micro second
   it('triggers search with 600ms debounce', async () => {
     render(
       <MemoryRouter>

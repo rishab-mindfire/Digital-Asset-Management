@@ -3,10 +3,10 @@ import { logger } from '../utils/logger.js';
 
 // Rabit mq url
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
+const queueName = process.env.QUEUE_EXPIRATION_ASSET_NAME || '';
 
 export const publishToQueueForThumbnail = async (data: Record<string, unknown>): Promise<void> => {
   let connection;
-  const queueName = process.env.RABBITMQ_QUEUE_NAME || 'asset_upload_processing';
   try {
     // Establish connection and Create a channel
     connection = await amqp.connect(RABBITMQ_URL);

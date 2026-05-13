@@ -122,7 +122,7 @@ JWT_SECRET=""
 JWT_REFRESH_SECRET=""
 UPLOAD_DIR="./storage/raw"
 RABBITMQ_URL="amqp://127.0.0.1:5672"
-RABBITMQ_QUEUE_NAME="asset_upload_processing"
+QUEUE_UPLOAD_ASSET_NAME="asset_upload_processing"
 RABBITMQ_THUMBNAILPATH="storage/thumbnails"
 EXPIRY_DAYS=1
 
