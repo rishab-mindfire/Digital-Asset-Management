@@ -25,3 +25,15 @@ export async function getFileHash(filePath: string): Promise<string> {
     }
   });
 }
+
+// based on expiration count and faild percentage riskLevel is callculated
+export const calculateRiskLevel = (failedPct: number, expiredCount: number): string => {
+  // Example Thresholds
+  if (failedPct > 15 || expiredCount > 50) {
+    return 'High';
+  }
+  if (failedPct > 5 || expiredCount > 10) {
+    return 'Medium';
+  }
+  return 'Low';
+};

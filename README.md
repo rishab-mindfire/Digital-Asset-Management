@@ -108,14 +108,23 @@ cd Digital-Asset-Management
 ```
 
 ## env file example
+ 1. RabbitMQ & Worker Integration
+    The backend utilizes a worker process for heavy tasks. For the queue to function correctly:
+    Ensure RabbitMQ is installed and running.
+    Port: The default connection port is 5672.
+
+  2. Variable: Check that RABBITMQ_URL in your active .env file matches your RabbitMQ instance (e.g., amqp://localhost:5672 for local dev).
+
+# frontend env.example
 
 ```
-# frontend
 VITE_BASE_URL=http://localhost:4001
 VITE_TOKEN_KEY='File-System'
+```
 
-# backend
+# backend env.example
 
+```
 PORT=4001
 FRONTEND_URL="http://localhost:3001"
 DB_CONNECTION_STRING="*********"

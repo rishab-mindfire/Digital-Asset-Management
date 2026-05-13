@@ -7,7 +7,7 @@ import fs from 'fs/promises';
 import { AssetModel } from '../../models/asset.model.js';
 import { MediaTaskPayload } from '../../types/index.js';
 import { generateThumbnail } from '../../helper/imageThumbnail.helper.js';
-import { getFileHash } from '../../helper/duplicateAsset.helper.js';
+import { getFileHash } from '../../helper/Asset.helper.js';
 
 // path for thumbnails
 const THUMBNAIL_DIR = path.resolve(process.env.RABBITMQ_THUMBNAILPATH || 'storage/thumbnails');

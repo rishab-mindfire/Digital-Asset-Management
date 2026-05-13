@@ -130,6 +130,7 @@ class AssetManagement {
    * Streams an asset from the local filesystem to the client.
    * Handles dynamic content types and filenames.
    */
+
   getAssetForDownload = async (assetId: string, res: Response) => {
     try {
       // Fetch Asset from DB

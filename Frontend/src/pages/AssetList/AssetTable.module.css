@@ -272,7 +272,7 @@
 .pageBtn {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: #374151;
@@ -302,4 +302,17 @@
   justify-content: center;
   padding-top: 30px;
   color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+
+.pagination {
+  gap: 8px;
+  flex-direction: column;
+}
+.toolbar {
+  display: flex;
+  justify-content: center;
+}
+
 }
