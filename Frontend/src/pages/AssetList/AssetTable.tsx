@@ -11,7 +11,6 @@ import {
 } from 'react';
 import useChunkedUpload from '../../hooks/useChunkedUpload';
 import usePagination from '../../hooks/usePagination';
-import Loader from '../../components/common/Loader';
 import { toast } from 'react-toastify';
 
 const AssetTable = () => {
@@ -81,7 +80,7 @@ const AssetTable = () => {
   }, [error, isUploading]);
 
   //get Asset list table
-  const { assets, pagination, loadingAssets, fetchAssets, setSearch, search, totalNumberOfAssets } =
+  const { assets, pagination, fetchAssets, setSearch, search, totalNumberOfAssets } =
     usePagination();
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -138,79 +137,75 @@ const AssetTable = () => {
           </button>
         </div>
 
-        {loadingAssets ? (
-          <Loader />
-        ) : (
-          <>
-            {assets.length > 0 ? (
-              <div className={styles.container}>
-                <div className={styles.tableResponsiveWrapper}>
-                  <table className={styles.assetTable}>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Approval</th>
-                        <th>Owner</th>
-                        <th>Uploaded At</th>
-                        {userRole === 'admin' && <th>View</th>}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {assets.map((asset) => (
-                        <tr key={asset.id}>
-                          <td style={{ fontWeight: 500 }}>{asset.name}</td>
-                          <td>{asset.type}</td>
+        <>
+          {assets.length > 0 ? (
+            <div className={styles.container}>
+              <div className={styles.tableResponsiveWrapper}>
+                <table className={styles.assetTable}>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Approval</th>
+                      <th>Owner</th>
+                      <th>Uploaded At</th>
+                      {userRole === 'admin' && <th>View</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {assets.map((asset) => (
+                      <tr key={asset.id}>
+                        <td style={{ fontWeight: 500 }}>{asset.name}</td>
+                        <td>{asset.type}</td>
+                        <td>
+                          <span
+                            className={`${styles.badge} ${
+                              asset.Approval === 'Approved' ? styles.approved : styles.pending
+                            }`}
+                          >
+                            {asset.Approval}
+                          </span>
+                        </td>
+                        <td>{asset.owner}</td>
+                        <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
+                        {userRole === 'admin' && (
                           <td>
-                            <span
-                              className={`${styles.badge} ${
-                                asset.Approval === 'Approved' ? styles.approved : styles.pending
-                              }`}
-                            >
-                              {asset.Approval}
-                            </span>
+                            <Link to={`/asset/${asset.id}`}>Open</Link>
                           </td>
-                          <td>{asset.owner}</td>
-                          <td style={{ color: '#9ca3af' }}>{asset.updated}</td>
-                          {userRole === 'admin' && (
-                            <td>
-                              <Link to={`/asset/${asset.id}`}>Open</Link>
-                            </td>
-                          )}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination Controls */}
+              <div className={styles.pagination}>
+                <div className={styles.paginationInfo}>
+                  Showing page <b>{pagination.page}</b> of <b>{pagination.totalPages}</b>
                 </div>
-                {/* Pagination Controls */}
-                <div className={styles.pagination}>
-                  <div className={styles.paginationInfo}>
-                    Showing page <b>{pagination.page}</b> of <b>{pagination.totalPages}</b>
-                  </div>
-                  <div className={styles.paginationControls}>
-                    <button
-                      className={styles.pageBtn}
-                      disabled={pagination.page === 1}
-                      onClick={() => fetchAssets(pagination.page - 1)}
-                    >
-                      &larr; Previous
-                    </button>
+                <div className={styles.paginationControls}>
+                  <button
+                    className={styles.pageBtn}
+                    disabled={pagination.page === 1}
+                    onClick={() => fetchAssets(pagination.page - 1)}
+                  >
+                    &larr; Previous
+                  </button>
 
-                    <button
-                      className={styles.pageBtn}
-                      disabled={pagination.page === pagination.totalPages}
-                      onClick={() => fetchAssets(pagination.page + 1)}
-                    >
-                      Next &rarr;
-                    </button>
-                  </div>
+                  <button
+                    className={styles.pageBtn}
+                    disabled={pagination.page === pagination.totalPages}
+                    onClick={() => fetchAssets(pagination.page + 1)}
+                  >
+                    Next &rarr;
+                  </button>
                 </div>
               </div>
-            ) : (
-              <div className={styles.noResult}>no result found !</div>
-            )}
-          </>
-        )}
+            </div>
+          ) : (
+            <div className={styles.noResult}>no result found !</div>
+          )}
+        </>
       </div>
 
       {/* upload files Modal */}
