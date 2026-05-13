@@ -32,8 +32,13 @@ export const handleGlobalError = (error: unknown): never => {
 };
 
 // Centralized response helper for controller-level error handling
-export const handleControllerError = (res: Response, error: unknown, defaultMessage: string) => {
-  const statusCode = error instanceof AppError ? error.statusCode : 500;
+export const handleControllerError = (
+  res: Response,
+  error: unknown,
+  defaultMessage: string,
+  errorCode?: number,
+) => {
+  const statusCode = errorCode ? errorCode : 500;
   const message = error instanceof Error ? error.message : defaultMessage;
   return res.status(statusCode).json({ message, error: message });
 };

@@ -62,7 +62,7 @@ class AssetAdmin {
     }
   };
 
-  // Extract technical metadata from a specific asset
+  // Extract metadata from a specific asset
   metaDataDetalis = async (req: Request, res: Response) => {
     try {
       if (!req.userEmail) {

@@ -7,7 +7,8 @@ import { logger } from '../utils/logger.js';
 import fs from 'fs';
 import { Response } from 'express';
 import path from 'path';
-import { getMimeType } from '../helper/fileMimeType.js';
+import { getMimeType } from '../helper/fileMimeType.helper.js';
+import { handleControllerError } from '../utils/globleError.js';
 
 class AssetManagement {
   // ALL asset lists
@@ -173,7 +174,7 @@ class AssetManagement {
       const readStream = fs.createReadStream(absolutePath);
 
       readStream.on('error', (error) => {
-        console.error('Streaming error:', error);
+        logger.error('Streaming error:', error);
         if (!res.headersSent) {
           res.status(500).send('Streaming failed');
         }
@@ -181,10 +182,11 @@ class AssetManagement {
 
       readStream.pipe(res);
     } catch (error) {
-      console.error('Download Service Error:', error);
-      if (!res.headersSent) {
-        res.status(500).json({ message: 'Internal Server Error' });
-      }
+      handleControllerError(res, error, 'Internal Server Error', 500);
+      // console.error('Download Service Error:', error);
+      // if (!res.headersSent) {
+      //   res.status(500).json({ message: 'Internal Server Error' });
+      // }
     }
   };
 }

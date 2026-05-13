@@ -10,7 +10,7 @@ import authRoleBased from './middlewares/authRoleBased.middleware.js';
 import { globalLimiter, logLimiter } from './config/limits.config.js';
 const app: Express = express();
 
-// Security & Core Middlewares
+// Security and Core Middlewares
 app.use(cors(corsOptions));
 app.use(cookieParser());
 configureSecurity(app);

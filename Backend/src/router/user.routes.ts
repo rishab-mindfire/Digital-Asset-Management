@@ -10,5 +10,4 @@ export const userRouter = Router();
 // user routes
 userRouter.post('/register', UserCtr.userRegistration);
 userRouter.post('/login', UserCtr.userLogin);
-userRouter.post('/reset', UserCtr.userChangePassword);
 userRouter.post('/refresh', UserCtr.refreshTokenController);
