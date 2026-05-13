@@ -3,7 +3,7 @@ import { logger } from '../utils/logger.js';
 
 // Rabit mq url
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
-const queueName = process.env.QUEUE_EXPIRATION_ASSET_NAME || '';
+const queueName = process.env.QUEUE_EXPIRATION_ASSET_NAME || 'asset_expiration_worker';
 
 export const publishToQueueForThumbnail = async (data: Record<string, unknown>): Promise<void> => {
   let connection;
@@ -15,7 +15,6 @@ export const publishToQueueForThumbnail = async (data: Record<string, unknown>):
     // Ensure the queue exists
     await channel.assertQueue(queueName, { durable: true });
 
-    //  Send the message
     //  true ensures the message survives RabbitMQ restarts
     const messageBuffer = Buffer.from(JSON.stringify(data));
     channel.sendToQueue(queueName, messageBuffer, {

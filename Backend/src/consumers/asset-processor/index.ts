@@ -6,7 +6,7 @@ import { logger } from '../../utils/logger.js';
 /**
  * Initializes and starts the background worker for asset processing.
  */
-export async function startAssetWorker(): Promise<void> {
+export async function assetUploadWorker(): Promise<void> {
   try {
     const connection = await amqp.connect(process.env.RABBITMQ_URL || '');
     const channel = await connection.createChannel();

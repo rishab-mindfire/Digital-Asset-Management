@@ -8,7 +8,7 @@ const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://127.0.0.1:5672';
 /**
  * Worker to process expired assets from RabbitMQ.
  */
-export const consumeExpiration = async (): Promise<void> => {
+export const assetExpirationWorker = async (): Promise<void> => {
   try {
     const connection = await amqp.connect(RABBITMQ_URL);
     const channel = await connection.createChannel();
@@ -19,6 +19,7 @@ export const consumeExpiration = async (): Promise<void> => {
       { durable: true },
     );
 
+    //channel for connection to queue
     channel.consume(
       process.env.QUEUE_EXPIRATION_ASSET_NAME || 'asset_expiration_worker',
       async (msg) => {
@@ -40,7 +41,7 @@ export const consumeExpiration = async (): Promise<void> => {
 
           // Acknowledge successful processing to remove from queue
           channel.ack(msg);
-          logger.info('[QUEUE PROCESS ]: Asset expiration queue !', assetId);
+          logger.info(`[QUEUE PROCESS ]: Asset expiration queue ! ${assetId}`);
         } catch (innerError) {
           // Prevent worker crash on message processing failure
           handleGlobalError(innerError);

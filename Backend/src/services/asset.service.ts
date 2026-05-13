@@ -41,6 +41,7 @@ class AssetManagement {
       ownerID: 0,
       uploadId: 0,
       localPath: 0,
+      isExpired: false,
     })
       .sort({ updatedAt: -1 })
       .limit(limitNum)

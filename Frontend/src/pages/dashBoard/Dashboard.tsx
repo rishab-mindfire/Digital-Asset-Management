@@ -104,12 +104,12 @@ const AssetDashboard = () => {
       {/* Stat Cards */}
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
-          <p className={styles.statLabel}>Total Assets</p>
+          <p className={styles.statLabel}>Total</p>
           <p className={styles.statValue}>{cardData.counts.totalAssets}</p>
         </div>
 
         <div className={`${styles.statCard} ${styles.expiring}`}>
-          <p className={styles.statLabel}>Expiring Soon</p>
+          <p className={styles.statLabel}>Expired</p>
           <p className={styles.statValue}>{cardData.counts.expiringSoon}</p>
         </div>
 

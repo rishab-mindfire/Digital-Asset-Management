@@ -42,8 +42,6 @@ export async function handleAssetTask(channel: Channel, msg: ConsumeMessage): Pr
         'metadata.originalAssetId': duplicate._id,
       });
 
-      // await fs.unlink(filePath);
-
       return channel.ack(msg);
     }
 

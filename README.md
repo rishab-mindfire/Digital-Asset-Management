@@ -115,17 +115,18 @@ VITE_BASE_URL=http://localhost:4001
 VITE_TOKEN_KEY='File-System'
 
 # backend
+
 PORT=4001
 FRONTEND_URL="http://localhost:3001"
-DB_CONNECTION_STRING="mongodb://localhost:27017/asset-management"
-JWT_SECRET=""
-JWT_REFRESH_SECRET=""
+DB_CONNECTION_STRING="*********"
+JWT_SECRET="**********"
+JWT_REFRESH_SECRET="*******"
 UPLOAD_DIR="./storage/raw"
 RABBITMQ_URL="amqp://127.0.0.1:5672"
-QUEUE_UPLOAD_ASSET_NAME="asset_upload_processing"
+QUEUE_UPLOAD_ASSET_NAME="asset_upload_worker"
+QUEUE_EXPIRATION_ASSET_NAME="asset_expiration_worker"
 RABBITMQ_THUMBNAILPATH="storage/thumbnails"
 EXPIRY_DAYS=1
-
 
 ```
 
