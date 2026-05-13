@@ -4,7 +4,7 @@ import { UsersModel } from '../models/users.model.js';
 import { verifyEmplyeeRole } from '../services/authRole.service.js';
 import jwt from 'jsonwebtoken';
 import { userLoginValidation, userRegistrationValidation } from '../validation/user.validation.js';
-import { AppError } from '../utils/globleError.js';
+import { AppError, handleControllerError } from '../utils/globleError.js';
 import { logger } from '../utils/logger.js';
 
 class UserClass {
@@ -29,14 +29,11 @@ class UserClass {
 
       // create new user
       await userServices.createUser(value);
-
+      logger.info('user created !');
       return res.status(201).json({ message: 'User created successfully!' });
     } catch (err: unknown) {
       if (err instanceof Error) {
-        return res.status(500).json({
-          message: 'Internal server error. User could not be created.',
-          error: err.message,
-        });
+        handleControllerError(res, err, 'Internal server error. User could not be created.', 500);
       }
     }
   };
@@ -81,7 +78,7 @@ class UserClass {
 
       //  Send Access Token in Header and Body
       res.setHeader('Authorization', 'Bearer ' + accessToken);
-
+      logger.info('login success !');
       return res.status(200).json({
         message: 'Login successful',
         userRole: userRole,
@@ -90,18 +87,6 @@ class UserClass {
     } catch (err: unknown) {
       logger.error(err);
       return res.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
-
-  // change password
-  userChangePassword = async (req: Request, res: Response) => {
-    // Find user by email
-    const user = await UsersModel.findOne({ userEmail: req.body.userEmail });
-
-    if (user) {
-      res.status(200).send(user);
-    } else {
-      res.status(404).send('Email not found !');
     }
   };
 
