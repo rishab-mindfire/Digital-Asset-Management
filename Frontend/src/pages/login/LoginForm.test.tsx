@@ -7,7 +7,7 @@ import { AuthProvider } from '../../context/AuthProvider';
 import { loginApi } from '../../services/login.service';
 import '@testing-library/jest-dom';
 
-vi.mock('../../services/loginService', () => ({
+vi.mock('../../services/login.service.ts', () => ({
   loginApi: vi.fn(),
 }));
 // create dummy memeory for auth acess

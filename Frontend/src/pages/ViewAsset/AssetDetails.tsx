@@ -18,32 +18,23 @@ import {
 
 const AssetDetails = () => {
   const { id } = useParams<{ id: string }>();
-
   const currentUser = localStorage.getItem('userRole-DAM');
-
   const navigation = useNavigate();
-
   const [metaData, setMetaData] = useState<metaDataType>();
-
   const [category, setCategory] = useState<'image' | 'video' | 'pdf' | 'other'>('other');
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         setLoading(true);
-
         if (!id) {
           return;
         }
 
         const rawData = await getAssetDetails(id);
-
         const extension = rawData?.metadata?.extension?.toLowerCase() || '';
-
         setMetaData(rawData);
 
         if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension)) {
@@ -68,7 +59,6 @@ const AssetDetails = () => {
   const markApprove = async (id: string) => {
     try {
       await approveAsset(id);
-
       setMetaData((prev) => {
         if (!prev) {
           return prev;
@@ -87,45 +77,32 @@ const AssetDetails = () => {
   const handleDownloadFile = async (id: string) => {
     try {
       const response = await downloadAsset(id);
-
       const disposition = response.headers['content-disposition'];
-
       let fileName = 'downloaded_file';
-
       if (disposition) {
         const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
-
         const standardMatch = disposition.match(/filename="?([^";]+)"?/i);
-
         const rawName = utf8Match ? utf8Match[1] : standardMatch ? standardMatch[1] : null;
-
         if (rawName) {
           fileName = decodeURIComponent(rawName);
         }
       }
 
       const rawMimeType = response.headers['content-type'];
-
       const blobType = typeof rawMimeType === 'string' ? rawMimeType : 'application/octet-stream';
-
       const blob = new Blob([response.data], {
         type: blobType,
       });
 
       const url = window.URL.createObjectURL(blob);
-
       const a = document.createElement('a');
-
       a.href = url;
       a.download = fileName;
-
       document.body.appendChild(a);
-
       a.click();
 
       setTimeout(() => {
         document.body.removeChild(a);
-
         window.URL.revokeObjectURL(url);
       }, 100);
     } catch (error: unknown) {
@@ -136,9 +113,7 @@ const AssetDetails = () => {
   const deleteAsset = async (id: string) => {
     try {
       setLoading(true);
-
       await removeAsset(id);
-
       navigation('/asset');
     } catch (error: unknown) {
       logger.error(getErrorMessage(error));
@@ -172,15 +147,11 @@ const AssetDetails = () => {
           <Link className="routes" to="/dashboard">
             Go to dashboard
           </Link>
-
           <span className="separator"> / </span>
-
           <Link className="routes" to="/asset">
             Asset list
           </Link>
-
           <span className="separator"> / </span>
-
           <span className="bread-scrumb-bold">Asset Details</span>
         </span>
       </header>
@@ -189,7 +160,6 @@ const AssetDetails = () => {
         <header className={styles.header}>
           <div className={styles.headerContent}>
             <h1>Asset: {metaData?.fileType}</h1>
-
             <button
               className={styles.downloadBtn}
               onClick={() => {
@@ -209,11 +179,8 @@ const AssetDetails = () => {
               {category === 'video' && (
                 <VideoPlayer assetId={id!} ext={metaData?.metadata.extension || ''} />
               )}
-
               {category === 'image' && <ImagePreview assetId={id!} />}
-
               {category === 'pdf' && <PdfViewer assetId={id!} />}
-
               {category === 'other' && (
                 <div className={styles.imagePlaceholder}>
                   <span>No Preview Available ( .{metaData?.metadata.extension})</span>
@@ -229,9 +196,7 @@ const AssetDetails = () => {
               <div className={styles.metaGrid}>
                 <div className={styles.metaItem}>
                   <label>File Type</label>
-
                   <p>{metaData?.metadata.extension?.toUpperCase()}</p>
-
                   <button
                     onClick={() => {
                       if (metaData?._id) {
@@ -245,7 +210,6 @@ const AssetDetails = () => {
 
                 <div className={styles.metaItem}>
                   <label>Status</label>
-
                   <p>
                     <span className={styles.statusBadge}>Uploaded</span>
                   </p>
@@ -253,7 +217,6 @@ const AssetDetails = () => {
 
                 <div className={styles.metaItem}>
                   <label>Owner</label>
-
                   <p>{metaData?.owner || 'System'}</p>
                 </div>
 
