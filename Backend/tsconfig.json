@@ -1,5 +1,4 @@
 {
-
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
     "target": "es2021",
@@ -15,7 +14,7 @@
     "types": ["node", "express", "multer"],
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "types/**/*.d.ts"],
   "exclude": ["node_modules"],
   "ts-node": {
     "esm": true,

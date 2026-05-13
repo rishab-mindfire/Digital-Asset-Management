@@ -50,10 +50,17 @@ const assetSchema = new Schema<IAsset>(
     isExpired: { type: Boolean, default: false },
     downloadCount: { type: Number, default: 0 },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    strict: true,
+    strictQuery: true,
+  },
 );
 
-// Search Index
+// Lookup for file name and department
+assetSchema.index({ title: 1, createdAt: -1, department: 1 });
+
+// Search Index lookup
 assetSchema.index({ title: 'text', 'metadata.tags': 'text' });
 
 export const AssetModel = model<IAsset>('Assets', assetSchema);

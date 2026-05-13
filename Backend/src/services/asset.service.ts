@@ -15,11 +15,10 @@ class AssetManagement {
   async assetListingService(query: {
     search?: string;
     type?: string;
-    status?: string;
     page?: string;
     limit?: string;
   }) {
-    const { search, type, status, page = '1', limit = '10' } = query;
+    const { search, type, page = '1', limit = '10' } = query;
 
     const pageNum = Number.parseInt(page, 10) || 1;
     const limitNum = Number.parseInt(limit, 10) || 10;
@@ -27,9 +26,6 @@ class AssetManagement {
     const filter: FilterQuery<IAsset> = {};
     if (type) {
       filter.fileType = type;
-    }
-    if (status) {
-      filter.status = status;
     }
     if (search) {
       filter.title = {
