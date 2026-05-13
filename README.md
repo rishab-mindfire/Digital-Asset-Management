@@ -115,14 +115,14 @@ cd Digital-Asset-Management
 
   2. Variable: Check that RABBITMQ_URL in your active .env file matches your RabbitMQ instance (e.g., amqp://localhost:5672 for local dev).
 
-# frontend env.example
+### frontend env.example
 
 ```
 VITE_BASE_URL=http://localhost:4001
 VITE_TOKEN_KEY='File-System'
 ```
 
-# backend env.example
+### backend env.example
 
 ```
 PORT=4001

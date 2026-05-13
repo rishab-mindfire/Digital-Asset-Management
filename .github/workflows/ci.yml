@@ -1,0 +1,49 @@
+name: CI Enforcement
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate:
+    name: Validate ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Run parallel jobs for both parts of your app
+        project: [Frontend, Backend]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          # We cache from the root, but you may need to point to subfolders
+          # if they have separate lockfiles
+          cache-dependency-path: './${{ matrix.project }}/package-lock.json'
+
+      - name: Install Root Dependencies
+        run: npm install
+
+      - name: Install ${{ matrix.project }} Dependencies
+        run: cd ${{ matrix.project }} && npm install
+
+      - name: 🚨 Lint Check
+        run: npm run lint:${{ env.LOWER_PROJECT }}
+        env:
+          LOWER_PROJECT: ${{ matrix.project == 'Frontend' && 'frontend' || 'backend' }}
+
+      - name: 🟦 Type Check
+        run: npm run type-check:${{ env.LOWER_PROJECT }}
+        env:
+          LOWER_PROJECT: ${{ matrix.project == 'Frontend' && 'frontend' || 'backend' }}
+
+      - name: 🏗️ Build Test
+        run: npm run build:${{ env.LOWER_PROJECT }}
+        env:
+          LOWER_PROJECT: ${{ matrix.project == 'Frontend' && 'frontend' || 'backend' }}
