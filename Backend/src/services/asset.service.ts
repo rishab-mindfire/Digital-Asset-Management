@@ -24,6 +24,7 @@ class AssetManagement {
     const limitNum = Number.parseInt(limit, 10) || 10;
 
     const filter: FilterQuery<IAsset> = {};
+    filter.isExpired = false;
     if (type) {
       filter.fileType = type;
     }
@@ -38,7 +39,6 @@ class AssetManagement {
       ownerID: 0,
       uploadId: 0,
       localPath: 0,
-      isExpired: false,
     })
       .sort({ updatedAt: -1 })
       .limit(limitNum)
@@ -57,7 +57,7 @@ class AssetManagement {
 
   // Asset details
   async getAssetFullDetail(assetId: string, user: AuthUser) {
-    const asset = await AssetModel.findById(assetId);
+    const asset = await AssetModel.findById(assetId).lean();
     if (!asset) {
       return null;
     }
@@ -77,7 +77,7 @@ class AssetManagement {
 
   // mark markApprove
   async markApprove(assetId: string) {
-    return await AssetModel.findByIdAndUpdate(assetId, { approval: 'approved' });
+    return await AssetModel.findByIdAndUpdate(assetId, { approval: 'approved' }).lean();
   }
 
   // get meteData
@@ -88,7 +88,7 @@ class AssetManagement {
       fileType: 1,
       approval: 1,
       metadata: 1,
-    });
+    }).lean();
     if (!asset) {
       return null;
     }
@@ -97,7 +97,7 @@ class AssetManagement {
 
   // delet assets
   deleteAssetService = async (assetId: string) => {
-    const asset = await AssetModel.findById(assetId);
+    const asset = await AssetModel.findById(assetId).lean();
     if (!asset) {
       throw new Error('Asset not found');
     }

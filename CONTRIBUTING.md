@@ -251,6 +251,7 @@ Include the following in your PR:
 * Screenshots (for UI changes)
 * Steps to test
 
+- for api refrence and test can look postman api doc in json formate added with file name : Digital Asset Management.postman_collection.json
 ---
 
 ### Example PR Title

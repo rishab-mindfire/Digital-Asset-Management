@@ -179,6 +179,8 @@ EXPIRY_DAYS=1
 ```
 npm run test      # All tests (before test went to frontend, backend folders )
 ```
+- for api refrence and test can look postman api doc in json formate added with file name : Digital Asset Management.postman_collection.json
+
 
 
 | Category     | Technology                     |

@@ -8,6 +8,7 @@ import { publicRouter } from './router/public.routes.js';
 import { configureSecurity, corsOptions } from './config/security.config.js';
 import authRoleBased from './middlewares/authRoleBased.middleware.js';
 import { globalLimiter, logLimiter } from './config/limits.config.js';
+import healthRouter from './router/health.routes.js';
 const app: Express = express();
 
 // Security and Core Middlewares
@@ -25,6 +26,7 @@ app.use(globalLimiter);
 
 // API Endpoints
 app.use('/user', userRouter);
+app.use('/health', authRoleBased('admin'), healthRouter);
 app.use('/admin', authRoleBased('admin'), adminRouter);
 app.use('/public', authRoleBased('public'), publicRouter);
 
