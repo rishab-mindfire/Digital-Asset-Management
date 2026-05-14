@@ -76,11 +76,15 @@ export default function Signup() {
 
   return (
     <div className={styles.loginContainer}>
-      <img src={backgroundImage} alt="background image" className={styles.backgroundImage} />
-      <form onSubmit={handleSubmit} className={styles.loginForm}>
+      {/* Decorative image hidden from screen readers */}
+      <img src={backgroundImage} alt="" className={styles.backgroundImage} aria-hidden="true" />
+
+      <form onSubmit={handleSubmit} className={styles.loginForm} aria-labelledby="signup-title">
         <div className={styles.logoSection}>
           <img src={logoImage} alt="Application logo" className={styles.logoImage} />
-          <h2 className={styles.title}>Signup</h2>
+          <h2 id="signup-title" className={styles.title}>
+            Signup
+          </h2>
         </div>
 
         {/* USER NAME */}
@@ -88,10 +92,12 @@ export default function Signup() {
           <label htmlFor="username">User Name</label>
           <input
             id="username"
-            type="username"
+            type="text" // Changed from 'username' to 'text' as 'username' is not a valid HTML type
             placeholder="Enter user name"
+            aria-label="User Name"
             value={formState.userName}
             aria-invalid={!!formState.errors.userName}
+            aria-describedby={formState.errors.userName ? 'username-error' : undefined}
             className={`${styles.input} ${formState.errors.userName ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
@@ -101,21 +107,29 @@ export default function Signup() {
               })
             }
           />
-
           {formState.errors.userName && (
-            <span className={styles.fieldError}>{formState.errors.userName}</span>
+            <span
+              className={styles.fieldError}
+              id="username-error"
+              role="alert"
+              aria-live="assertive"
+            >
+              {formState.errors.userName}
+            </span>
           )}
         </div>
+
         {/* EMAIL */}
         <div className={styles.inputGroup}>
           <label htmlFor="email">Email Address</label>
-
           <input
             id="email"
             type="email"
             placeholder="Enter mail id"
+            aria-label="Email Address"
             value={formState.userEmail}
             aria-invalid={!!formState.errors.userEmail}
+            aria-describedby={formState.errors.userEmail ? 'email-error' : undefined}
             className={`${styles.input} ${formState.errors.userEmail ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
@@ -125,22 +139,24 @@ export default function Signup() {
               })
             }
           />
-
           {formState.errors.userEmail && (
-            <span className={styles.fieldError}>{formState.errors.userEmail}</span>
+            <span className={styles.fieldError} id="email-error" role="alert" aria-live="assertive">
+              {formState.errors.userEmail}
+            </span>
           )}
         </div>
 
         {/* PASSWORD */}
         <div className={styles.inputGroup}>
           <label htmlFor="password">Password</label>
-
           <input
             id="password"
             type="password"
             placeholder="Password"
+            aria-label="Password"
             value={formState.userPassword}
             aria-invalid={!!formState.errors.userPassword}
+            aria-describedby={formState.errors.userPassword ? 'password-error' : undefined}
             className={`${styles.input} ${formState.errors.userPassword ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
@@ -150,20 +166,27 @@ export default function Signup() {
               })
             }
           />
-
           {formState.errors.userPassword && (
-            <span className={styles.fieldError}>{formState.errors.userPassword}</span>
+            <span
+              className={styles.fieldError}
+              id="password-error"
+              role="alert"
+              aria-live="assertive"
+            >
+              {formState.errors.userPassword}
+            </span>
           )}
         </div>
 
         {/* ROLE */}
         <div className={styles.inputGroup}>
           <label htmlFor="role">Role</label>
-
           <select
             id="role"
+            aria-label="Select User Role"
             value={formState.userRole}
             aria-invalid={!!formState.errors.userRole}
+            aria-describedby={formState.errors.userRole ? 'role-error' : undefined}
             className={`${styles.input} ${formState.errors.userRole ? styles.inputError : ''}`}
             onChange={(e) =>
               dispatch({
@@ -178,20 +201,42 @@ export default function Signup() {
             <option value="manager">Manager</option>
             <option value="public">Public</option>
           </select>
-
           {formState.errors.userRole && (
-            <span className={styles.fieldError}>{formState.errors.userRole}</span>
+            <span className={styles.fieldError} id="role-error" role="alert" aria-live="assertive">
+              {formState.errors.userRole}
+            </span>
           )}
         </div>
 
-        {message && <p className={styles.success}>{message}</p>}
+        {/* SUCCESS MESSAGE */}
+        {message && (
+          <p className={styles.success} role="status" aria-live="polite">
+            {message}
+          </p>
+        )}
+
         {/* GENERAL ERROR */}
-        {formState.errors.general && <p className={styles.error}>{formState.errors.general}</p>}
+        {formState.errors.general && (
+          <p className={styles.error} role="alert" aria-live="assertive">
+            {formState.errors.general}
+          </p>
+        )}
 
         {/* BUTTON */}
-        <button disabled={formState.loading} className={styles.button}>
-          {formState.loading ? 'Signing up...' : 'Signup'}
+        <button
+          disabled={formState.loading}
+          className={styles.button}
+          aria-busy={formState.loading}
+        >
+          {formState.loading ? (
+            <span role="status" aria-live="polite">
+              Signing up...
+            </span>
+          ) : (
+            'Signup'
+          )}
         </button>
+
         <div className={styles.redirect}>
           <p>
             Already have an account?{' '}
@@ -200,6 +245,8 @@ export default function Signup() {
               onClick={() => navigate('/login')}
               role="button"
               tabIndex={0}
+              aria-label="Navigate to login page"
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/login')}
             >
               Login
             </span>

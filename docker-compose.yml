@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   backend:
-    build: ./Backend
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
     container_name: backend
     restart: always
     ports:
@@ -14,9 +16,9 @@ services:
       - FRONTEND_URL=http://localhost:3001
     depends_on:
       mongo:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
-        condition: service_healthy # Wait until RabbitMQ is fully ready
+        condition: service_healthy
     volumes:
       - uploads_data:/backend-app/storage
     networks:
@@ -26,8 +28,11 @@ services:
     image: mongo:6
     container_name: mongo
     restart: always
-    ports:
-      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - mongo_data:/data/db
     networks:
@@ -37,17 +42,11 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
     networks:
       - app-network
 

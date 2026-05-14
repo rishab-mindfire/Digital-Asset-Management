@@ -21,8 +21,6 @@ vi.mock('../src/services/authRole.service.js', () => ({
 // Imports services for mocks
 import app from '../src/index';
 import { userServices } from '../src/services/users.service.js';
-import * as authGeneral from '../src/services/authGeneral.service.js';
-import * as authRole from '../src/services/authRole.service.js';
 import { mockAuthUserExiest } from './mock/mockData.js';
 
 const request = supertest(app);

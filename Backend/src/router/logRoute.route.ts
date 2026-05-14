@@ -5,9 +5,9 @@ const logRouter = Router();
 
 logRouter.post('/logs', (req, res) => {
   const { level, message, meta, timestamp } = req.body;
-  // pass the level dynamically ('info', 'error', etc.)
+  // pass the level dynamically ('info', 'error', etc. with there message)
   logger.log(level || 'info', `[FE] ${message}`, {
-    frontendMeta: meta, // This stores your string/object/array
+    frontendMeta: meta, // This stores  string/object/array
     frontendTime: timestamp,
   });
 

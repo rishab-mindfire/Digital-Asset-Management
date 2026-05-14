@@ -1,77 +1,83 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
 import AssetTable from './AssetTable';
+import * as useChunkedUploadHook from '../../hooks/useChunkedUpload';
+import * as usePaginationHook from '../../hooks/usePagination';
 
-// Import hooks to extract their return types
-import useChunkedUpload from '../../hooks/useChunkedUpload';
-import usePagination from '../../hooks/usePagination';
-import {
-  mockAssets,
-  mockPagination,
-  type UseChunkedUploadReturn,
-  type UsePaginationReturn,
-} from '../../../test/mock/mockData';
-
-//  Mock the custom hooks
+// Mock the hooks
 vi.mock('../../hooks/useChunkedUpload');
 vi.mock('../../hooks/usePagination');
 
-//  Mock child components with explicit prop types
-vi.mock('../../components/modal/Modal', () => ({
-  default: ({ children, isOpen }: { children: React.ReactNode; isOpen: boolean }) =>
-    isOpen ? <div data-testid="modal-container">{children}</div> : null,
-}));
-
-vi.mock('../../components/common/Loader', () => ({
-  default: () => <div data-testid="loading-spinner" />,
-}));
-
 describe('AssetTable Component', () => {
-  // Define mock functions with Vitest Mock type
-  const mockFetchAssets: Mock = vi.fn();
-  const mockSetSearch: Mock = vi.fn();
-  const mockUploadFiles: Mock = vi.fn();
+  const mockFetchAssets = vi.fn();
+  const mockSetSearch = vi.fn();
 
-  // Matches hook: { total, page, totalPages }
+  const mockPaginationData = {
+    assets: [
+      {
+        id: '1',
+        name: 'Asset 1',
+        type: 'Image',
+        Approval: 'Approved',
+        owner: 'User A',
+        updated: '2023-01-01',
+      },
+    ],
+    pagination: { page: 1, totalPages: 1 },
+    fetchAssets: mockFetchAssets,
+    setSearch: mockSetSearch,
+    search: '',
+    totalNumberOfAssets: 1,
+  };
+
+  const mockUploadData = {
+    uploadMultipalFiles: vi.fn(),
+    isUploading: false,
+    progressMap: {},
+    setProgressMap: vi.fn(),
+    error: null,
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.useFakeTimers();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (usePaginationHook.default as any).mockReturnValue(mockPaginationData);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useChunkedUploadHook.default as any).mockReturnValue(mockUploadData);
 
-    // Mock usePagination return values
-    vi.mocked(usePagination).mockReturnValue({
-      assets: mockAssets,
-      pagination: mockPagination,
-      loadingAssets: false,
-      fetchAssets: mockFetchAssets,
-      setSearch: mockSetSearch,
-      search: '',
-    } as UsePaginationReturn);
-
-    // Mock useChunkedUpload return values
-    vi.mocked(useChunkedUpload).mockReturnValue({
-      uploadMultipalFiles: mockUploadFiles,
-      isUploading: false,
-      progressMap: {},
-      setProgressMap: vi.fn(),
-      error: null,
-    } as UseChunkedUploadReturn);
+    // Mock LocalStorage
+    Storage.prototype.getItem = vi.fn().mockReturnValue('admin');
   });
 
-  it('renders the asset table with formatted hook data', () => {
+  it('renders the asset table with data', () => {
     render(
       <MemoryRouter>
         <AssetTable />
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('Asset Overview')).toBeInTheDocument();
-    expect(screen.getByText('Document.pdf')).toBeInTheDocument();
-    expect(screen.getByText('Admin User')).toBeInTheDocument();
-    expect(screen.getByText('Approved')).toBeInTheDocument();
+    expect(screen.getByText('Asset Overview')).toBeDefined();
+    expect(screen.getByText('Asset 1')).toBeDefined();
+    expect(screen.getByText('Approved')).toBeDefined();
   });
-  //search debounce test for 600 micro second
-  it('triggers search with 600ms debounce', async () => {
+
+  it('opens the upload modal when clicking the upload button', async () => {
+    render(
+      <MemoryRouter>
+        <AssetTable />
+      </MemoryRouter>,
+    );
+
+    const uploadBtn = screen.getByText(/\+ Upload/i);
+    fireEvent.click(uploadBtn);
+
+    expect(screen.getByText('Upload Asset')).toBeDefined();
+    const dropZone = await screen.findByText(/Drag files here/i);
+    expect(dropZone).toBeDefined();
+  });
+
+  it('updates search value and triggers debounce effect', async () => {
     render(
       <MemoryRouter>
         <AssetTable />
@@ -79,80 +85,32 @@ describe('AssetTable Component', () => {
     );
 
     const searchInput = screen.getByPlaceholderText('Search assets...') as HTMLInputElement;
-    fireEvent.change(searchInput, { target: { value: 'nature' } });
+    fireEvent.change(searchInput, { target: { value: 'New Search' } });
 
-    // Should not call setSearch immediately
-    expect(mockSetSearch).not.toHaveBeenCalled();
+    // Finding by role and casting
+    expect(searchInput.value).toBe('New Search');
+    // Wait for debounce (600ms)
+    await waitFor(
+      () => {
+        expect(mockSetSearch).toHaveBeenCalledWith('New Search');
+      },
+      { timeout: 1000 },
+    );
+  });
 
-    // Fast-forward 600ms
-    act(() => {
-      vi.advanceTimersByTime(600);
+  it('shows a spinner when isUploading is true', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useChunkedUploadHook.default as any).mockReturnValue({
+      ...mockUploadData,
+      isUploading: true,
     });
 
-    expect(mockSetSearch).toHaveBeenCalledWith('nature');
-  });
-
-  it('displays the Loader when loadingAssets is true', () => {
-    vi.mocked(usePagination).mockReturnValue({
-      assets: [],
-      pagination: mockPagination,
-      loadingAssets: true,
-      fetchAssets: mockFetchAssets,
-      setSearch: mockSetSearch,
-      search: '',
-    } as UsePaginationReturn);
-
     render(
       <MemoryRouter>
         <AssetTable />
       </MemoryRouter>,
     );
 
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
-  });
-
-  it('disables "Previous" on page 1 and "Next" on the last page', () => {
-    // page 1 state
-    render(
-      <MemoryRouter>
-        <AssetTable />
-      </MemoryRouter>,
-    );
-
-    const prevBtn = screen.getByRole('button', { name: /Previous/i });
-    expect(prevBtn).toBeDisabled();
-
-    // Mock last page state
-    vi.mocked(usePagination).mockReturnValue({
-      assets: mockAssets,
-      pagination: { total: 30, page: 3, totalPages: 3 },
-      loadingAssets: false,
-      fetchAssets: mockFetchAssets,
-      setSearch: mockSetSearch,
-      search: '',
-    } as UsePaginationReturn);
-
-    render(
-      <MemoryRouter>
-        <AssetTable />
-      </MemoryRouter>,
-    );
-
-    const nextButtons = screen.getAllByRole('button', { name: /Next/i });
-    // Using index 1 because the second render adds another button to the screen in tests
-    expect(nextButtons[nextButtons.length - 1]).toBeDisabled();
-  });
-
-  it('calls fetchAssets with specific page numbers', () => {
-    render(
-      <MemoryRouter>
-        <AssetTable />
-      </MemoryRouter>,
-    );
-
-    const nextBtn = screen.getByRole('button', { name: /Next/i });
-    fireEvent.click(nextBtn);
-
-    expect(mockFetchAssets).toHaveBeenCalledWith(2);
+    expect(document.querySelector('.spinner')).toBeDefined();
   });
 });

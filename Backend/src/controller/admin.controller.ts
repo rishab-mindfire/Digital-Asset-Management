@@ -66,7 +66,6 @@ class AdminClass {
           400,
         );
       }
-
       const userDetails = await getUserDetails(req.userEmail);
       if (!userDetails) {
         throw new AppError('User details not found', 404);

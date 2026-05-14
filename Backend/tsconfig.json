@@ -14,7 +14,7 @@
     "types": ["node", "express", "multer"],
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "types/**/*.d.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"],
   "ts-node": {
     "esm": true,

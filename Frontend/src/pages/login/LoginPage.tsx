@@ -94,21 +94,24 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}>
-      <img src={backgroundImage} alt="background image" className={styles.backgroundImage} />
-      <form onSubmit={handleSubmit} className={styles.loginForm}>
+      <img src={backgroundImage} alt="" className={styles.backgroundImage} aria-hidden="true" />
+
+      <form onSubmit={handleSubmit} className={styles.loginForm} aria-labelledby="login-title">
         <div className={styles.logoSection}>
-          <img src={logoImage} alt="Application logo" className={styles.logoImage} />
-          <h2 className={styles.title}>Login</h2>
+          <img src={logoImage} alt="Company Name Logo" className={styles.logoImage} />
+          <h2 id="login-title" className={styles.title}>
+            Login
+          </h2>
         </div>
 
         {/* EMAIL */}
         <div className={styles.inputGroup}>
           <label htmlFor="email">Email Address</label>
-
           <input
             id="email"
             type="email"
             placeholder="Email"
+            aria-label="Email Address"
             aria-describedby={formState.errors.userEmail ? 'email-error' : undefined}
             aria-invalid={!!formState.errors.userEmail}
             value={formState.userEmail}
@@ -123,7 +126,7 @@ export default function Login() {
           />
 
           {formState.errors.userEmail && (
-            <span className={styles.fieldError} id="email-error" role="alert">
+            <span className={styles.fieldError} id="email-error" role="alert" aria-live="assertive">
               {formState.errors.userEmail}
             </span>
           )}
@@ -132,11 +135,11 @@ export default function Login() {
         {/* PASSWORD */}
         <div className={styles.inputGroup}>
           <label htmlFor="password">Password</label>
-
           <input
             id="password"
             type="password"
             placeholder="Password"
+            aria-label="Password"
             value={formState.userPassword}
             aria-describedby={formState.errors.userPassword ? 'password-error' : undefined}
             aria-invalid={!!formState.errors.userPassword}
@@ -151,7 +154,12 @@ export default function Login() {
           />
 
           {formState.errors.userPassword && (
-            <span className={styles.fieldError} id="password-error" role="alert">
+            <span
+              className={styles.fieldError}
+              id="password-error"
+              role="alert"
+              aria-live="assertive"
+            >
               {formState.errors.userPassword}
             </span>
           )}
@@ -159,15 +167,27 @@ export default function Login() {
 
         {/* GENERAL ERROR */}
         {formState.errors.general && (
-          <p className={styles.error} role="alert">
+          <p className={styles.error} role="alert" aria-live="assertive">
             {formState.errors.general}
           </p>
         )}
 
-        {/* BUTTON */}
-        <button disabled={formState.loading} className={styles.button} role="button">
-          {formState.loading ? 'Logging in...' : 'Login'}
+        {/* BUTTON & LOADING STATUS */}
+        <button
+          disabled={formState.loading}
+          className={styles.button}
+          aria-busy={formState.loading}
+          aria-label={formState.loading ? 'Logging in' : 'Login to your account'}
+        >
+          {formState.loading ? (
+            <span role="status" aria-live="polite">
+              Logging in...
+            </span>
+          ) : (
+            'Login'
+          )}
         </button>
+
         <div className={styles.redirect}>
           <p>
             Don’t have an account?{' '}
@@ -176,6 +196,8 @@ export default function Login() {
               onClick={() => navigate('/signup')}
               role="button"
               tabIndex={0}
+              aria-label="Go to signup page"
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/signup')}
             >
               Sign up
             </span>

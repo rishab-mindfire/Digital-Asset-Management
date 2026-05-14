@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import type { chartType, StateData } from '../../models/Types';
 import { getCardData, getChartData } from '../../services/dasboard.service';
 import { logger } from '../../utils/logger';
-import { getErrorMessage } from '../../utils/getErrorMessage';
+import { handleError } from '../../utils/handleError';
 
 const AssetDashboard = () => {
   const [chartData, setChartData] = useState<chartType>({
@@ -84,7 +84,7 @@ const AssetDashboard = () => {
       setChartData(chartResponse);
       setCardData(cardResponse);
     } catch (error) {
-      const message = getErrorMessage(error);
+      const message = handleError(error);
       logger.error(message);
     }
   };

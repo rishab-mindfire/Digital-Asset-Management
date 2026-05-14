@@ -3,6 +3,7 @@ import { createReadStream, createWriteStream } from 'fs';
 import path from 'path';
 import { finished } from 'stream/promises';
 import { handleGlobalError } from '../utils/globleError.js';
+import { logger } from '../utils/logger.js';
 
 const TEMP_DIR = path.resolve('storage/temp');
 const UPLOAD_DIR = path.resolve('storage/uploads');
@@ -91,12 +92,15 @@ export const mergeFinalChunks = async (
     // Finalize the write stream and wait for disk buffer flush
     writeStream.end();
     await finished(writeStream);
+    logger.info(`merged file ${finalFilename}`);
     return finalPath;
   } catch (err) {
     writeStream.destroy();
     handleGlobalError(err);
+    logger.info(`error in merging file ${finalFilename}`, err);
   } finally {
-    // Ensure the temporary directory is removed regardless of success or failure
+    // Ensure the temporary directory is removed
     await fs.rm(chunkDir, { recursive: true, force: true }).catch(() => {});
+    logger.info(`Chunk deleted : ${finalFilename}`);
   }
 };

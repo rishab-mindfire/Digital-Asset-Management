@@ -13,6 +13,7 @@ import {
 } from '../helper/fileHandlers.helper.js';
 import { calculateRiskLevel, getFileHash } from '../helper/Asset.helper.js';
 import { publishToExpirationQueue } from '../queuePublicer/expireAsset.js';
+import { logger } from '../utils/logger.js';
 
 class AdminServices {
   // dash board data for graph
@@ -172,7 +173,7 @@ class AdminServices {
     const isDuplicate = !!existingAsset;
 
     // Construct the update payload
-    // We use spread operators to conditionally include duplicate-specific fields
+    // use spread operators to conditionally include duplicate-specific fields
     const updatePayload: Partial<IAsset> = {
       uploadId,
       fileHash: currentFileHash,
@@ -215,6 +216,7 @@ class AdminServices {
 
     // Queue Worker: ONLY publish if the file is unique
     if (!isDuplicate) {
+      logger.info('duplicate file added !');
       try {
         await publishToQueueForThumbnail({
           assetId: assetData._id.toString(),
@@ -233,6 +235,7 @@ class AdminServices {
       try {
         // Schedule the expiration
         await publishToExpirationQueue(assetData._id.toString());
+        logger.error('published to expiration !');
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw new Error('publish to expiration not works');

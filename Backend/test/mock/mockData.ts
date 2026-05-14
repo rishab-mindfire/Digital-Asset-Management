@@ -1,5 +1,4 @@
-import { JwtPayload } from 'jsonwebtoken';
-import { userServices } from '../../src/services/users.service';
+import { userServices } from '../../src/services/users.service.js';
 
 // --- User service Mocks ---
 export const mockAuthUser = {
@@ -16,7 +15,7 @@ export const mockAuthUserExiest = {
 // --- Auth Mocks ---
 export const mockJwtSecret = 'test-secret-key';
 export const mockJwtToken = 'header.payload.signature';
-export const mockDecodedUser: JwtPayload = {
+export const mockDecodedUser: { userEmail: string; iat: number; exp: number } = {
   userEmail: 'test@example.com',
   iat: 123456789,
   exp: 123456789 + 60 * 60 * 12,
