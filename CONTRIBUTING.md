@@ -37,10 +37,10 @@ npm run dev
 # 3. Environment Variables
 
 Create a `.env` file for frontend example
-    backend base api url point:
-    token key :
-    cookies name key :
-    user role key :
+    ` backend base api url point `,
+    ` token key ` ,
+    ` cookies name key ` ,
+    ` user role key `
 
 ```env
 VITE_BASE_URL=http://localhost:4001
@@ -51,11 +51,11 @@ USERROLE_KEY="userRole-DAM"
 
 
 Create a `.env` file for backend example
-    local server port :
-    frontend url :
-    DB connection string :
-    JWT_SECRET :
-    JWT_REFRESH_SECRET :
+    ` local server port ` ,
+    ` frontend url ` ,
+    ` DB connection string ` ,
+    ` JWT_SECRET ` ,
+    ` JWT_REFRESH_SECRET ` ,
     etc...
 
 ```env
@@ -143,7 +143,7 @@ Before you start, ensure you have the following installed:
 - **MongoDB**: v6.0+ (Local instance or MongoDB Atlas).
 - **Package Manager**: npm or yarn.
 
-# 6. App folder structure**
+# 6. App folder structure
 
  ```
  ├── Frontend/ # Front end (React app)
