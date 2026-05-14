@@ -179,10 +179,6 @@ class AssetManagement {
       readStream.pipe(res);
     } catch (error) {
       handleControllerError(res, error, 'Internal Server Error', 500);
-      // console.error('Download Service Error:', error);
-      // if (!res.headersSent) {
-      //   res.status(500).json({ message: 'Internal Server Error' });
-      // }
     }
   };
 }

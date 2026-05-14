@@ -30,6 +30,7 @@ export const mockApiResponse = {
     total: 1,
     page: 1,
     totalPages: 1,
+    totalNumberOfAssets: 1,
   },
 };
 

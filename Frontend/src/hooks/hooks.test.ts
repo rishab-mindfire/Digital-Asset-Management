@@ -14,7 +14,7 @@ vi.mock('../services/apiInterceptor', () => ({
 }));
 
 describe('usePagination Hook test', () => {
-  // Cast api as Mocked to get type-safe mock methods
+  // Cast api as Mocked to get mock methods
   const mockedApi = api as Mocked<typeof api>;
 
   beforeEach(() => {
@@ -85,7 +85,7 @@ describe('usePagination Hook test', () => {
   });
 
   it('should set loading state correctly during fetch', async () => {
-    // Define the resolver type explicitly using AxiosResponse and your custom Data type
+    // Define the resolver type explicitly using AxiosResponse and custom Data type
     let resolveApi: (value: AxiosResponse<AssetApiResponse>) => void;
 
     const delayedPromise = new Promise<AxiosResponse<AssetApiResponse>>((resolve) => {
@@ -96,7 +96,7 @@ describe('usePagination Hook test', () => {
 
     const { result } = renderHook(() => usePagination());
 
-    // Start the fetch (logic triggers setAssetLoading(true))
+    // Start the fetch (setAssetLoading(true))
     let fetchPromise: Promise<void>;
     act(() => {
       fetchPromise = result.current.fetchAssets(1);
@@ -104,7 +104,7 @@ describe('usePagination Hook test', () => {
 
     expect(result.current.loadingAssets).toBe(true);
 
-    // Resolve with a full AxiosResponse object to satisfy types
+    // resolveApi with mock data
     await act(async () => {
       resolveApi({
         data: mockApiResponse.data,
