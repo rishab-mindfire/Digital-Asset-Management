@@ -29,6 +29,10 @@ Backend/dist/
 Backend/storage/
 Backend/logs/
 
+#storage
+**/storage/
+**/storage/**
+
 # IDE / System files
 .DS_Store
 .vscode/
