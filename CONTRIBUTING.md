@@ -72,6 +72,13 @@ RABBITMQ_THUMBNAILPATH="storage/thumbnails"
 EXPIRY_DAYS=1
 COOKIES_NAME="DigitalAssetApp"
 ```
+### 1. setup docker for rabbit MQ run
+   open in other terminal start docker by :
+```
+   docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+```
+   (make sure rabbit mq is running on correct port else change in env for port configuration)
+
 
 > note : Never commit `.env` files to version control.
 
