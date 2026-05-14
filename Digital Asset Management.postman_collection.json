@@ -1,0 +1,519 @@
+{
+  "info": {
+    "_postman_id": "8e031414-3568-476a-aaef-873ae9d1a469",
+    "name": "Digital Asset Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "28793068"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"userEmail\":\"admin@gmail.com\",\r\n    \"userPassword\":\"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrlBackend}}/user/login",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "user",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "registration",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"userName\": \"Rishav\",\r\n    \"userEmail\":\"user@gmail.com\",\r\n    \"userPassword\":\"12345\",\r\n    \"userRole\":\"admin\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrlBackend}}/user/register",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "user",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get dashboard",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3Nzg0NzcwNDEsImV4cCI6MTc3ODU2MzQ0MX0.3aWLO0JXhrHmEsfLgg1qXdDjr8y7xIyrMu057r8_VVQ",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/dashboardChart/stats",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "dashboardChart",
+            "stats"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "mark Approve",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3NzgyMTc5MDEsImV4cCI6MTc3ODMwNDMwMX0.0ZzEI89_R6X4K9faDxTNLPLeeOvxttuJNhw_GWjEfhA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/markassets/69fde25e45e5358f69c98c85",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "markassets",
+            "69fde25e45e5358f69c98c85"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "assets list",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGcOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJwdWJsaWNAZ21haWwuY29tIiwiaWF0IjoxNzc4NTk2NTExLCJleHAiOjE3Nzg2ODI5MTF9._06faNYSz80j3y4OHqYnRg8Qb5wQKwn7RciaPSwf_4s",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrlBackend}}/public/assets?page=1&limit=10",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "public",
+            "assets"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "asset details",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3NzgyMTc5MDEsImV4cCI6MTc3ODMwNDMwMX0.0ZzEI89_R6X4K9faDxTNLPLeeOvxttuJNhw_GWjEfhA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Range",
+            "value": "bytes=0-",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/assets/69fd96f245e5358f69c98c7a",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "assets",
+            "69fd96f245e5358f69c98c7a"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "download assets",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();",
+              "",
+              "// Handle both array and single object responses",
+              "const items = Array.isArray(response) ? response : [response];",
+              "",
+              "if (items.length === 0) {",
+              "    pm.visualizer.set('<p>No data returned.</p>');",
+              "} else {",
+              "    const keys = Object.keys(items[0]);",
+              "",
+              "    const headerRow = keys.map(k => `<th>${k}</th>`).join('');",
+              "    const bodyRows = items.map(item =>",
+              "        `<tr>${keys.map(k => `<td>${item[k] !== undefined && item[k] !== null ? JSON.stringify(item[k]) : ''}</td>`).join('')}</tr>`",
+              "    ).join('');",
+              "",
+              "    const template = `",
+              "        <style>",
+              "            body { font-family: sans-serif; padding: 10px; }",
+              "            table { border-collapse: collapse; width: 100%; }",
+              "            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }",
+              "            th { background-color: #f0f0f0; font-weight: bold; }",
+              "            tr:nth-child(even) { background-color: #f9f9f9; }",
+              "        </style>",
+              "        <table>",
+              "            <thead><tr>${headerRow}</tr></thead>",
+              "            <tbody>${bodyRows}</tbody>",
+              "        </table>",
+              "    `;",
+              "",
+              "    pm.visualizer.set(template);",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3Nzg2NzU1MTYsImV4cCI6MTc3ODc2MTkxNn0.e8ETU7Ugz8G_Mxu7W7F1dF0YdM1EhXeAVH3kZ0aE9bc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/downloadAsset/6a03228945e5358f69c98cf8",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "downloadAsset",
+            "6a03228945e5358f69c98cf8"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete assets",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJwdWJsaWNAZ21haWwuY29tIiwiaWF0IjoxNzc4NTgzMDM1LCJleHAiOjE3Nzg2Njk0MzV9.Hqgy0gb_oA9pXh0pP1fTVtV_Zpip9bXKqPIdGDnuptc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4001/admin/assets/6a017c3145e5358f69c98c93",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "4001",
+          "path": [
+            "admin",
+            "assets",
+            "6a017c3145e5358f69c98c93"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "chunk-upload",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg3MjExNSwiZXhwIjoxNzc3OTU4NTE1fQ.KeFIT6kQ_QQIadPYKlzQjrJnWw1uVF2EcKHSjlCCVko",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "af72c30d-356c-46dc-8142-55dbd4f2e945",
+              "src": "/C:/Users/rishabrajv/Downloads/logo.webp"
+            },
+            {
+              "key": "chunkIndex",
+              "value": "1",
+              "type": "text",
+              "uuid": "e1b7e593-501b-4e3f-868d-cab9d9d1d210"
+            },
+            {
+              "key": "uploadId",
+              "value": "folder",
+              "type": "text",
+              "uuid": "b5073ede-4976-49c1-a0a6-e88a5155c805"
+            },
+            {
+              "key": "totalChunks",
+              "value": "2",
+              "type": "text",
+              "uuid": "462eb1c6-2507-4077-a371-418571842972"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/upload/chunk",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "upload",
+            "chunk"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "bulk upload",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTc3Nzk1OTI1OSwiZXhwIjoxNzc4MDQ1NjU5fQ.YXte5RHI5OfKjQjZJlPO_aPfJGKn_LvrY7H9rtQHwD8",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "af72c30d-356c-46dc-8142-55dbd4f2e945",
+              "src": "/C:/Users/rishabrajv/Downloads/download.png"
+            },
+            {
+              "key": "chunkIndex",
+              "value": "2",
+              "type": "text",
+              "uuid": "e1b7e593-501b-4e3f-868d-cab9d9d1d210"
+            },
+            {
+              "key": "uploadId",
+              "value": "folder",
+              "type": "text",
+              "uuid": "b5073ede-4976-49c1-a0a6-e88a5155c805"
+            },
+            {
+              "key": "totalChunks",
+              "value": "2",
+              "type": "text",
+              "uuid": "462eb1c6-2507-4077-a371-418571842972"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/bulk-upload/chunk",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "bulk-upload",
+            "chunk"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "video stream",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3NzgyMTc5MDEsImV4cCI6MTc3ODMwNDMwMX0.0ZzEI89_R6X4K9faDxTNLPLeeOvxttuJNhw_GWjEfhA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Range",
+            "value": "bytes=0-",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/assets/69fd7dfc45e5358f69c98c78",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "assets",
+            "69fd7dfc45e5358f69c98c78"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3NzgyMTc5MDEsImV4cCI6MTc3ODMwNDMwMX0.0ZzEI89_R6X4K9faDxTNLPLeeOvxttuJNhw_GWjEfhA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrlBackend}}/admin/assetsDetails/69fd96f245e5358f69c98c7a",
+          "host": [
+            "{{baseUrlBackend}}"
+          ],
+          "path": [
+            "admin",
+            "assetsDetails",
+            "69fd96f245e5358f69c98c7a"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
