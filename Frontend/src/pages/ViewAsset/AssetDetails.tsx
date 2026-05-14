@@ -141,21 +141,32 @@ const AssetDetails = () => {
   }
 
   return (
-    <section className="mainContainer">
+    <section className="mainContainer" aria-labelledby="page-title">
       <header className="header">
-        <h1 className="title">Asset Details</h1>
+        <h1 id="page-title" className="title">
+          Asset Details
+        </h1>
 
-        <span className="bread-scrumb">
+        {/* BREADCRUMBS: Wrapped in nav with label */}
+        <nav className="bread-scrumb" aria-label="Breadcrumb">
           <Link className="routes" to="/dashboard">
             Go to dashboard
           </Link>
-          <span className="separator"> / </span>
+          <span className="separator" aria-hidden="true">
+            {' '}
+            /{' '}
+          </span>
           <Link className="routes" to="/asset">
             Asset list
           </Link>
-          <span className="separator"> / </span>
-          <span className="bread-scrumb-bold">Asset Details</span>
-        </span>
+          <span className="separator" aria-hidden="true">
+            {' '}
+            /{' '}
+          </span>
+          <span className="bread-scrumb-bold" aria-current="page">
+            Asset Details
+          </span>
+        </nav>
       </header>
 
       <div className={styles.container}>
@@ -164,6 +175,7 @@ const AssetDetails = () => {
             <h1>Asset: {metaData?.fileType}</h1>
             <button
               className={styles.downloadBtn}
+              aria-label={`Download ${metaData?.fileType} file`}
               onClick={() => {
                 if (metaData?._id) {
                   handleDownloadFile(metaData._id);
@@ -176,7 +188,8 @@ const AssetDetails = () => {
         </header>
 
         <main className={styles.mainContent}>
-          <section className={styles.previewArea}>
+          {/* PREVIEW AREA: Added label for the specific asset type */}
+          <section className={styles.previewArea} aria-label={`${category} preview`}>
             <div className={styles.previewContainer}>
               {category === 'video' && (
                 <VideoPlayer assetId={id!} ext={metaData?.metadata.extension || ''} />
@@ -184,22 +197,27 @@ const AssetDetails = () => {
               {category === 'image' && <ImagePreview assetId={id!} />}
               {category === 'pdf' && <PdfViewer assetId={id!} />}
               {category === 'other' && (
-                <div className={styles.imagePlaceholder}>
+                <div className={styles.imagePlaceholder} role="status">
                   <span>No Preview Available ( .{metaData?.metadata.extension})</span>
                 </div>
               )}
             </div>
           </section>
 
-          <aside className={styles.metadataPane}>
+          {/* ASIDE: Metadata is secondary info, perfect for aside landmark */}
+          <aside className={styles.metadataPane} aria-labelledby="metadata-title">
             <div className={styles.mainBox}>
-              <h3>Metadata</h3>
+              <h3 id="metadata-title">Metadata</h3>
 
               <div className={styles.metaGrid}>
                 <div className={styles.metaItem}>
-                  <label>File Type</label>
-                  <p>{metaData?.metadata.extension?.toUpperCase()}</p>
+                  <label id="filetype-label">File Type</label>
+                  <p aria-labelledby="filetype-label">
+                    {metaData?.metadata.extension?.toUpperCase()}
+                  </p>
                   <button
+                    className={styles.deleteBtn}
+                    aria-label="Delete this asset"
                     onClick={() => {
                       if (metaData?._id) {
                         deleteAsset(metaData._id);
@@ -211,27 +229,30 @@ const AssetDetails = () => {
                 </div>
 
                 <div className={styles.metaItem}>
-                  <label>Status</label>
-                  <p>
-                    <span className={styles.statusBadge}>Uploaded</span>
-                  </p>
+                  <label id="status-label">Status</label>
+                  <div aria-labelledby="status-label">
+                    <span className={styles.statusBadge} role="status">
+                      Uploaded
+                    </span>
+                  </div>
                 </div>
 
                 <div className={styles.metaItem}>
-                  <label>Owner</label>
-                  <p>{metaData?.owner || 'System'}</p>
+                  <label id="owner-label">Owner</label>
+                  <p aria-labelledby="owner-label">{metaData?.owner || 'System'}</p>
                 </div>
 
                 {metaData && currentUser === 'admin' && (
-                  <span className={styles.buttomBtn}>
+                  <div className={styles.buttomBtn}>
                     <button
                       className="secondaryBtn"
                       disabled={metaData.approval !== 'pending'}
+                      aria-label="Mark asset as approved"
                       onClick={() => markApprove(metaData._id)}
                     >
-                      Mark approve
+                      {metaData.approval === 'pending' ? 'Mark approve' : 'Approved'}
                     </button>
-                  </span>
+                  </div>
                 )}
               </div>
             </div>
