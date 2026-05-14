@@ -161,6 +161,9 @@ EXPIRY_DAYS=1
 
   2. Variable: Check that RABBITMQ_URL in your active .env file matches your RabbitMQ instance (e.g., amqp://localhost:5672 for local dev).
 
+## API
+ - postman API referance end point mentiond in json formate
+ - file name : Digital Asset Management.postman_collection.json
 
 ## **6. Scripts**
 

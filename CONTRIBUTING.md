@@ -214,6 +214,10 @@ Before you start, ensure you have the following installed:
     ├── vite.config.ts
  ```
 
+ ## API
+ - postman API referance end point mentiond in json formate
+ - file name : Digital Asset Management.postman_collection.json
+
 
 ### Commit Messages
 
