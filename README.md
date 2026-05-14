@@ -224,7 +224,7 @@ P --> Q
 
 %% ACTIONS
 Q --> R[Upload Asset]
-R --> S[Refresh List (Approved Assets only)]
+R --> S[Refresh List : Approved Assets only]
 
 Q --> T[Open Particular Asset]
 T --> U{Asset Details}
