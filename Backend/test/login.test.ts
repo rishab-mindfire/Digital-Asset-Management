@@ -9,8 +9,6 @@ vi.mock('../src/services/authGeneral.service');
 
 // Import services for there test with mocks data
 import * as userServices from '../src/services/users.service';
-import * as authRoleService from '../src/services/authRole.service';
-import * as authGeneral from '../src/services/authGeneral.service';
 
 const request = supertest(app);
 
@@ -18,24 +16,6 @@ describe('User Login API Integration', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
-
-  // ---------------- SUCCESS ----------------
-  // it('should return 200 and Bearer token on successful login', async () => {
-  //   vi.mocked(userServices.userServices.checkSigninPassword).mockResolvedValue(true);
-  //   vi.mocked(authRoleService.verifyEmplyeeRole).mockResolvedValue('admin');
-  //   vi.mocked(authGeneral.generateToken).mockReturnValue('mocked-token');
-
-  //   const payload = {
-  //     userEmail: 'myaccount@gmail.com',
-  //     userPassword: '123456',
-  //   };
-
-  //   const response = await request.post('/user/login').send(payload);
-
-  //   expect(response.status).toBe(200);
-  //   expect(response.body.userRole).toBe('admin');
-  //   expect(response.headers['authorization']).toContain('Bearer mocked-token');
-  // });
 
   // ---------------- INVALID EMAIL ----------------
   it('should return 400 for invalid email format', async () => {

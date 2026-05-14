@@ -12,6 +12,8 @@ import {
 import useChunkedUpload from '../../hooks/useChunkedUpload';
 import usePagination from '../../hooks/usePagination';
 import { toast } from 'react-toastify';
+import { handleError } from '../../utils/handleError';
+import { logger } from '../../utils/logger';
 
 const AssetTable = () => {
   const userRole = localStorage.getItem(import.meta.env.USERROLE_KEY || 'userRole-DAM');
@@ -49,11 +51,10 @@ const AssetTable = () => {
       await uploadMultipalFiles(selectedFiles);
       // alert('All files uploaded successfully!');
       setSelectedFiles([]);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-        setErrorMessage(err.message);
-      }
+    } catch (error) {
+      const message = handleError(error);
+      logger.error(message);
+      setErrorMessage(message);
     }
   };
 

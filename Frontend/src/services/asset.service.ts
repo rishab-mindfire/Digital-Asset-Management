@@ -1,5 +1,5 @@
 import { api } from './apiInterceptor';
-import { getErrorMessage } from '../utils/getErrorMessage';
+import { handleError } from '../utils/handleError';
 import { logger } from '../utils/logger';
 
 // Get Asset Details
@@ -9,10 +9,8 @@ export const getAssetDetails = async (id: string) => {
 
     return response.data;
   } catch (error: unknown) {
-    const message = getErrorMessage(error);
-
+    const message = handleError(error);
     logger.error(message);
-
     throw new Error(message, {
       cause: error,
     });
@@ -26,10 +24,8 @@ export const approveAsset = async (id: string) => {
 
     return response.data;
   } catch (error: unknown) {
-    const message = getErrorMessage(error);
-
+    const message = handleError(error);
     logger.error(message);
-
     throw new Error(message, {
       cause: error,
     });
@@ -43,10 +39,8 @@ export const removeAsset = async (id: string) => {
 
     return response.data;
   } catch (error: unknown) {
-    const message = getErrorMessage(error);
-
+    const message = handleError(error);
     logger.error(message);
-
     throw new Error(message, {
       cause: error,
     });
@@ -62,7 +56,7 @@ export const downloadAsset = async (id: string) => {
 
     return response;
   } catch (error: unknown) {
-    const message = getErrorMessage(error);
+    const message = handleError(error);
 
     logger.error(message);
 

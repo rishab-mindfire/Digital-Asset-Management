@@ -6,7 +6,7 @@ import { ImagePreview } from './MediaComponents/ImagePreview';
 import { PdfViewer } from './MediaComponents/PdfViewer';
 import type { metaDataType } from '../../models/Types';
 import { logger } from '../../utils/logger';
-import { getErrorMessage } from '../../utils/getErrorMessage';
+import { handleError } from '../../utils/handleError';
 import PageNotFound from '../errorPage/PageNotFound';
 
 import {
@@ -47,7 +47,9 @@ const AssetDetails = () => {
           setCategory('other');
         }
       } catch (error: unknown) {
-        setError(getErrorMessage(error));
+        const message = handleError(error);
+        setError(message);
+        logger.error(message);
       } finally {
         setLoading(false);
       }
@@ -70,7 +72,7 @@ const AssetDetails = () => {
         };
       });
     } catch (error: unknown) {
-      logger.error(getErrorMessage(error));
+      logger.error(handleError(error));
     }
   };
 
@@ -106,7 +108,7 @@ const AssetDetails = () => {
         window.URL.revokeObjectURL(url);
       }, 100);
     } catch (error: unknown) {
-      logger.error(getErrorMessage(error));
+      logger.error(handleError(error));
     }
   };
 
@@ -116,7 +118,7 @@ const AssetDetails = () => {
       await removeAsset(id);
       navigation('/asset');
     } catch (error: unknown) {
-      logger.error(getErrorMessage(error));
+      logger.error(handleError(error));
     } finally {
       setLoading(false);
     }
