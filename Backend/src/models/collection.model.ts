@@ -26,6 +26,8 @@ const collectionSchema = new Schema<ICollection>(
     ownerEmail: {
       type: String,
       required: true,
+      lowercase: true,
+      trim: true,
     },
     isPublic: {
       type: Boolean,
@@ -40,7 +42,7 @@ const collectionSchema = new Schema<ICollection>(
 );
 
 // Indexing for lookup owner and assset creation
-collectionSchema.index({ createdBy: 1, timestamps: 1 });
+collectionSchema.index({ createdBy: 1, createdAt: -1 });
 // Indexing for lookups by owner name or email
 collectionSchema.index({ name: 1, ownerEmail: 1 });
 
