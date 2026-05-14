@@ -128,31 +128,30 @@ QUEUE_UPLOAD_ASSET_NAME="asset_upload_worker"
 QUEUE_EXPIRATION_ASSET_NAME="asset_expiration_worker"
 RABBITMQ_THUMBNAILPATH="storage/thumbnails"
 EXPIRY_DAYS=1
-
 ```
 
- ## Setup and run app
+## Setup and run app
 ### 1. installation forntend
-    ```
+```
    cd Frontend
    npm i
    npm run dev
-   ```
+```
 
 ### 2. setup docker for rabbit MQ run
    (open in other terminal start docker by : )
-   ```
+```
    docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
-   ```
+```
    (make sure rabbit mq is running on correct port else change in env for port configuration)
 
 ### 4. installation backend
-   ```
+```
    cd Backend
    npm i
    npm run dev                 (for dev mood)
    npm run prod                (for production mood)
-   ```
+```
 
 ## env file example
  1. RabbitMQ & Worker Integration
@@ -174,7 +173,7 @@ EXPIRY_DAYS=1
 
 ## Testing
 
-```bash
+```
 npm run test      # All tests (before test went to frontend, backend folders )
 ```
 
