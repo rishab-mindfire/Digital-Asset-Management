@@ -34,7 +34,7 @@ DIGITA-ASSET-MANAGEMENT/
 ├── README.md
 
 ```
-## **4. App folder**
+## **4. App folder structure**
 
  ```
  ├── Frontend/ # Front end (React app)
@@ -107,14 +107,6 @@ git clone https://github.com/rishab-mindfire/Digital-Asset-Management
 cd Digital-Asset-Management
 ```
 
-## env file example
- 1. RabbitMQ & Worker Integration
-    The backend utilizes a worker process for heavy tasks. For the queue to function correctly:
-    Ensure RabbitMQ is installed and running.
-    Port: The default connection port is 5672.
-
-  2. Variable: Check that RABBITMQ_URL in your active .env file matches your RabbitMQ instance (e.g., amqp://localhost:5672 for local dev).
-
 ### frontend env.example
 
 ```
@@ -140,29 +132,35 @@ EXPIRY_DAYS=1
 ```
 
  ## Setup and run app
- ````
-# 1. installation forntend
+### 1. installation forntend
+    ```
    cd Frontend
    npm i
-
-   # 2. Run frontend
    npm run dev
+   ```
 
-# 3. setup docker for rabbit MQ run
+### 2. setup docker for rabbit MQ run
    (open in other terminal start docker by : )
-
+   ```
    docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
-   (make sure rabbit mq is running on correct port else create env for port)
+   ```
+   (make sure rabbit mq is running on correct port else change in env for port configuration)
 
-# 4. installation backend
+### 4. installation backend
+   ```
    cd Backend
    npm i
-
-# 2. Run backend
    npm run dev                 (for dev mood)
    npm run prod                (for production mood)
+   ```
 
- ````
+## env file example
+ 1. RabbitMQ & Worker Integration
+    The backend utilizes a worker process for heavy tasks. For the queue to function correctly:
+    Ensure RabbitMQ is installed and running. (use docker)
+    Port: The default connection port is 5672.
+
+  2. Variable: Check that RABBITMQ_URL in your active .env file matches your RabbitMQ instance (e.g., amqp://localhost:5672 for local dev).
 
 
 ## **6. Scripts**
@@ -195,7 +193,7 @@ npm run test      # All tests (before test went to frontend, backend folders )
 
 
 ```mermaid
-    flowchart TD
+  flowchart TD
 
 %% AUTH FLOW
 A[User Opens App] --> B{Authenticated?}
@@ -209,9 +207,34 @@ E -- Valid --> G[Call Login API]
 
 G --> H{Success?}
 H -- No --> I[Show Error]
-H -- Yes --> J[Store Token]
+H -- Yes --> J[Store Token & Role]
 
 J --> K[Set Auth State]
-K --> L[Go to Dashboard]
+K --> L[Dashboard]
 
+%% ASSET FLOW
+L --> M[Fetch Asset List]
+
+M --> N{User Role?}
+
+N -- Public --> O[Filter: Only Approved Assets]
+N -- Admin --> P[Show All Assets]
+
+O --> Q[Asset List View]
+P --> Q
+
+%% ACTIONS
+Q --> R[Upload Asset]
+R --> S[Refresh List]
+
+Q --> T[Open Particular Asset]
+T --> U{Asset Details}
+
+U --> V[Download File]
+U --> W[Play Video/Preview]
+
+%% ADMIN SPECIFIC
+U --> X{Is Admin?}
+X -- Yes --> Y[Approve/Reject Asset]
+X -- Yes --> Z[Delete Asset]
 ```
