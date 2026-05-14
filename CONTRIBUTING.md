@@ -6,7 +6,7 @@ Thank you for your interest in contributing! This project uses a **React (TypeSc
 
 ##  Project Setup
 
-### 1. Clone the Repository
+# 1. Clone the Repository
 
 ```bash
 git clone https://github.com/rishab-mindfire/Digital-Asset-Management
@@ -14,48 +14,76 @@ git clone https://github.com/rishab-mindfire/Digital-Asset-Management
 
 ---
 
-### 2. Install Dependencies
+# 2. Install Dependencies
 
 #### Frontend (React + TypeScript)
 
 ```bash
 cd Frontend
 npm install
+npm run dev
 ```
 
----
-
-### 3. Environment Variables
-
-Create a `.env` file for backend base api url point:
-
-```env
-VITE_BASE_URL=http://localhost:3000
-```
-
-> Never commit `.env` files to version control.
-
----
-
-### 4. Run the Project
-#### Start Frontend
+#### Backend (Nodejs + express)
 
 ```bash
-cd frontend
+cd Backend
+npm install
 npm run dev
 ```
 
 ---
 
-##  Coding Standards
+# 3. Environment Variables
+
+Create a `.env` file for frontend example
+    backend base api url point:
+    token key :
+    cookies name key :
+    user role key :
+
+```env
+VITE_BASE_URL=http://localhost:4001
+VITE_TOKEN_KEY='*******'
+COOKIES_NAME="DigitalAssetApp"
+USERROLE_KEY="userRole-DAM"
+```
+
+
+Create a `.env` file for backend example
+    local server port :
+    frontend url :
+    DB connection string :
+    JWT_SECRET :
+    JWT_REFRESH_SECRET :
+    etc...
+
+```env
+PORT=4001
+FRONTEND_URL="http://localhost:3001"
+DB_CONNECTION_STRING="mongodb://localhost:27017/asset-management"
+JWT_SECRET="########################"
+JWT_REFRESH_SECRET="##########################"
+UPLOAD_DIR="./storage/raw"
+RABBITMQ_URL="amqp://127.0.0.1:5672"
+QUEUE_UPLOAD_ASSET_NAME="asset_upload_worker"
+QUEUE_EXPIRATION_ASSET_NAME="asset_expiration_worker"
+RABBITMQ_THUMBNAILPATH="storage/thumbnails"
+EXPIRY_DAYS=1
+COOKIES_NAME="DigitalAssetApp"
+```
+
+> note : Never commit `.env` files to version control.
+
+---
+
+# 4.  Coding Standards
 
 ### General Rules
 
 * Use **TypeScript** for all new code
 * Keep functions small and reusable
 * Avoid unnecessary comments — write clean, readable code instead
-
----
 
 ### Naming Conventions
 
@@ -69,7 +97,7 @@ npm run dev
 
 ---
 
-### Project Structure (Example)
+# 5. Project Structure (Example)
 
 ```
 src/
@@ -92,10 +120,11 @@ src/
 * Use **ESLint** and **Prettier**
 * Run before committing:
 
-```bash
+```
 npm run lint
 npm run format
 ```
+husky used for pre commites error check before commiting to origin
 
 ---
 
@@ -107,12 +136,6 @@ npm run format
 * `bugfix/issue-name`
 * `hotfix/urgent-fix`
 
-
-
----
-#### Backend (nodeJs + TypeScript)
----
-
 ## Prerequisites
 
 Before you start, ensure you have the following installed:
@@ -120,43 +143,70 @@ Before you start, ensure you have the following installed:
 - **MongoDB**: v6.0+ (Local instance or MongoDB Atlas).
 - **Package Manager**: npm or yarn.
 
----
-## Environment Configuration:
+# 6. App folder structure**
 
-## Create a .env.dev file in the root directory:
+ ```
+ ├── Frontend/ # Front end (React app)
+    ├── node_modeules
+    ├── public
+     ├── src
+        ├── assets                      ( files, img , logo)
+        ├── auth                        ( authentication logics)
+        ├── components                  ( components)
+        ├── context                     ( context, auth-context)
+        ├── hooks                       ( custome hookes, pagination hook)
+        ├── models                      ( type declearation)
+        ├── pages                       ( layout pages)
+        ├── reducers                    ( api call, reducers and actions, login, singin)
+        ├── services                    ( API services, interceptors)
+        ├── App.tsx                     ( main app, routes)
+        ├── index.css
+        ├── main.tsx
+    ├── test
+    ├── .env
+    ├── .prettierignore
+    ├── .prettierrc
+    ├── dockerfile
+    ├── eslint.config.js
+    ├── index.html
+    ├── ngnix.config
+    ├── packege-lock.json
+    ├── tsconfig.app.json
+    ├── tsconfig.node.json
+    ├── vite.config.ts
 
-Code snippet
+ ├── Backend/  # Backend App (node+express)
+    ├── node_module
+    ├── src
+       ├── config                          ( DB configuration, Rabbit MQ config)
+       ├── consumer                        ( Consumer, worker deligation )
+       ├── controller                      ( controlers for admin, public, managers)
+       ├── helper                          ( helpers for id generator, other)
+       ├── middlewares                     ( authentication middleware)
+       ├── models                          ( DB schema design and type initialization)
+       ├── queuePublicer                   ( public tasks to queue)
+       ├── router                          ( routes for admin, public, managers)
+       ├── services                        ( services for API routes)
+       ├── types                           ( type decleratons)
+       ├── utilis                          ( utility folder, globle errror hander)
+       ├── validation                      ( validation sanitize frontend payloads)
+       ├── index.ts
+       ├── server.ts
+    ├── storage
+    ├── test
+    ├── .env.dev
+    ├── .env.production
+    ├── .prettierignore
+    ├── .prettierrc
+    ├── dockerfile
+    ├── eslint.config.js
+    ├── .dockerignore
+    ├── packege-lock.json
+    ├── tsconfig.app.json
+    ├── tsconfig.node.json
+    ├── vite.config.ts
+ ```
 
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/project_db
-
-
-## Install Dependencies:
-
-Bash
-```
-cd Backend
-npm install
-```
-
-Start the Server:
-
-Bash
-```
-npm run dev
-```
-
- ## Architectural Guidelines
-
-
-
-
-
-
-
-
-
- ---
 
 ### Commit Messages
 
