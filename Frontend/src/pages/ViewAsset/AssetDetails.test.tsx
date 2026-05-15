@@ -85,7 +85,7 @@ describe('AssetDetails Component', () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /mark approve/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Mark asset as approved/i })).toBeInTheDocument();
     });
   });
 

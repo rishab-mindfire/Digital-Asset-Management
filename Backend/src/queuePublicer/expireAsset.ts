@@ -10,44 +10,48 @@ export const publishToExpirationQueue = async (assetId: string): Promise<void> =
   const EXPIRY_EXCHANGE = 'asset_expiry_exchange';
   const ROUTING_KEY = 'expire_key';
 
-  // Convert days to milliseconds
-  const expiredIn = Number(process.env.EXPIRY_DAYS || 10) * 24 * 60 * 60 * 1000;
+  // Calculate TTL: 10 days = 864,000,000 ms
+  const days = Number(process.env.EXPIRY_DAYS || 10);
+  const expiredInMs = days * 24 * 60 * 60 * 1000;
 
   try {
     connection = await amqp.connect(RABBITMQ_URL);
     const channel = await connection.createChannel();
 
-    // Setup the Exchange that will receive messages AFTER they expire
+    // Setup the Exchange for expired messages
     await channel.assertExchange(EXPIRY_EXCHANGE, 'direct', { durable: true });
 
-    //  Setup the Worker Queue
+    // Setup the Worker Queue where messages land after 10 days
     await channel.assertQueue(FINAL_EXPIRY_QUEUE, { durable: true });
     await channel.bindQueue(FINAL_EXPIRY_QUEUE, EXPIRY_EXCHANGE, ROUTING_KEY);
 
     //  Setup the Delay Queue
-    //  queue send expired messages to EXPIRY_EXCHANGE
     await channel.assertQueue(DELAY_QUEUE, {
       durable: true,
       arguments: {
-        'x-message-ttl': expiredIn,
         'x-dead-letter-exchange': EXPIRY_EXCHANGE,
         'x-dead-letter-routing-key': ROUTING_KEY,
-        'x-queue-mode': 'lazy', // Good for long-term storage of many messages
+        'x-queue-mode': 'lazy',
       },
     });
 
-    //  Publish the message to the DELAY queue
     const payload = Buffer.from(JSON.stringify({ assetId, createdAt: new Date() }));
-    channel.sendToQueue(DELAY_QUEUE, payload, { persistent: true });
-    logger.info(`Asset ${assetId} queued for expiration in ${process.env.EXPIRY_DAYS || 10} days.`);
+
+    //  Set the days expiration on the MESSAGE itself
+    channel.sendToQueue(DELAY_QUEUE, payload, {
+      persistent: true,
+      expiration: expiredInMs.toString(),
+    });
+
+    logger.info(`Asset ${assetId} queued. Will expire in ${days} days.`);
 
     await channel.close();
     await connection.close();
   } catch (error) {
-    logger.error('Failed to queue expiration:', error);
-    // Ensure connections are closed even on failure if they were opened
+    logger.error(`Failed to queue expiration: ${error}`);
     if (connection) {
       await connection.close();
     }
+    throw error;
   }
 };
