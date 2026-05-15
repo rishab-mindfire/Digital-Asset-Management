@@ -216,7 +216,10 @@ class AdminServices {
 
     // Queue Worker: ONLY publish if the file is unique
     if (!isDuplicate) {
-      logger.info('duplicate file added !');
+      logger.info('new file added !');
+      //  UPDATE STATUS TO UPLOADED FIRST
+      await AssetModel.findByIdAndUpdate(assetData._id, { status: 'uploaded' });
+      logger.info(`Asset ${assetData._id} status updated to uploaded thumbnail.`);
       try {
         await publishToQueueForThumbnail({
           assetId: assetData._id.toString(),
@@ -235,7 +238,7 @@ class AdminServices {
       try {
         // Schedule the expiration
         await publishToExpirationQueue(assetData._id.toString());
-        logger.error('published to expiration !');
+        logger.error('published successfully to expiration !');
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw new Error('publish to expiration not works');

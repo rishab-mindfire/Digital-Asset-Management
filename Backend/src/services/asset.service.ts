@@ -24,7 +24,6 @@ class AssetManagement {
     const limitNum = Number.parseInt(limit, 10) || 10;
 
     const filter: FilterQuery<IAsset> = {};
-    filter.isExpired = false;
     if (type) {
       filter.fileType = type;
     }
@@ -39,6 +38,7 @@ class AssetManagement {
       ownerID: 0,
       uploadId: 0,
       localPath: 0,
+      isExpired: false,
     })
       .sort({ updatedAt: -1 })
       .limit(limitNum)
