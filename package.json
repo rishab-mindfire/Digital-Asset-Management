@@ -4,13 +4,15 @@
   "description": "A centralize plateform the manage digital assets",
   "type": "module",
   "scripts": {
+    "prepare": "husky",
+    "test:forntend":"cd Frontend && npm run test",
+    "test:backend":"cd Backend && npm run test",
     "lint:frontend": "cd Frontend && npm run lint",
     "format:frontend": "cd Frontend && npm run format",
     "lint:backend": "cd Backend && npm run lint",
     "format:backend": "cd Backend && npm run format",
     "lint": "npm run lint:frontend && npm run lint:backend",
     "format": "npm run format:frontend && npm run format:backend",
-    "prepare": "husky",
     "rabbit-mq": "docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management",
     "dev-front": "cd Frontend && npm run dev",
     "dev-back": "cd Backend && npm run dev"

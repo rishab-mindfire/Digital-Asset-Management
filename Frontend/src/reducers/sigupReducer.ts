@@ -4,10 +4,9 @@ import type { SigninAction, SignupType } from '../models/Types';
  * Initial state for sigup form
  */
 export const initialSignInState: SignupType = {
-  userName: 'name',
+  userName: '',
   userEmail: '',
   userPassword: '',
-  userRole: 'public',
   loading: false,
   errors: {},
 };
