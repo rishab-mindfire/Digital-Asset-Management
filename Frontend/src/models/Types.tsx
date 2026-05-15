@@ -59,7 +59,7 @@ export interface SignupType {
   userName: string;
   userEmail: string;
   userPassword: string;
-  userRole: UserRole;
+  userRole?: UserRole;
   loading: boolean;
   errors: SignInErrors;
 }
