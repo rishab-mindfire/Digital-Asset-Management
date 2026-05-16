@@ -14,11 +14,19 @@ const port = process.env.PORT || 4001;
 const startServer = async () => {
   try {
     // connection DB
-    await connectDB();
+    try {
+      await connectDB();
+    } catch (error) {
+      logger.error(`error in db connection : ${error}`);
+    }
     //workers conection (consumner) to MQ
-    await initWorkers();
+    try {
+      await initWorkers();
+      logger.info('Worker initiated !');
+    } catch (error) {
+      logger.error(`error in Worker creation : ${error}`);
+    }
     app.listen(port, () => {});
-    logger.info('workers initiated ! ');
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(err.message);
