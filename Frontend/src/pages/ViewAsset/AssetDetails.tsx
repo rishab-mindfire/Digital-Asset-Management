@@ -9,23 +9,29 @@ import { logger } from '../../utils/logger';
 import { handleError } from '../../utils/handleError';
 import PageNotFound from '../errorPage/PageNotFound';
 
+// Import service functions for data handling
 import {
   getAssetDetails,
   approveAsset,
   removeAsset,
-  downloadAsset,
+  triggerAssetDownload,
 } from '../../services/asset.service';
 
 const AssetDetails = () => {
+  // Hook to get the asset ID from the URL path
   const { id } = useParams<{ id: string }>();
+  // Retrieve user role from storage for permission-based UI
   const currentUser = localStorage.getItem(import.meta.env.USERROLE_KEY || 'userRole-DAM');
   const navigation = useNavigate();
+
+  // Component state management
   const [metaData, setMetaData] = useState<metaDataType>();
   const [category, setCategory] = useState<'image' | 'video' | 'pdf' | 'other'>('other');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Fetch asset data and determine file category for rendering
     const fetchDetails = async () => {
       try {
         setLoading(true);
@@ -37,6 +43,7 @@ const AssetDetails = () => {
         const extension = rawData?.metadata?.extension?.toLowerCase() || '';
         setMetaData(rawData);
 
+        // Map file extensions to UI categories
         if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension)) {
           setCategory('image');
         } else if (['mp4', 'mov', 'webm'].includes(extension)) {
@@ -58,60 +65,27 @@ const AssetDetails = () => {
     fetchDetails();
   }, [id]);
 
+  // Handle administrator approval action
   const markApprove = async (id: string) => {
     try {
       await approveAsset(id);
-      setMetaData((prev) => {
-        if (!prev) {
-          return prev;
-        }
-
-        return {
-          ...prev,
-          approval: 'approved',
-        };
-      });
+      setMetaData((prev) => (prev ? { ...prev, approval: 'approved' } : prev));
     } catch (error: unknown) {
       logger.error(handleError(error));
     }
   };
 
-  const handleDownloadFile = async (id: string) => {
+  // Trigger native browser download (handles large files without RAM crashes)
+  const handleDownloadFile = (id: string) => {
     try {
-      const response = await downloadAsset(id);
-      const disposition = response.headers['content-disposition'];
-      let fileName = 'downloaded_file';
-      if (disposition) {
-        const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
-        const standardMatch = disposition.match(/filename="?([^";]+)"?/i);
-        const rawName = utf8Match ? utf8Match[1] : standardMatch ? standardMatch[1] : null;
-        if (rawName) {
-          fileName = decodeURIComponent(rawName);
-        }
-      }
-
-      const rawMimeType = response.headers['content-type'];
-      const blobType = typeof rawMimeType === 'string' ? rawMimeType : 'application/octet-stream';
-      const blob = new Blob([response.data], {
-        type: blobType,
-      });
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-
-      setTimeout(() => {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      }, 100);
-    } catch (error: unknown) {
-      logger.error(handleError(error));
+      triggerAssetDownload(id);
+    } catch (err) {
+      logger.error(`Download failed to initiate : ${err}`);
+      console.error('Download failed to initiate', err);
     }
   };
 
+  // Handle permanent deletion of the asset
   const deleteAsset = async (id: string) => {
     try {
       setLoading(true);
@@ -124,6 +98,7 @@ const AssetDetails = () => {
     }
   };
 
+  // Loading state UI
   if (loading) {
     return (
       <section className="mainContainer">
@@ -132,6 +107,7 @@ const AssetDetails = () => {
     );
   }
 
+  // Error/404 state UI
   if (error) {
     return (
       <section className="mainContainer">
@@ -147,7 +123,7 @@ const AssetDetails = () => {
           Asset Details
         </h1>
 
-        {/* BREADCRUMBS: Wrapped in nav with label */}
+        {/* Navigation breadcrumbs */}
         <nav className="bread-scrumb" aria-label="Breadcrumb">
           <Link className="routes" to="/dashboard">
             Go to dashboard
@@ -176,11 +152,7 @@ const AssetDetails = () => {
             <button
               className={styles.downloadBtn}
               aria-label={`Download ${metaData?.fileType} file`}
-              onClick={() => {
-                if (metaData?._id) {
-                  handleDownloadFile(metaData._id);
-                }
-              }}
+              onClick={() => metaData?._id && handleDownloadFile(metaData._id)}
             >
               download
             </button>
@@ -188,7 +160,7 @@ const AssetDetails = () => {
         </header>
 
         <main className={styles.mainContent}>
-          {/* PREVIEW AREA: Added label for the specific asset type */}
+          {/* Dynamic Preview Section based on category */}
           <section className={styles.previewArea} aria-label={`${category} preview`}>
             <div className={styles.previewContainer}>
               {category === 'video' && (
@@ -204,7 +176,7 @@ const AssetDetails = () => {
             </div>
           </section>
 
-          {/* ASIDE: Metadata is secondary info, perfect for aside landmark */}
+          {/* Sidebar containing file metadata and secondary actions */}
           <aside className={styles.metadataPane} aria-labelledby="metadata-title">
             <div className={styles.mainBox}>
               <h3 id="metadata-title">Metadata</h3>
@@ -215,14 +187,11 @@ const AssetDetails = () => {
                   <p aria-labelledby="filetype-label">
                     {metaData?.metadata.extension?.toUpperCase()}
                   </p>
+                  {/* Delete button (accessible to all viewers of this page) */}
                   <button
                     className={styles.deleteBtn}
                     aria-label="Delete this asset"
-                    onClick={() => {
-                      if (metaData?._id) {
-                        deleteAsset(metaData._id);
-                      }
-                    }}
+                    onClick={() => metaData?._id && deleteAsset(metaData._id)}
                   >
                     delete
                   </button>
@@ -242,6 +211,7 @@ const AssetDetails = () => {
                   <p aria-labelledby="owner-label">{metaData?.owner || 'System'}</p>
                 </div>
 
+                {/* Admin-only Approval Button */}
                 {metaData && currentUser === 'admin' && (
                   <div className={styles.buttomBtn}>
                     <button

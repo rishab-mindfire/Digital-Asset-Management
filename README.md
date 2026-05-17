@@ -54,7 +54,8 @@ DIGITA-ASSET-MANAGEMENT/
         ├── index.css
         ├── main.tsx
     ├── test
-    ├── .env
+    ├── .env                              (for local env file)
+    ├── .env.production                   (for production env file)
     ├── .prettierignore
     ├── .prettierrc
     ├── dockerfile
@@ -110,15 +111,19 @@ cd Digital-Asset-Management
 ### frontend env.example
 
 ```
-VITE_BASE_URL=http://localhost:4001
+VITE_PORT=3001                                   (frontend running port)
+VITE_BASE_URL=http://localhost:4001              (backend running base api)
 VITE_TOKEN_KEY='File-System'
+COOKIES_NAME="DigitalAssetApp"
+USERROLE_KEY="userRole-DAM"
+
 ```
 
 ### backend env.example
 
 ```
-PORT=4001
-FRONTEND_URL="http://localhost:3001"
+PORT=4001                                       (backend running port)
+FRONTEND_URL="http://localhost:3001"            (frontend running port)
 DB_CONNECTION_STRING="*********"
 JWT_SECRET="**********"
 JWT_REFRESH_SECRET="*******"

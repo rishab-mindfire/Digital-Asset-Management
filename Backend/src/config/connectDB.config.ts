@@ -32,7 +32,7 @@ const connectDB = async (): Promise<typeof mongoose> => {
     return mongoose;
   } catch (error: unknown) {
     // Delegate to global handler for consistent error formatting
-    return handleGlobalError(error);
+    return handleGlobalError(`error in db connection :${error}`);
   }
 };
 

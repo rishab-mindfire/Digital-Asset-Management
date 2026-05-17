@@ -60,7 +60,7 @@ class UserClass {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      // Generate both Access and Refresh Tokens
+      // Generate Access and Refresh Tokens
       // Secret for Refresh token
       const accessToken = jwt.sign({ userEmail }, process.env.JWT_SECRET!, { expiresIn: '1d' });
       const DigitalAssetApp = jwt.sign({ userEmail }, process.env.JWT_REFRESH_SECRET!, {

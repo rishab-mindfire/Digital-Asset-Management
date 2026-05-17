@@ -157,7 +157,9 @@ class AssetManagement {
 
       //  Encode for Header Safety
       const encodedName = encodeURIComponent(finalFileName);
-
+      const stats = fs.statSync(absolutePath);
+      res.setHeader('Content-Length', stats.size); // Use actual disk size
+      res.setHeader('Accept-Ranges', 'bytes');
       // Set Headers
       res.setHeader('Content-Type', mimeType);
       res.setHeader('Content-Length', asset.metadata?.size || 0);
@@ -168,7 +170,6 @@ class AssetManagement {
 
       // Stream the file
       const readStream = fs.createReadStream(absolutePath);
-
       readStream.on('error', (error) => {
         logger.error('Streaming error:', error);
         if (!res.headersSent) {

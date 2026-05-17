@@ -32,7 +32,7 @@ app.use('/public', authRoleBased('public'), publicRouter);
 
 // Health Check
 app.get('/', (req: Request, res: Response) => {
-  res.status(200).send('TS Server is running and secure.');
+  res.status(200).send('Server is running and secure.');
 });
 
 export default app;

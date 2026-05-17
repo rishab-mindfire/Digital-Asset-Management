@@ -133,7 +133,7 @@ class AssetAdmin {
       }
       await assetService.getAssetForDownload(id, res);
     } catch (error: unknown) {
-      handleControllerError(res, error, 'Asset deletion failed');
+      handleControllerError(res, error, 'Asset download failed');
     }
   };
 }

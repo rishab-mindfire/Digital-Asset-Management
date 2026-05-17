@@ -52,3 +52,14 @@ export const mockPagination: UsePaginationReturn['pagination'] = {
   page: 1,
   totalPages: 3,
 };
+
+// Standard mock data for asset testing
+export const mockAssetData = {
+  _id: '123',
+  fileType: 'Marketing Image',
+  owner: 'John Doe',
+  approval: 'pending',
+  metadata: {
+    extension: 'jpg',
+  },
+};

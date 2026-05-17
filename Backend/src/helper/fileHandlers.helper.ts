@@ -66,7 +66,6 @@ export const mergeFinalChunks = async (
 ): Promise<string | undefined> => {
   const chunkDir = path.join(TEMP_DIR, uploadId);
   const finalPath = path.join(UPLOAD_DIR, finalFilename);
-
   await fs.mkdir(UPLOAD_DIR, { recursive: true });
   const writeStream = createWriteStream(finalPath);
 
@@ -92,12 +91,12 @@ export const mergeFinalChunks = async (
     // Finalize the write stream and wait for disk buffer flush
     writeStream.end();
     await finished(writeStream);
-    logger.info(`merged file ${finalFilename}`);
+    logger.info(`merged successfully file : ${finalFilename}`);
     return finalPath;
   } catch (err) {
     writeStream.destroy();
     handleGlobalError(err);
-    logger.info(`error in merging file ${finalFilename}`, err);
+    logger.error(`error in merging file ${finalFilename}`, err);
   } finally {
     // Ensure the temporary directory is removed
     await fs.rm(chunkDir, { recursive: true, force: true }).catch(() => {});

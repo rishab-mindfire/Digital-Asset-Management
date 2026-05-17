@@ -3,17 +3,17 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import AssetDetails from './AssetDetails';
 import * as assetService from '../../services/asset.service';
-import type { InternalAxiosRequestConfig } from 'axios';
+import { mockAssetData } from '../../../test/mock/mockData';
 
 // Mock the services
 vi.mock('../../services/asset.service', () => ({
   getAssetDetails: vi.fn(),
   approveAsset: vi.fn(),
   removeAsset: vi.fn(),
-  downloadAsset: vi.fn(),
+  triggerAssetDownload: vi.fn(),
 }));
 
-// Mock the Media components to simplify testing AssetDetails logic
+// Mock media player components to isolate AssetDetails logic
 vi.mock('./MediaComponents/VideoPlayer', () => ({
   VideoPlayer: () => <div data-testid="video-player" />,
 }));
@@ -24,22 +24,13 @@ vi.mock('./MediaComponents/PdfViewer', () => ({
   PdfViewer: () => <div data-testid="pdf-viewer" />,
 }));
 
-const mockAssetData = {
-  _id: '123',
-  fileType: 'Marketing Image',
-  owner: 'John Doe',
-  approval: 'pending',
-  metadata: {
-    extension: 'jpg',
-  },
-};
-
 describe('AssetDetails Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
   });
 
+  // Helper to render the component within a router context
   const renderComponent = (id = '123') => {
     return render(
       <MemoryRouter initialEntries={[`/asset/${id}`]}>
@@ -52,10 +43,12 @@ describe('AssetDetails Component', () => {
   };
 
   it('renders loading state initially and then displays asset data', async () => {
+    // Setup mock to return data
     vi.mocked(assetService.getAssetDetails).mockResolvedValue(mockAssetData);
 
     renderComponent();
 
+    // Verify loading text appears
     expect(screen.getByText(/Loading asset.../i)).toBeInTheDocument();
 
     await waitFor(() => {
@@ -66,35 +59,39 @@ describe('AssetDetails Component', () => {
   });
 
   it('renders VideoPlayer when extension is mp4', async () => {
+    // Setup mock for video file type
     vi.mocked(assetService.getAssetDetails).mockResolvedValue({
       ...mockAssetData,
       metadata: { extension: 'mp4' },
     });
 
     renderComponent();
-
+    // Verify video player component is mounted
     await waitFor(() => {
       expect(screen.getByTestId('video-player')).toBeInTheDocument();
     });
   });
 
   it('shows "Mark approve" button only for admin users', async () => {
+    // Simulate admin session
     localStorage.setItem('userRole-DAM', 'admin');
     vi.mocked(assetService.getAssetDetails).mockResolvedValue(mockAssetData);
 
     renderComponent();
-
+    // Verify admin-only action button is visible
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Mark asset as approved/i })).toBeInTheDocument();
     });
   });
 
   it('handles asset deletion and navigates away', async () => {
+    // Setup mocks for data fetch and deletion success
     vi.mocked(assetService.getAssetDetails).mockResolvedValue(mockAssetData);
     vi.mocked(assetService.removeAsset).mockResolvedValue({});
 
     renderComponent();
 
+    // Trigger delete action
     const deleteBtn = await screen.findByRole('button', { name: /delete/i });
     fireEvent.click(deleteBtn);
 
@@ -105,34 +102,19 @@ describe('AssetDetails Component', () => {
     });
   });
 
-  it('triggers download when download button is clicked', async () => {
+  it('triggers native browser download when download button is clicked', async () => {
+    // Setup the mock data so the UI renders
     vi.mocked(assetService.getAssetDetails).mockResolvedValue(mockAssetData);
-
-    const mockBlob = new Blob(['content'], { type: 'image/jpeg' });
-
-    // Provide full Axios-like response object
-    vi.mocked(assetService.downloadAsset).mockResolvedValue({
-      data: mockBlob,
-      status: 200,
-      statusText: 'OK',
-      headers: {
-        'content-type': 'image/jpeg',
-        'content-disposition': 'attachment; filename="test.jpg"',
-      },
-      config: {} as InternalAxiosRequestConfig,
-      request: {},
-    });
-
-    // Mock URL methods to prevent JSDOM crashes
-    window.URL.createObjectURL = vi.fn(() => 'mock-url');
-    window.URL.revokeObjectURL = vi.fn();
-
     renderComponent();
 
+    // Wait for the component to finish loading and find the button
     const downloadBtn = await screen.findByRole('button', { name: /download/i });
+
+    // Trigger the click
     fireEvent.click(downloadBtn);
 
-    expect(assetService.downloadAsset).toHaveBeenCalledWith('123');
+    // Assert that the NEW service function was called with the correct ID
+    expect(assetService.triggerAssetDownload).toHaveBeenCalledWith('123');
   });
 
   it('shows error page when service fails', async () => {

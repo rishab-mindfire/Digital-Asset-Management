@@ -47,21 +47,21 @@ export const removeAsset = async (id: string) => {
   }
 };
 
-// Download Asset
-export const downloadAsset = async (id: string) => {
-  try {
-    const response = await api.get(`/admin/downloadAsset/${id}`, {
-      responseType: 'blob',
-    });
+/**
+ * Triggers a native browser download for an asset.
+ * Using window.location.href avoids the memory limits of Axios Blobs,
+ */
+export const triggerAssetDownload = (id: string) => {
+  const token = localStorage.getItem(import.meta.env.VITE_TOKEN_KEY);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
 
-    return response;
-  } catch (error: unknown) {
-    const message = handleError(error);
-
-    logger.error(message);
-
-    throw new Error(message, {
-      cause: error,
-    });
+  if (!token) {
+    throw new Error('Authentication token missing');
   }
+
+  // Construct the URL
+  const downloadUrl = `${baseUrl}/admin/downloadAsset/${id}?token=${token}`;
+
+  // Trigger the browser's native download manager
+  window.location.href = downloadUrl;
 };
