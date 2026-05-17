@@ -2,14 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { verifyEmplyeeRole } from '../services/authRole.service.js';
 import { handleControllerError } from '../utils/globleError.js';
+import { logger } from '../utils/logger.js';
 
 function authRoleBased(...allowedRoles: string[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       //  Extract the Access Token from the Authorization header
       const authHeader = req.headers['authorization'];
-      const token = authHeader && authHeader.split(' ')[1];
-
+      const token = (authHeader && authHeader.split(' ')[1]) || (req.query.token as string);
       if (!token) {
         return res.status(401).json({ message: 'Authentication token missing' });
       }
@@ -30,6 +30,7 @@ function authRoleBased(...allowedRoles: string[]) {
       req.userEmail = userEmail;
       next();
     } catch (error: unknown) {
+      logger.error('invalid token found !');
       handleControllerError(res, error, 'Invalid session', 401);
     }
   };

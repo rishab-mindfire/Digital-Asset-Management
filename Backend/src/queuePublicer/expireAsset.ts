@@ -42,7 +42,6 @@ export const publishToExpirationQueue = async (assetId: string): Promise<void> =
       persistent: true,
       expiration: expiredInMs.toString(),
     });
-
     logger.info(`Asset ${assetId} queued. Will expire in ${days} days.`);
 
     await channel.close();

@@ -130,18 +130,21 @@ class AdminServices {
           createdAt: new Date(),
         });
       }
+      const progress = Math.min(Math.round((chunkIndex / totalChunks) * 100), 100);
 
+      if (progress === 100) {
+        logger.info(`all chunk uploaded successfully for uploadID : ${uploadId}`);
+      }
       // Upload progress
       return {
         success: true,
-        progress: Math.min(Math.round((chunkIndex / totalChunks) * 100), 100),
+        progress: progress,
         chunkIndex,
       };
     } catch (error: unknown) {
       if (error instanceof Error) {
-        throw new Error(`Filesystem operation failed: ${error.message}`);
+        logger.error(`Filesystem operation failed: ${error.message}`);
       }
-
       throw new Error('Filesystem operation failed');
     }
   }
@@ -231,14 +234,14 @@ class AdminServices {
         await AssetModel.findByIdAndUpdate(assetData._id, { status: 'failed' });
 
         if (error instanceof Error) {
-          throw new Error(`Merge successful, but processing queue failed: ${error.message}`);
+          logger.warn(`Merge successful, but processing queue failed: ${error.message}`);
         }
-        throw new Error('Merge successful, but failed to trigger background worker');
+        logger.error('Merge successful, but failed to trigger background worker');
       }
       try {
         // Schedule the expiration
         await publishToExpirationQueue(assetData._id.toString());
-        logger.error('published successfully to expiration !');
+        logger.warn('published successfully to expiration !');
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw new Error('publish to expiration not works');
