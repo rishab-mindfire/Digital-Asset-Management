@@ -21,13 +21,13 @@ vi.mock('../src/services/authRole.service.js', () => ({
   verifyEmplyeeRole: vi.fn(),
 }));
 
-// Extend the Request interface to allow optional query and custom parameters
+// Extend the Request interface to allow optional custom parameters safely
 interface MockRequest extends Partial<Request> {
   method?: string;
   headers: {
     authorization?: string;
   };
-  query?: Record<string, any>;
+  query: Record<string, string | string[] | undefined>;
   userEmail?: string;
 }
 
@@ -50,7 +50,7 @@ describe('authRoleBased middleware', () => {
     req = {
       method: 'GET',
       headers: {},
-      query: {},
+      query: {}, // Explicitly defined so req.query.token does not crash
     };
 
     // Initialize response mocks ensuring status allows method chaining
