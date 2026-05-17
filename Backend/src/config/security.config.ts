@@ -13,7 +13,13 @@ export const corsOptions: CorsOptions = {
   // HEADERS THE BROWSER IS ALLOWED TO SEND
   allowedHeaders: ['Authorization', 'Content-Type', 'Range', 'X-Requested-With'],
   // HEADERS THE BROWSER IS ALLOWED TO READ FROM THE RESPONSE
-  exposedHeaders: ['Content-Range', 'Accept-Ranges', 'Content-Length', 'Content-Disposition'],
+  exposedHeaders: [
+    'Authorization',
+    'Content-Range',
+    'Accept-Ranges',
+    'Content-Length',
+    'Content-Disposition',
+  ],
 };
 
 // helmet for CSP (cross security policy) and x-frame
@@ -21,8 +27,6 @@ export const configureSecurity = (app: Express): void => {
   app.use(
     helmet({
       crossOriginResourcePolicy: { policy: 'cross-origin' },
-      // use the URL directly in the <video> tag,
-      // allow cross-origin-embedder-policy
       crossOriginEmbedderPolicy: false,
     }),
   );
@@ -31,9 +35,14 @@ export const configureSecurity = (app: Express): void => {
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
-        // Add frontend URL to connect-src so the browser allows the request
-        connectSrc: ["'self'", frontend_url],
-        scriptSrc: ["'self'", frontend_url],
+        // connect-src: Allow XHR/Fetch/Websockets to BOTH frontend and backend
+        connectSrc: ["'self'", frontend_url, '://localhost:4001'],
+        // script-src: Ensure scripts can run
+        scriptSrc: ["'self'", frontend_url, "'unsafe-inline'"],
+        // media-src: CRITICAL for <video> tags to work
+        mediaSrc: ["'self'", 'http://localhost:4001', 'blob:'],
+        // imgSrc: for thumbnails
+        imgSrc: ["'self'", 'data:', 'blob:', 'http://localhost:4001'],
       },
     }),
   );

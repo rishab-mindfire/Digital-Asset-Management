@@ -19,7 +19,7 @@ export const loginApi = async (
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`, credentials, {
       withCredentials: true,
     });
-    // Axios normalizes headers to lowercase
+    // Axios  headers
     const authHeader = response.headers?.authorization;
     if (!authHeader) {
       throw new Error('Authorization header missing');
