@@ -40,7 +40,7 @@ class AssetManagement {
       localPath: 0,
       isExpired: false,
     })
-      .sort({ updatedAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(limitNum)
       .skip((pageNum - 1) * limitNum);
 

@@ -16,6 +16,7 @@ import {
   removeAsset,
   triggerAssetDownload,
 } from '../../services/asset.service';
+import { toast } from 'react-toastify';
 
 const AssetDetails = () => {
   // Hook to get the asset ID from the URL path
@@ -91,6 +92,7 @@ const AssetDetails = () => {
       setLoading(true);
       await removeAsset(id);
       navigation('/asset');
+      toast.success('Asset removed successfully !');
     } catch (error: unknown) {
       logger.error(handleError(error));
     } finally {
