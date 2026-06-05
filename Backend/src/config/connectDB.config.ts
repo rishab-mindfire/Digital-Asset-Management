@@ -19,7 +19,6 @@ const options: ConnectOptions = {
 const connectDB = async (): Promise<typeof mongoose> => {
   try {
     const connectionString = process.env.DB_CONNECTION_STRING;
-
     if (!connectionString) {
       throw new AppError('DB_CONNECTION_STRING is missing in environment variables', 500);
     }
